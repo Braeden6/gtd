@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "GTD",
+    "slug": "gtd",
+    "scheme": "com.braeden6.gtd",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/splash-icon.jpeg",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.jpeg",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.braeden6.gtd"
+    },
+    "android": {
+      "package": "com.braeden6.gtd",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/splash-icon.jpeg",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/splash-icon.jpeg",
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera.",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
+        }
+    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "26e46064-7027-4ebf-98a7-fc3f38513d16"
+      }
+    }
+  }
+}
