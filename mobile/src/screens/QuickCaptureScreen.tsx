@@ -13,24 +13,48 @@ import { Mic, Play, StopCircle } from 'lucide-react-native';
 import DefaultLayout from '../layouts/default';
 import { useRecord } from '../hooks/useRecord';
 import Camera from '../components/Camera';
-
+import { API_URL } from '@env';
 
 export default function QuickCaptureScreen() {
   const { handleRecordPress, recording, playRecording, isRecording } = useRecord();
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [text, setText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
     if (!text.trim()) return;
+    const formData = new FormData();
+    formData.append('note', text);
     
     setIsSubmitting(true);
     try {
-      // TODO: Implement your inbox item creation logic here
-      // await createInboxItem({ content: text });
+      if (recording) {
+        const uri = recording.getURI();
+        if (!uri) return;
+        // @ts-ignore
+        formData.append('audio', {
+          uri: uri,
+          type: 'audio/x-m4a',
+          name: 'recording.m4a'
+        });
+      }
+
+      if (capturedImage) {
+        // @ts-ignore
+        formData.append('image', {
+          uri: capturedImage,
+          type: 'image/jpeg',
+          name: 'image.jpg'
+        });
+      }
+      
+      await fetch(`${API_URL}/api/inbox/quick-capture`, {
+        method: 'POST',
+        body: formData,
+      });
       setText('');
     } catch (error) {
-      // TODO: Add error handling
-      console.error(error);
+      console.error('Error submitting:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -38,7 +62,6 @@ export default function QuickCaptureScreen() {
 
   return (
     <DefaultLayout>
-      <Camera />
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1"
@@ -52,6 +75,11 @@ export default function QuickCaptureScreen() {
             <Text className="text-2xl font-bold text-gray-900 mb-6">
               {t('screens.quickCapture.title', 'Capture Thought')}
             </Text>
+
+            <Camera 
+              setCapturedImage={setCapturedImage}
+              capturedImage={capturedImage}
+            />            
 
             {/* Voice Recording Section */}
             <View>

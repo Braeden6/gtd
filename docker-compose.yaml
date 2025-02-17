@@ -1,17 +1,17 @@
 version: '3.8'
 
 services:
-  caddy:
-    image: caddy:2
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
-    networks:
-      - app-network
+  # caddy:
+  #   image: caddy:2
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./Caddyfile:/etc/caddy/Caddyfile
+  #     - caddy_data:/data
+  #     - caddy_config:/config
+  #   networks:
+  #     - app-network
 
 
   frontend:
@@ -20,8 +20,11 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
     environment:
-      - VITE_API_URL=https://desktop
+      - VITE_API_URL=http://localhost:3000
     networks:
       - app-network
 
@@ -32,7 +35,8 @@ services:
     volumes:
       - ./backend:/app
       - go-modules:/go/pkg/mod
-      - ./data:/data
+    ports:
+      - "3000:3000"
     environment:
       - DB_HOST=postgres
       - DB_USER=postgres

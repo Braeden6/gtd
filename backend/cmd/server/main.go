@@ -47,33 +47,35 @@ func main() {
 		Port:     os.Getenv("DB_PORT"),
 	}
 
-	minioService, err := storage.NewMinioService(storage.MinioConfig{
-		Endpoint:        "minio:9000",
-		AccessKeyID:     "minioadmin",
-		SecretAccessKey: "minioadmin",
-		UseSSL:          false,
-		BucketName:      "audio-files",
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
+    minioService, err := storage.NewMinioService(storage.MinioConfig{
+        Endpoint:        "minio:9000",
+        AccessKeyID:     "minioadmin",
+        SecretAccessKey: "minioadmin",
+        UseSSL:          false,
+        BucketName:      "audio-files",
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
 
-	db, err := database.NewGormDB(dbConfig)
-	if err != nil {
-		e.Logger.Fatal(err)
-	}
+    storageService := service.NewStorageService(minioService)
+
+    db, err := database.NewGormDB(dbConfig)
+    if err != nil {
+        e.Logger.Fatal(err)
+    }
 
 	inboxRepo := repository.NewInboxRepository(db)
 	inboxService := service.NewInboxService(inboxRepo)
-	inboxHandler := api.NewInboxHandler(inboxService)
+	inboxHandler := api.NewInboxHandler(inboxService, storageService)
 
-	audioRepo := repository.NewAudioRepository(db, minioService)
-	audioService := service.NewAudioService(audioRepo)
-	audioHandler := api.NewAudioHandler(audioService)
+	// audioRepo := repository.NewAudioRepository(db, storageService)
+	// audioService := service.NewAudioService(audioRepo)
+	// audioHandler := api.NewAudioHandler(audioService)
 
 	api := e.Group("/api")
 	inboxHandler.RegisterRoutes(api)
-	audioHandler.RegisterRoutes(api)
+	// audioHandler.RegisterRoutes(api)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }

@@ -7,9 +7,12 @@ import LoginScreen from './src/screens/LoginScreen';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 import QuickCaptureScreen from './src/screens/QuickCaptureScreen';
 import { RootStackParamList } from './src/types/screen';
+import React from 'react';
+import { PortalHost } from '@rn-primitives/portal';
+// import { initializeApi } from './src/lib/api';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-
+// initializeApi();
 
 function AppNavigator() {
   const { userInfo } = useAuth();
@@ -32,6 +35,7 @@ function AppNavigator() {
           )}
         </Stack.Navigator>
       </NavigationContainer>
+      <PortalHost />
     </SafeAreaProvider>
   );
 }
