@@ -1,19 +1,24 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
-
+	"mime/multipart"
 	"github.com/braeden6/gtd/internal/domain"
 	"github.com/braeden6/gtd/internal/service"
 	"github.com/labstack/echo/v4"
 )
 
 type InboxHandler struct {
-	service *service.InboxService
+	service        *service.InboxService
+	storageService service.StorageService
 }
 
-func NewInboxHandler(service *service.InboxService) *InboxHandler {
-	return &InboxHandler{service: service}
+func NewInboxHandler(service *service.InboxService, storageService service.StorageService) *InboxHandler {
+	return &InboxHandler{
+		service:        service,
+		storageService: storageService,
+	}
 }
 
 func (h *InboxHandler) RegisterRoutes(g *echo.Group) {
@@ -23,6 +28,76 @@ func (h *InboxHandler) RegisterRoutes(g *echo.Group) {
 	inbox.GET("/:id", h.GetByID)
 	inbox.PUT("/:id", h.Update)
 	inbox.DELETE("/:id", h.Delete)
+	inbox.POST("/quick-capture", h.QuickCapture)
+}
+
+
+type QuickCaptureRequest struct {
+    Audio *multipart.FileHeader `form:"audio"`
+    Note  string               `form:"note"`
+}
+
+// QuickCaptureResponse represents the output from the quick capture endpoint
+type QuickCaptureResponse struct {
+    Message string `json:"message"`
+    ItemID  string `json:"itemId"`
+}
+
+// QuickCapture godoc
+// @Summary Quick capture inbox item
+// @Description Create a new inbox item with optional media attachments
+// @Tags inbox
+// @Accept multipart/form-data
+// @Produce json
+// @Param audio formData file false "Audio file"
+// @Param note formData string false "Text note"
+// @Success 201 {object} QuickCaptureResponse
+// @Router /inbox/quick-capture [post]
+func (h *InboxHandler) QuickCapture(c echo.Context) error {
+	note := c.FormValue("note")
+
+    audio, err := c.FormFile("audio")
+    if err != nil && err != http.ErrMissingFile {
+        return c.JSON(http.StatusBadRequest, map[string]string{
+            "error": fmt.Sprintf("Error processing audio file: %v", err),
+        })
+    }
+
+	image, err := c.FormFile("image")
+	if err != nil && err != http.ErrMissingFile {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"error": fmt.Sprintf("Error processing image file: %v", err),
+		})
+	}
+
+	imagePath, err := h.storageService.StoreFile(c.Request().Context(), "image", image)
+    if err != nil {
+        return c.JSON(http.StatusInternalServerError, map[string]string{
+            "error": err.Error(),
+        })
+    }
+
+    audioPath, err := h.storageService.StoreFile(c.Request().Context(), "audio", audio)
+    if err != nil {
+        return c.JSON(http.StatusInternalServerError, map[string]string{
+            "error": err.Error(),
+        })
+    }
+
+	item := domain.InboxItem{
+		UserID: "40c8bdda-fc65-41d9-a29b-f5e4d2407dad",
+		Content: note,
+		AudioPath: audioPath,
+		ImagePath: imagePath,
+	}
+	if err := h.service.CreateInboxItem(c.Request().Context(), &item); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
+    return c.JSON(http.StatusCreated, QuickCaptureResponse{
+        Message: "Quick capture successful",
+        ItemID:  item.ID,
+    })
 }
 
 // Create godoc

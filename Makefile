@@ -17,9 +17,10 @@ generate-swagger:
 	cd backend && $(HOME)/go/bin/swag init -g cmd/server/main.go -o ./docs
 
 generate-api:
-	cd frontend && pnpm generate-api
-
-
+	cd frontend && \
+	pnpm generate-api # && \
+	# pnpm generate-api-mobile
+	
 # test-frontend:
 # 	docker compose run frontend pnpm test
 

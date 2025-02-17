@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { api_QuickCaptureResponse } from '../models/api_QuickCaptureResponse';
 import type { domain_InboxItem } from '../models/domain_InboxItem';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -33,6 +34,27 @@ export class InboxService {
             method: 'POST',
             url: '/inbox',
             body: item,
+        });
+    }
+    /**
+     * Quick capture inbox item
+     * Create a new inbox item with optional media attachments
+     * @param audio Audio file
+     * @param note Text note
+     * @returns api_QuickCaptureResponse Created
+     * @throws ApiError
+     */
+    public static postInboxQuickCapture(
+        audio?: Blob,
+        note?: string,
+    ): CancelablePromise<api_QuickCaptureResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/inbox/quick-capture',
+            formData: {
+                'audio': audio,
+                'note': note,
+            },
         });
     }
     /**

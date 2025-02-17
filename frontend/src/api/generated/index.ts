@@ -7,6 +7,7 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { api_QuickCaptureResponse } from './models/api_QuickCaptureResponse';
 export type { domain_InboxItem } from './models/domain_InboxItem';
 
 export { AudioService } from './services/AudioService';
