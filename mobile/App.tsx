@@ -9,9 +9,13 @@ import QuickCaptureScreen from './src/screens/QuickCaptureScreen';
 import { RootStackParamList } from './src/types/screen';
 import React from 'react';
 import { PortalHost } from '@rn-primitives/portal';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // import { initializeApi } from './src/lib/api';
 
+const queryClient = new QueryClient();
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
+
 // initializeApi();
 
 function AppNavigator() {
@@ -42,8 +46,10 @@ function AppNavigator() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppNavigator />
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <AppNavigator />
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
