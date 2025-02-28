@@ -7,6 +7,10 @@ import (
 	"github.com/braeden6/gtd/internal/domain"
 	"github.com/braeden6/gtd/internal/service"
 	"github.com/labstack/echo/v4"
+	"time"
+	"os"
+	"io"
+	"math/rand"
 )
 
 type InboxHandler struct {
@@ -29,6 +33,7 @@ func (h *InboxHandler) RegisterRoutes(g *echo.Group) {
 	inbox.PUT("/:id", h.Update)
 	inbox.DELETE("/:id", h.Delete)
 	inbox.POST("/quick-capture", h.QuickCapture)
+	inbox.GET("/benchmark", h.BenchmarkOperation)
 }
 
 
@@ -210,4 +215,142 @@ func (h *InboxHandler) Delete(c echo.Context) error {
 	}
 
 	return c.NoContent(http.StatusNoContent)
+}
+
+// BenchmarkOperation godoc
+// @Summary Benchmark CPU and I/O operations
+// @Description Performs CPU-intensive calculations and simulates I/O operations for benchmarking
+// @Tags inbox
+// @Accept json
+// @Produce json
+// @Param iterations query int false "Number of calculation iterations" default(100000)
+// @Param io_type query string false "I/O operation type (file, minio, postgres, all)" default(all)
+// @Success 200 {object} map[string]interface{}
+// @Router /inbox/benchmark [get]
+func (h *InboxHandler) BenchmarkOperation(c echo.Context) error {
+	// Get parameters with defaults
+	iterations := 100000
+	ioType := "all"
+
+	// Parse query parameters if provided
+	if iterParam := c.QueryParam("iterations"); iterParam != "" {
+		fmt.Sscanf(iterParam, "%d", &iterations)
+	}
+	if ioTypeParam := c.QueryParam("io_type"); ioTypeParam != "" {
+		ioType = ioTypeParam
+	}
+
+	startTime := time.Now()
+
+	// CPU-intensive operation - calculate prime numbers
+	primeCount := 0
+	for i := 2; i < iterations; i++ {
+		isPrime := true
+		for j := 2; j*j <= i; j++ {
+			if i%j == 0 {
+				isPrime = false
+				break
+			}
+		}
+		if isPrime {
+			primeCount++
+		}
+	}
+	
+	cpuTime := time.Since(startTime)
+	ioStartTime := time.Now()
+	
+	// I/O operations based on selected type
+	ioResults := make(map[string]interface{})
+	
+	// File I/O
+	if ioType == "file" || ioType == "all" {
+		fileStart := time.Now()
+		// Create a temporary file to simulate I/O
+		tempFile, err := os.CreateTemp("", "benchmark-*.txt")
+		if err == nil {
+			defer os.Remove(tempFile.Name())
+			defer tempFile.Close()
+			
+			// Write some data
+			data := make([]byte, 1024*100) // 100KB of data
+			rand.Read(data)
+			tempFile.Write(data)
+			
+			// Flush to disk
+			tempFile.Sync()
+			
+			// Read it back
+			tempFile.Seek(0, 0)
+			io.ReadAll(tempFile)
+			
+			ioResults["file_io_ms"] = time.Since(fileStart).Milliseconds()
+		} else {
+			ioResults["file_io_error"] = err.Error()
+		}
+	}
+	
+	// MinIO I/O
+	if ioType == "minio" || ioType == "all" {
+		minioStart := time.Now()
+		
+		// Generate random data
+		data := make([]byte, 1024*100) // 100KB of data
+		rand.Read(data)
+		
+		// Store the data using the benchmark method
+		objectName := fmt.Sprintf("benchmark-%d.bin", time.Now().UnixNano())
+		filePath, err := h.storageService.StoreBenchmarkBytes(c.Request().Context(), data, objectName)
+		if err == nil {
+			ioResults["minio_io_ms"] = time.Since(minioStart).Milliseconds()
+			ioResults["minio_object_path"] = filePath
+		} else {
+			ioResults["minio_upload_error"] = err.Error()
+		}
+	}
+	
+	// PostgreSQL I/O
+	if ioType == "postgres" || ioType == "all" {
+		pgStart := time.Now()
+		
+		// Create a benchmark inbox item
+		benchmarkItem := &domain.InboxItem{
+			UserID:  "40c8bdda-fc65-41d9-a29b-f5e4d2407dad",
+			Content: fmt.Sprintf("Benchmark test at %s", time.Now().Format(time.RFC3339)),
+		}
+		
+		// Insert into database
+		err := h.service.CreateInboxItem(c.Request().Context(), benchmarkItem)
+		if err == nil {
+			// Read it back
+			_, err := h.service.GetInboxItem(c.Request().Context(), benchmarkItem.ID)
+			if err == nil {
+				// Delete it
+				err = h.service.DeleteInboxItem(c.Request().Context(), benchmarkItem.ID)
+				if err == nil {
+					ioResults["postgres_io_ms"] = time.Since(pgStart).Milliseconds()
+					ioResults["postgres_operation"] = "create-read-delete"
+				} else {
+					ioResults["postgres_delete_error"] = err.Error()
+				}
+			} else {
+				ioResults["postgres_read_error"] = err.Error()
+			}
+		} else {
+			ioResults["postgres_create_error"] = err.Error()
+		}
+	}
+
+	ioTime := time.Since(ioStartTime)
+	totalTime := time.Since(startTime)
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status":       "success",
+		"iterations":   iterations,
+		"prime_count":  primeCount,
+		"cpu_time_ms":  cpuTime.Milliseconds(),
+		"io_time_ms":   ioTime.Milliseconds(),
+		"total_time_ms": totalTime.Milliseconds(),
+		"io_details":   ioResults,
+	})
 }
