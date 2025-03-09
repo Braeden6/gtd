@@ -34,6 +34,7 @@ target_metadata = SQLAlchemyBase.metadata
 
 # Import settings to get database URL
 from src.core.settings import settings
+
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 
 # other values from the config, defined by the needs of env.py,

@@ -62,8 +62,32 @@ Includes:
 | testcontainers       | Integration testing         |
 | fastapi-csrf-protect | CSRF protection             |
 
+# Commands
 
-## migration commands
+## setup
+pip install -e .
+pip install -e '.[dev]'
+
+## run
+uvicorn src.main:app --reload
+
+## migration
 alembic revision --autogenerate -m "migration message"
 alembic upgrade head
 alembic downgrade -1
+
+## test
+pytest
+pytest -m unit
+pytest -m integration
+pytest -m e2e
+pytest -v
+pytest --cov=src
+
+## lint
+ruff check src
+ruff check src --fix
+ruff format src
+
+## type check
+mypy src

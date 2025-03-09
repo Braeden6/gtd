@@ -2,9 +2,11 @@ frontend/dev-dist/**
 backend/docs/**
 data/**
 
+*.pyc
 
 *.env
 
+.coverage
 
 
 # Logs
