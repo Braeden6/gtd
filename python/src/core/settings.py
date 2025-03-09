@@ -1,17 +1,18 @@
 from pydantic_settings import BaseSettings
 from typing import Optional
 
+
 class Settings(BaseSettings):
-    DATABASE_URL: Optional[str] = 'postgresql+asyncpg://postgres:postgres@localhost:5432/gtd'
-    PASSWORD_SECRET_KEY: str = 'dasdasdasd'
+    DATABASE_URL: Optional[str] = "postgresql+asyncpg://postgres:postgres@localhost:5432/gtd"
+    PASSWORD_SECRET_KEY: str = "dasdasdasd"
     COOKIE_SECURE: bool = True
     COOKIE_DOMAIN: Optional[str] = None
-    
+
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
     REDIS_DB: int = 0
     SESSION_EXPIRATION: int = 3600  # 1 hour
-    
+
     MINIO_ENDPOINT_URL: str = "http://localhost:9000"
     MINIO_ACCESS_KEY: str = "minioadmin"
     MINIO_SECRET_KEY: str = "minioadmin"
@@ -21,9 +22,10 @@ class Settings(BaseSettings):
     @property
     def REDIS_URL(self) -> str:
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
-    
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
+
 
 settings = Settings()

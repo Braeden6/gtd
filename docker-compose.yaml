@@ -1,19 +1,6 @@
 version: '3.8'
 
 services:
-  # caddy:
-  #   image: caddy:2
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - ./Caddyfile:/etc/caddy/Caddyfile
-  #     - caddy_data:/data
-  #     - caddy_config:/config
-  #   networks:
-  #     - app-network
-
-
   frontend:
     build: 
       context: ./frontend
@@ -34,38 +21,27 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - ./backend:/app
-      - go-modules:/go/pkg/mod
     ports:
-      - "3000:3000"
+      - "8000:8000"
     environment:
       - DB_HOST=postgres
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - DB_NAME=gtd
       - DB_PORT=5432
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - MINIO_URL=http://minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - AUTHENTIK_URL=https://auth.braeden6.com
+      - AUTHENTIK_CLIENT_ID=your-client-id
+      - AUTHENTIK_CLIENT_SECRET=your-client-secret
+      - SECRET_KEY=your-secret-key
+      - CSRF_SECRET=your-csrf-secret
     networks:
       - app-network
 
-  fastapi-benchmark:
-    build:
-      context: ./python
-      dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
-    environment:
-      - MINIO_HOST=minio
-      - MINIO_PORT=9000
-      - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=gtd
-    depends_on:
-      - postgres
-      - minio
-    networks:
-      - app-network
-      
   postgres:
     image: postgres:16
     environment:
@@ -79,6 +55,16 @@ services:
     networks:
       - app-network
 
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --save 60 1 --loglevel warning
+    networks:
+      - app-network
+  
   pgadmin:
     image: dpage/pgadmin4
     environment:
@@ -103,13 +89,13 @@ services:
     networks:
       - app-network
 
-
 volumes:
   go-modules:
   postgres_data:
   minio_data:
   caddy_data:
   caddy_config:
+  redis_data:
 
 networks:
   app-network:

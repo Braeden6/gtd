@@ -12,16 +12,15 @@ cookie_transport = CookieTransport(
     cookie_httponly=True,
 )
 
-redis = Redis.from_url(
-    settings.REDIS_URL,
-    decode_responses=True
-)
+redis = Redis.from_url(settings.REDIS_URL, decode_responses=True)
+
 
 def get_redis_strategy() -> RedisStrategy:
     return RedisStrategy(
         redis=redis,
         lifetime_seconds=settings.SESSION_EXPIRATION,
     )
+
 
 auth_backend = AuthenticationBackend(
     name="session",

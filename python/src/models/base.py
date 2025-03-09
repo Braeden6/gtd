@@ -7,8 +7,10 @@ from sqlalchemy.ext.declarative import declarative_base
 
 SQLAlchemyBase = declarative_base()
 
-class BaseModel(SQLAlchemyBase): # type: ignore
+
+class BaseModel(SQLAlchemyBase):  # type: ignore
     """Base model with common fields for all entities."""
+
     __abstract__ = True
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -21,13 +23,15 @@ class BaseModel(SQLAlchemyBase): # type: ignore
 
 class SoftDeleteModel(BaseModel):
     """Base model with soft delete capability."""
+
     __abstract__ = True
 
     deleted_at = Column(DateTime, nullable=True, index=True)
-    
+
     @property
     def is_deleted(self) -> bool:
         return self.deleted_at is not None
 
-BaseModelType = TypeVar('BaseModelType', bound=BaseModel)
-SoftDeleteModelType = TypeVar('SoftDeleteModelType', bound=SoftDeleteModel)
+
+BaseModelType = TypeVar("BaseModelType", bound=BaseModel)
+SoftDeleteModelType = TypeVar("SoftDeleteModelType", bound=SoftDeleteModel)
