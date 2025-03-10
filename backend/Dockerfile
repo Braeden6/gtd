@@ -1,12 +1,13 @@
-FROM golang:1.23.0 AS build
+FROM python:3.10-slim as builder
+RUN pip install --no-cache-dir uv
 WORKDIR /app
-COPY go.mod go.sum ./
-RUN go mod download
-COPY . .
-RUN CGO_ENABLED=1 GOOS=linux go build -o gtd-server ./cmd/server
+COPY pyproject.toml .
+RUN uv pip install --system -e .
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
-COPY --from=build /app/gtd-server /usr/local/bin/
-EXPOSE 3000
-CMD ["gtd-server"]
+# Runtime stage
+FROM python:3.10-slim
+WORKDIR /app
+COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+COPY . .
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -27,7 +27,7 @@ class BaseRepository(RepositoryInterface[BaseModelType], Generic[BaseModelType])
     async def get_by_id(self, id: UUID) -> Optional[BaseModelType]:
         """Get an entity by ID."""
         query = select(self.model_class).where(self.model_class.id == id)
-        result  = await self.db_session.execute(query)
+        result = await self.db_session.execute(query)
         return result.scalars().first()
 
     async def get_all(self, **filters: Any) -> List[BaseModelType]:

@@ -1,8 +1,7 @@
-FROM golang:1.23.0 AS development
+FROM python:3.10-slim
 WORKDIR /app
-RUN go install github.com/air-verse/air@latest
-COPY go.mod go.sum ./
-RUN go mod download
-COPY . .
-EXPOSE 3000
-CMD ["air"]
+RUN pip install --no-cache-dir uv
+COPY pyproject.toml .
+RUN uv pip install --system -e .
+RUN uv pip install --system -e ".[dev]"
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "3000", "--reload"]

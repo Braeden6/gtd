@@ -11,7 +11,7 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - VITE_API_URL=http://localhost:3000
+      - VITE_API_URL=http://localhost:8000
     networks:
       - app-network
 
@@ -34,11 +34,6 @@ services:
       - MINIO_URL=http://minio:9000
       - MINIO_ACCESS_KEY=minioadmin
       - MINIO_SECRET_KEY=minioadmin
-      - AUTHENTIK_URL=https://auth.braeden6.com
-      - AUTHENTIK_CLIENT_ID=your-client-id
-      - AUTHENTIK_CLIENT_SECRET=your-client-secret
-      - SECRET_KEY=your-secret-key
-      - CSRF_SECRET=your-csrf-secret
     networks:
       - app-network
 
