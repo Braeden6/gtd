@@ -1,18 +1,16 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
 import Dashboard from '@/pages/Dashboard/index';
 import NextActions from '@/pages/NextActions/index';
 import Projects from '@/pages/Projects/index';
-// import WaitingFor from '@/pages/waiting-for';
-// import Someday from '@/pages/someday';
-// import Reference from '@/pages/reference';
 import NotFound from '@/pages/NotFound/index';
 import Inbox from './pages/Indox/inbox';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { useState, useEffect } from 'react';
-import { PWAInstallPrompt } from '@/components/features/PWAInstallPrompt';
-import QuickCapture from './pages/QuickCapture/QuickCapture';
+import AuthentikLogin from './components/features/AuthentikLogin';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import React from 'react';
+import AuthCallback from './components/features/AuthCallback';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,36 +21,54 @@ const queryClient = new QueryClient({
   },
 });
 
-function App() {
-  const [shouldShowPWAPrompt, setShouldShowPWAPrompt] = useState(false);
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+}
 
-  useEffect(() => {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-    setShouldShowPWAPrompt(isIOS && !isStandalone);
-  }, []);
+// Protected route component
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+  const location = useLocation();
 
-  if (shouldShowPWAPrompt) {
-    return <PWAInstallPrompt />;
+  // Show loading state while checking auth
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
+  // Redirect to login if not authenticated
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+
+  // Render children if authenticated
+  return <>{children}</>;
+};
+
+function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Routes>
-        <Route path="capture" element={<QuickCapture />} /> 
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="inbox" element={<Inbox />} />
-            <Route path="next-actions" element={<NextActions />} />
-            <Route path="projects" element={<Projects />} />
-            {/* <Route path="waiting-for" element={<WaitingFor />} /> */}
-            {/* <Route path="someday" element={<Someday />} /> */}
-            {/* <Route path="reference" element={<Reference />} /> */}
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Authentication route */}
+            <Route path="/login" element={<AuthentikLogin />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
+            
+            {/* Protected routes with MainLayout */}
+            <Route path="/" element={
+              // <ProtectedRoute>
+                <MainLayout />
+              // </ProtectedRoute>
+            }>
+              <Route index element={<Dashboard />} />
+              <Route path="inbox" element={<Inbox />} />
+              <Route path="next-actions" element={<NextActions />} />
+              <Route path="projects" element={<Projects />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
