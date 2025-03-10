@@ -19,13 +19,11 @@ class Settings(BaseSettings):
     MINIO_REGION: Optional[str] = None
     MINIO_BUCKET_NAME: str = "gtd-storage"
 
-    AUTHENTIK_CLIENT_ID: str = "1234567890"
-    AUTHENTIK_SECRET: str = "1234567890"
+    AUTHENTIK_CLIENT_ID: str = ""
+    AUTHENTIK_SECRET: str = ""
     AUTHENTIK_AUTHORIZATION_URL: str = "https://auth.braeden6.com/application/o/authorize/"
     AUTHENTIK_TOKEN_URL: str = "https://auth.braeden6.com/application/o/token/"
-    AUTHENTIK_REDIRECT_URI: str = "http://localhost:8000/auth/oauth/authentik/callback"
     AUTHENTIK_USERINFO_URL: str = "https://auth.braeden6.com/application/o/userinfo/"
-    AUTHENTIK_REVOKE_TOKEN_URL: str = "https://auth.braeden6.com/application/o/revoke/"
 
     @property
     def REDIS_URL(self) -> str:

@@ -28,10 +28,9 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, UUID]):
     async def on_after_request_verify(self, user: User, token: str, request: Optional[Request] = None):
         logger.debug(f"Verification requested for user {user.id}. Verification token: {token}")
         print(request)
-        
+
     async def on_after_login(self, user: User, request: Optional[Request] = None, response: Optional[Response] = None):
         logger.debug(f"User {user.id} has logged in.")
-
 
 
 async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_user_db)):

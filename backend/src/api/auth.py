@@ -45,14 +45,12 @@ auth_router.include_router(
         auth_backend,
         state_secret=settings.AUTHENTIK_SECRET,
         associate_by_email=True,
-        redirect_url='http://localhost:5173/auth/callback',
+        redirect_url="http://localhost:5173/auth/callback",
         is_verified_by_default=True,
     ),
     prefix="/auth/oauth/authentik",
     tags=["auth"],
 )
-
-
 
 
 @auth_router.get("/authenticated-route")

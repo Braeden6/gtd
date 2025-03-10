@@ -1,11 +1,10 @@
 import pytest
-from uuid import uuid4
-from unittest.mock import AsyncMock, MagicMock, create_autospec
+from unittest.mock import AsyncMock
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, update, delete, exists
 from typing import Type
 from src.repository.base import BaseRepository
 from src.models.base import BaseModelType
+
 
 @pytest.fixture
 def mock_db_session():
@@ -13,9 +12,11 @@ def mock_db_session():
     session.execute.return_value.scalar.return_value = True
     return session
 
+
 class MockBaseRepository(BaseRepository[BaseModelType]):
     def __init__(self, db_session: AsyncSession, model_class: Type[BaseModelType]):
         super().__init__(db_session, model_class)
+
 
 @pytest.mark.unit
 async def test_create(mock_db_session: AsyncSession):
@@ -23,17 +24,18 @@ async def test_create(mock_db_session: AsyncSession):
     # repo = MockBaseRepository(mock_db_session, BaseModelType)
     # test_data = {"name": "test", "value": 123}
     # result = await repo.create(**test_data)
-    
+
     # repo.db_session.add.assert_called_once()
     # repo.db_session.flush.assert_awaited_once()
     # repo.db_session.refresh.assert_awaited_once()
     # assert isinstance(result, repo.model_class)
 
+
 # @pytest.mark.unit
 # async def test_get_by_id(base_repo: BaseRepository[BaseModelType]):
 #     test_id = uuid4()
 #     result = await base_repo.get_by_id(test_id)
-    
+
 #     base_repo.db_session.execute.assert_awaited_once()
 #     select.assert_called_once()
 #     assert isinstance(result, base_repo.model_class)
@@ -41,7 +43,7 @@ async def test_create(mock_db_session: AsyncSession):
 # @pytest.mark.unit
 # async def test_get_all(base_repo: BaseRepository[BaseModelType]):
 #     result = await base_repo.get_all()
-    
+
 #     base_repo.db_session.execute.assert_awaited_once()
 #     assert isinstance(result, list)
 #     assert isinstance(result[0], base_repo.model_class)
@@ -50,7 +52,7 @@ async def test_create(mock_db_session: AsyncSession):
 # async def test_get_all_with_filters(base_repo: BaseRepository[BaseModelType]):
 #     filters = {"name": "test"}
 #     await base_repo.get_all(**filters)
-    
+
 #     base_repo.db_session.execute.assert_awaited_once()
 
 # @pytest.mark.unit
@@ -58,7 +60,7 @@ async def test_create(mock_db_session: AsyncSession):
 #     test_id = uuid4()
 #     update_data = {"name": "updated"}
 #     result = await base_repo.update(test_id, update_data)
-    
+
 #     base_repo.db_session.execute.assert_awaited_once()
 #     base_repo.db_session.flush.assert_awaited_once()
 #     assert isinstance(result, base_repo.model_class)
@@ -67,15 +69,15 @@ async def test_create(mock_db_session: AsyncSession):
 # async def test_delete(base_repo: BaseRepository[BaseModelType]):
 #     test_id = uuid4()
 #     result = await base_repo.delete(test_id)
-    
+
 #     base_repo.db_session.execute.assert_awaited_once()
 #     base_repo.db_session.flush.assert_awaited_once()
 #     assert isinstance(result, bool)
 
 # @pytest.mark.unit
 # async def test_exists(base_repo: BaseRepository[BaseModelType]):
-    # test_id = uuid4()
-    # result = await base_repo.exists(test_id)
-    
-    # base_repo.db_session.execute.return_value.scalar.assert_called_once()
-    # assert isinstance(result, bool)
+# test_id = uuid4()
+# result = await base_repo.exists(test_id)
+
+# base_repo.db_session.execute.return_value.scalar.assert_called_once()
+# assert isinstance(result, bool)
