@@ -7,7 +7,7 @@ import NotFound from '@/pages/NotFound/index';
 import Inbox from './pages/Indox/inbox';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import AuthentikLogin from './components/features/AuthentikLogin';
+import Login from './pages/Login/Login';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import React from 'react';
 import AuthCallback from './components/features/AuthCallback';
@@ -25,22 +25,17 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
-// Protected route component
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
   const location = useLocation();
 
-  // Show loading state while checking auth
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  // Redirect to login if not authenticated
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
-
-  // Render children if authenticated
   return <>{children}</>;
 };
 
@@ -51,14 +46,14 @@ function App() {
         <BrowserRouter>
           <Routes>
             {/* Authentication route */}
-            <Route path="/login" element={<AuthentikLogin />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             
             {/* Protected routes with MainLayout */}
             <Route path="/" element={
-              // <ProtectedRoute>
+              <ProtectedRoute>
                 <MainLayout />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             }>
               <Route index element={<Dashboard />} />
               <Route path="inbox" element={<Inbox />} />
