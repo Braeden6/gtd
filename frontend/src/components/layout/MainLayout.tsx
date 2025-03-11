@@ -3,14 +3,16 @@ import { Outlet } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sidebar } from '@/components/layout/Sidebar';
+import { Topbar } from '@/components/layout/Topbar';
 import { QuickCaptureDialog } from '@/components/features/QuickCaptureDialog';
-
 
 export function MainLayout() {
   const [isQuickCaptureOpen, setIsQuickCaptureOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
+      <Topbar />
+      
       <div className="flex">
         <Sidebar />
         
