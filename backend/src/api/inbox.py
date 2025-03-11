@@ -55,3 +55,29 @@ async def create_inbox_item(
         logger = logging.getLogger(__name__)
         logger.error(f"Error creating inbox item: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to create inbox item: {str(e)}")
+
+
+@router.get("/", response_model=list[InboxItemResponse], status_code=status.HTTP_200_OK, summary="Get all inbox items for the current user")
+async def get_user_inbox_items(
+    inbox_repo: Annotated[InboxRepository, Depends(get_inbox_repository)],
+    current_user: User = Depends(current_active_user),
+    processed: Optional[bool] = None,
+):
+    """
+    Retrieve all inbox items for the current user.
+
+    - **processed**: Optional filter for processed status (True/False)
+    
+    Returns a list of inbox items ordered by creation date (newest first).
+    """
+    try:
+        user_id: UUID = current_user.id  # type: ignore
+        inbox_items = await inbox_repo.get_by_user_id(user_id=user_id, processed=processed)
+        return inbox_items
+    
+    except Exception as e:
+        import logging
+
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error retrieving inbox items: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to retrieve inbox items: {str(e)}")

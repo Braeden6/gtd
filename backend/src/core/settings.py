@@ -25,6 +25,8 @@ class Settings(BaseSettings):
     AUTHENTIK_TOKEN_URL: str = "https://auth.braeden6.com/application/o/token/"
     AUTHENTIK_USERINFO_URL: str = "https://auth.braeden6.com/application/o/userinfo/"
 
+    FRONTEND_URL: str = "http://localhost:5173"
+
     @property
     def REDIS_URL(self) -> str:
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
