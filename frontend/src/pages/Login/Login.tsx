@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { LockKeyhole } from 'lucide-react';
 
 const Login: React.FC = () => {
   const location = useLocation();
@@ -26,28 +29,32 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#0a0d16]">
-      <div className="p-8 bg-[#111827]/50 rounded-lg shadow-md max-w-md w-full">
-        <div className="text-center space-y-6">
-          <div className="space-y-2">
-            <h1 className="text-2xl font-bold tracking-tight text-white">Welcome to GTD App</h1>
-            <p className="text-gray-400">Sign in to your account to continue</p>
+    <div className="flex items-center justify-center min-h-screen bg-background p-4">
+      <Card className="max-w-md w-full shadow-lg">
+        <CardHeader className="text-center space-y-2 pb-2">
+          <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit">
+            <LockKeyhole className="h-6 w-6 text-primary" />
           </div>
-          
-          <div className="flex flex-col space-y-4">
-            <button 
-              onClick={initiateLogin}
-              className="flex items-center justify-center w-full h-10 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
-            >
-              <span>Sign in</span>
-            </button>
-            
-            <div className="text-xs text-gray-500">
-              By continuing, you agree to our Terms of Service and Privacy Policy.
-            </div>
-          </div>
-        </div>
-      </div>
+          <CardTitle className="text-2xl font-bold">Welcome to GTD App</CardTitle>
+          <CardDescription className="text-base">Sign in to your account to continue</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6 pt-6">
+          <div className="border-t border-border" />
+          <Button 
+            onClick={initiateLogin}
+            className="w-full font-medium"
+            size="lg"
+            variant="default"
+          >
+            Sign in
+          </Button>
+        </CardContent>
+        <CardFooter className="text-xs text-muted-foreground text-center flex justify-center">
+          <p className="max-w-xs">
+            By continuing, you agree to our Terms of Service and Privacy Policy.
+          </p>
+        </CardFooter>
+      </Card>
     </div>
   );
 };
