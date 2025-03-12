@@ -50,3 +50,7 @@ class FileService:
                 content_type = "image/gif"
 
         return await self.storage.upload_file(image_data, file_path, content_type=content_type)
+    
+    async def delete_file(self, file_path: str) -> None:
+        """Delete a file from storage."""
+        await self.storage.delete_file(file_path)

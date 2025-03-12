@@ -2,40 +2,23 @@ import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { InboxService } from '@/api/generated';
+import { useInboxItems } from '@/hooks/useInboxItems';
+import { InboxItemsList } from '@/components/InboxItemsList';
 
 export default function Inbox() {
   const [newItem, setNewItem] = useState('');
-  const queryClient = useQueryClient();
+  const { 
+    items, 
+    isLoading, 
+    addItem, 
+    isAddingItem, 
+  } = useInboxItems();
 
-  const { data: items = [], isLoading } = useQuery({
-    queryKey: ['inbox'],
-    queryFn: () => InboxService.getUserInboxItemsInboxGet(),
-  });
-
-  const createMutation = useMutation({
-    mutationFn: (content: string) => 
-      InboxService.createInboxItemInboxPost({
-        content
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['inbox'] });
-    },
-  });
-
-  // const deleteMutation = useMutation({
-  //   mutationFn: (id: string) => InboxService.deleteInbox(id),
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ['inbox'] });
-  //   },
-  // });
-
-  const addItem = async () => {
+  const handleAddItem = async () => {
     if (!newItem.trim()) return;
     
     try {
-      await createMutation.mutateAsync(newItem);
+      await addItem(newItem);
       setNewItem('');
     } catch (error) {
       console.error('Failed to create item:', error);
@@ -64,48 +47,19 @@ export default function Inbox() {
           placeholder="Add new item..."
           value={newItem}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewItem(e.target.value)}
-          onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && addItem()}
-          disabled={createMutation.isPending}
+          onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && handleAddItem()}
+          disabled={isAddingItem}
         />
         <Button 
-          onClick={addItem}
-          disabled={createMutation.isPending}
+          onClick={handleAddItem}
+          disabled={isAddingItem}
         >
           <Plus className="h-4 w-4 mr-2" />
-          {createMutation.isPending ? 'Adding...' : 'Add'}
+          {isAddingItem ? 'Adding...' : 'Add'}
         </Button>
       </div>
 
-      <div className="space-y-2">
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className="p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
-          >
-            <div className="flex justify-between items-start">
-              <div>
-                <p>{item.content}</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {new Date(item.created_at || '').toLocaleString()}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Has audio: {!!item.audio_path} | 
-                  Has image: {!!item.image_path} | 
-                  Status: {item.processed ? 'Processed' : 'Unprocessed'}
-                </p>
-              </div>
-              <Button
-                variant="destructive"
-                size="sm"
-                // onClick={() => deleteMutation.mutate(item.id || '')}
-                // disabled={deleteMutation.isPending}
-              >
-                Delete
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
+      <InboxItemsList />
     </div>
-  );
-}
+    )
+};

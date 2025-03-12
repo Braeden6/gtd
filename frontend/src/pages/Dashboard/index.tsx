@@ -1,9 +1,9 @@
 import { Card } from '@/components/ui/card';
-
+import { useInboxItems } from '@/hooks/useInboxItems';
 export default function Dashboard() {
+  const { items } = useInboxItems();
   return (
       <div className="space-y-6">
-        {/* Header */}
         <div>
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <p className="text-muted-foreground">Welcome to your GTD workspace</p>
@@ -14,7 +14,7 @@ export default function Dashboard() {
           {/* Inbox Card */}
           <Card className="p-6">
             <h2 className="text-lg font-semibold mb-2">Inbox</h2>
-            <div className="text-3xl font-bold text-primary">5</div>
+            <div className="text-2xl text-primary">{items.filter(item => !item.processed).length} of {items.length} items</div>
             <p className="text-sm text-muted-foreground">Items need processing</p>
           </Card>
 
@@ -22,7 +22,6 @@ export default function Dashboard() {
           <Card className="p-6">
             <h2 className="text-lg font-semibold mb-2">Today</h2>
             <div className="space-y-2">
-              {/* Example tasks */}
               <div className="text-sm">📝 Review project proposal</div>
               <div className="text-sm">📞 Call client about meeting</div>
             </div>
@@ -40,7 +39,6 @@ export default function Dashboard() {
         <Card className="p-6">
           <h2 className="text-lg font-semibold mb-4">Recent Activity</h2>
           <div className="space-y-4">
-            {/* Example activities */}
             <div className="flex items-center gap-4">
               <div className="text-sm">
                 <div className="font-medium">Completed task: Update documentation</div>
