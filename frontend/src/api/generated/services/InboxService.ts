@@ -59,4 +59,29 @@ export class InboxService {
             },
         });
     }
+    /**
+     * Delete an inbox item
+     * Delete an inbox item and its associated files.
+     *
+     * - **item_id**: UUID of the inbox item to delete
+     *
+     * Returns no content on successful deletion.
+     * @param itemId
+     * @returns void
+     * @throws ApiError
+     */
+    public static deleteInboxItemInboxItemIdDelete(
+        itemId: string,
+    ): CancelablePromise<void> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/inbox/{item_id}',
+            path: {
+                'item_id': itemId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
 }

@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sun, Moon } from 'lucide-react';
+import { useInboxItems } from '@/hooks/useInboxItems';
 
 type NavigationItem = {
   name: string;
@@ -22,11 +23,12 @@ type NavigationItem = {
 
 export function Sidebar() {
   const location = useLocation();
+  const { items } = useInboxItems();
   const [darkMode, setDarkMode] = useState(false);
   
   const navigation: NavigationItem[] = [
     { name: 'Dashboard', icon: Home, href: '/' },
-    { name: 'Inbox', icon: Inbox, count: 5, href: '/inbox' },
+    { name: 'Inbox', icon: Inbox, count: items.filter(item => !item.processed).length, href: '/inbox' },
     { name: 'Next Actions', icon: CheckSquare, href: '/next-actions' },
     { name: 'Projects', icon: FolderKanban, href: '/projects' },
     { name: 'Waiting For', icon: Clock, href: '/waiting-for' },
@@ -50,8 +52,8 @@ export function Sidebar() {
 
 
   return (
-    <aside className="w-64 min-h-screen border-r bg-muted/10 flex flex-col">
-      <nav className="flex flex-col gap-2 p-4 flex-1">
+    <aside className="w-64 h-[calc(100vh-3.5rem)] border-r bg-muted/10 flex flex-col">
+      <nav className="flex flex-col gap-2 p-4 flex-1 overflow-y-auto">
         {navigation.map((item) => (
           <NavLink key={item.name} item={item} isActive={location.pathname === item.href} />
         ))}
