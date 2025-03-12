@@ -9,10 +9,10 @@ import {
   Home
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sun, Moon } from 'lucide-react';
 import { useInboxItems } from '@/hooks/useInboxItems';
+import { useTheme } from '@/context/useTheme';
 
 type NavigationItem = {
   name: string;
@@ -24,7 +24,7 @@ type NavigationItem = {
 export function Sidebar() {
   const location = useLocation();
   const { items } = useInboxItems();
-  const [darkMode, setDarkMode] = useState(false);
+  const { isDarkMode, toggleTheme } = useTheme();
   
   const navigation: NavigationItem[] = [
     { name: 'Dashboard', icon: Home, href: '/' },
@@ -35,20 +35,6 @@ export function Sidebar() {
     { name: 'Someday/Maybe', icon: Archive, href: '/someday' },
     { name: 'Reference', icon: FileText, href: '/reference' },
   ];
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      setDarkMode(true);
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    setDarkMode(!darkMode);
-    document.documentElement.classList.toggle('dark');
-    localStorage.setItem('theme', !darkMode ? 'dark' : 'light');
-  };
 
 
   return (
@@ -67,7 +53,7 @@ export function Sidebar() {
           onClick={toggleTheme}
           className="w-full flex items-center justify-center gap-2"
         >
-          {darkMode ? (
+          {isDarkMode ? (
             <>
               <Sun className="h-5 w-5" />
               <span>Light Mode</span>

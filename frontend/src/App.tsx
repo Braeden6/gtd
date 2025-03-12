@@ -4,13 +4,15 @@ import Dashboard from '@/pages/Dashboard/index';
 import NextActions from '@/pages/NextActions/index';
 import Projects from '@/pages/Projects/index';
 import NotFound from '@/pages/NotFound/index';
-import Inbox from './pages/Indox/inbox';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import Login from './pages/Login/Login';
+import Login from '@/pages/Login/Login';
 import { useAuth } from '@/hooks/useAuth';
 import React from 'react';
-import AuthCallback from './components/features/AuthCallback';
+import AuthCallback from '@/pages/AuthCallback/AuthCallback';
+import { ThemeProvider } from '@/context/useTheme';
+import Inbox from '@/pages/Inbox/inbox';
+import { LoadingScreen } from './components/Loading';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,7 +32,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const location = useLocation();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingScreen 
+      title="Authenticating" 
+      description="Verifying your credentials..." 
+      showProgress={false}
+    />;
   }
 
   if (!isAuthenticated) {
@@ -42,7 +48,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      {/* <AuthProvider> */}
+      <ThemeProvider>
         <BrowserRouter>
           <Routes>
             {/* Authentication route */}
@@ -63,7 +69,7 @@ function App() {
             </Route>
           </Routes>
         </BrowserRouter>
-      {/* </AuthProvider> */}
+      </ThemeProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

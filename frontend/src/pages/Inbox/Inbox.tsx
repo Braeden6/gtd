@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useInboxItems } from '@/hooks/useInboxItems';
 import { InboxItemsList } from '@/components/InboxItemsList';
+import { LoadingScreen } from '@/components/Loading';
 
 export default function Inbox() {
   const [newItem, setNewItem] = useState('');
@@ -27,11 +28,11 @@ export default function Inbox() {
 
   if (isLoading) {
     return (
-      <div className="p-6 max-w-4xl mx-auto">
-        <div className="flex justify-center items-center h-32">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
-        </div>
-      </div>
+      <LoadingScreen 
+        title="Loading" 
+        description="Please wait while we load your inbox..." 
+        showProgress={false}
+      />
     );
   }
 
