@@ -14,12 +14,14 @@ import { useRecord } from '../hooks/useRecord';
 import Camera from '../components/Camera';
 import { API_URL } from '@env';
 import { Record } from '../components/Record';
+import { useAuth } from '../context/AuthContext';
 
 export default function QuickCaptureScreen() {
   const { deleteRecording, recordingUri } = useRecord();
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [text, setText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { userInfo, logout } = useAuth();
 
   const isDisabled = () => {
     return isSubmitting || (!text.trim() && !recordingUri && !capturedImage);
@@ -75,6 +77,15 @@ export default function QuickCaptureScreen() {
           keyboardShouldPersistTaps="handled"
         >
           <View className="flex-1 gap-10">
+
+          <TouchableOpacity
+            onPress={logout}
+          >
+            <Text >
+            logout
+            </Text>
+          </TouchableOpacity>
+
             {/* Header */}
             <Text className="text-3xl font-bold text-gray-900 mb-6 text-center">
               {t('screens.quickCapture.title', 'Log your thoughts')}

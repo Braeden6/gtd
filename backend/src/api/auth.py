@@ -51,3 +51,16 @@ auth_router.include_router(
     prefix="/auth/oauth/authentik",
     tags=["auth"],
 )
+
+auth_router.include_router(
+    fastapi_users.get_oauth_router(
+        authentik_oauth_client,
+        auth_backend,
+        state_secret=settings.AUTHENTIK_SECRET,
+        associate_by_email=True,
+        redirect_url="com.braeden6.gtd://callback",
+        is_verified_by_default=True,
+    ),
+    prefix="/auth/oauth/mobile/authentik",
+    tags=["auth"],
+)
