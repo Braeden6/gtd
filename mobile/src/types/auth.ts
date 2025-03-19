@@ -1,16 +1,11 @@
-export interface AuthTokens {
-    accessToken: string;
-    expiresAt: number;
-    refreshToken: string;
-}
-
 export interface UserInfo {
-  email?: string;
-  email_verified?: boolean;
-  given_name?: string;
-  groups?: string[];
-  name?: string;
-  nickname?: string;
-  preferred_username?: string;
-  sub?: string;
+  created_at: string;
+  email: string;
+  first_name: string | null;
+  id: string;
+  is_active: boolean;
+  is_superuser: boolean;
+  is_verified: boolean;
+  last_name: string | null;
+  updated_at: string;
 }

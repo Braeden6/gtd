@@ -1,58 +1,69 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { tokenStorage } from '../utils/auth';
-import { AuthTokens, UserInfo } from '../types/auth';
-import { getUserInfo } from '../utils/auth';
+import { UserInfo } from '../types/auth';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '@env';
 
 interface AuthContextType {
   userInfo: UserInfo | null;
-  login: (tokens: AuthTokens) => Promise<void>;
+  saveSessionCookie: (tokenValue: string) => Promise<boolean>;
+  getUserInfo: () => Promise<void>;
   logout: () => Promise<void>;
-  getValidToken: () => Promise<string | null>;
 }
+
+const GTD_AUTH_COOKIE_KEY = 'gtd_auth_cookie';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  useEffect(() => {
-    const checkUserInfo = async () => {
-      const tokens = await tokenStorage.get();
-      if (tokens) {
-        const userInfo = await getUserInfo(tokens.accessToken);
-        setUserInfo(userInfo);
-      }
-    };
 
-    checkUserInfo();
+  useEffect(() => {
+    try {
+      loadSessionCookie();
+      getUserInfo();
+    } catch {
+      setUserInfo(null);
+    }
   }, []);
 
-  const login = async (tokens: AuthTokens) => {
-    try {
-      if (!tokens?.accessToken) {
-        console.error('Invalid token data:', tokens);
-        return;
-      }
+  const loadSessionCookie = async () => {
+    const cookie = await AsyncStorage.getItem(GTD_AUTH_COOKIE_KEY);
+    if (cookie) {
+      axios.defaults.headers.common['Cookie'] = `gtd_auth=${cookie}`;
+    } else {
+      throw new Error('No cookie found');
+    }
+  };
 
-      await tokenStorage.save(tokens);
-      const userInfo = await getUserInfo(tokens.accessToken);
-      setUserInfo(userInfo);
+  const saveSessionCookie = async (tokenValue: string) => {
+    try {
+      await AsyncStorage.setItem(GTD_AUTH_COOKIE_KEY, tokenValue);
+      axios.defaults.headers.common['Cookie'] = `gtd_auth=${tokenValue}`;
+      return true;
     } catch (error) {
-      console.error('Error saving tokens:', error);
-      throw new Error('Failed to save authentication data');
+      console.error('Error saving auth cookie:', error);
+      return false;
     }
   };
 
   const logout = async () => {
-    await tokenStorage.clear();
+    await AsyncStorage.removeItem(GTD_AUTH_COOKIE_KEY);
+    axios.defaults.headers.common['Cookie'] = '';
     setUserInfo(null);
-  };
+  }
 
-  const getValidToken = async () => {
-    return tokenStorage.getValidToken(() => setUserInfo(null));
-  };
+  const getUserInfo = async () => {
+    const response = await axios.get<UserInfo>(`${API_URL}/users/me`, { withCredentials: true });
+    if (response.status === 200) {
+      setUserInfo(response.data);
+    } else {
+      throw new Error('Failed to get user info');
+    }
+  }
 
   return (
-    <AuthContext.Provider value={{ userInfo, login, logout, getValidToken }}>
+    <AuthContext.Provider value={{ userInfo, saveSessionCookie, getUserInfo, logout }}>
       {children}
     </AuthContext.Provider>
   );

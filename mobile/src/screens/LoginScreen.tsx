@@ -1,18 +1,63 @@
-import React from 'react';
-import { View, TouchableOpacity, Text, ActivityIndicator, Image } from 'react-native';
-import { useAuth } from '../context/AuthContext';
-import { useAuthRequest } from '../utils/auth';
+import { View, TouchableOpacity, Text } from 'react-native';
+import axios from 'axios';
 import DefaultLayout from '../layouts/default';
-import { t } from '../translations';
+import * as WebBrowser from 'expo-web-browser';
+import { useAuth } from '../context/AuthContext';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../types/screen';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { API_URL } from '@env';
+import { useState } from 'react';
 
-export default function LoginScreen() {
-  const { login } = useAuth();
-  const { isLoading, startAuth } = useAuthRequest();
 
-  const handleLogin = async () => {
-    const tokens = await startAuth();
-    if (tokens) {
-      await login(tokens);
+const Login: React.FC = () => {
+  const { saveSessionCookie, getUserInfo, userInfo } = useAuth();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const initiateLogin = async (): Promise<void> => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(`${API_URL}/auth/oauth/mobile/authentik/authorize?scopes=fastapi-users%3Aoauth-state`);
+      const authUrl = response.data.authorization_url;
+
+      const urlParams = new URLSearchParams(authUrl.split('?')[1]);
+      const state = urlParams.get('state');
+      const redirectUrl = urlParams.get('redirect_url');
+      const result = await WebBrowser.openAuthSessionAsync(
+        authUrl + '&scope=' + encodeURIComponent('openid profile email'),
+        redirectUrl,
+      );
+
+      // @ts-ignore
+      const responseUrl =  new URLSearchParams(result.url.split('?')[1]);
+      const responseCode = responseUrl.get('code');
+      const responseState = responseUrl.get('state');
+      if (!responseCode) {
+        throw new Error('No code found');
+      }
+      if (state !== responseState) {
+      throw new Error('State mismatch');
+      }
+
+      const finalResponse = await axios.get(
+        `${API_URL}/auth/oauth/authentik/callback?code=${responseCode}&state=${responseState}`, 
+        { withCredentials: true }
+      );
+      const cookies = finalResponse.headers['set-cookie'];
+      const authCookie = cookies?.find((cookie: string) => cookie.startsWith('gtd_auth='));
+      const tokenValue = authCookie?.split(';')[0].replace('gtd_auth=', '');
+      if (!tokenValue) {
+        throw new Error('No token found');
+      }
+      await saveSessionCookie(tokenValue);
+      await getUserInfo();
+      navigation.navigate('QuickCapture');
+    } catch (error) {
+      // !!! popup saying "Something went wrong logging in, please try again"
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -21,22 +66,18 @@ export default function LoginScreen() {
       <View className="flex-1 items-center p-6 pt-12 bg-white">
         <View className="items-center relative">
           <TouchableOpacity
-            onPress={handleLogin}
+            onPress={initiateLogin}
             disabled={isLoading}
-            className={`absolute top-14 w-48 bg-[#8AD4FF] py-2 px-4 rounded-xl ${
-              isLoading ? 'opacity-70' : ''
-            }`}
+            className={`absolute top-14 w-48 bg-[#8AD4FF] py-2 px-4 rounded-xl`}
           >
-            {isLoading ? (
-              <ActivityIndicator color="white" />
-            ) : (
               <Text className="text-black text-center font-semibold text-lg">
-                {t('common.signIn')}
+                Login
               </Text>
-            )}
           </TouchableOpacity>
         </View>
       </View>
     </DefaultLayout>
   );
-}
+};
+
+export default Login;
