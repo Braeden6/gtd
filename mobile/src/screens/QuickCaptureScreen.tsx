@@ -15,9 +15,13 @@ import Camera from '../components/Camera';
 import { API_URL } from '@env';
 import { Record } from '../components/Record';
 import { useAuth } from '../context/AuthContext';
+import { Button, ButtonText } from '../components/ui/button';
+import { Box } from '../components/ui/box';
+import { useTheme } from '../context/ThemeContext';
 
 export default function QuickCaptureScreen() {
   const { deleteRecording, recordingUri } = useRecord();
+  const { toggleTheme, isDarkMode } = useTheme();
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [text, setText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -70,10 +74,10 @@ export default function QuickCaptureScreen() {
     <DefaultLayout>
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1 bg-white pt-20"
+        className="flex-1 pt-20"
       >
         <ScrollView 
-          className="flex-1 bg-white"
+          className="flex-1 bg-test-0"
           keyboardShouldPersistTaps="handled"
         >
           <View className="flex-1 gap-10">
@@ -91,19 +95,20 @@ export default function QuickCaptureScreen() {
               {t('screens.quickCapture.title', 'Log your thoughts')}
             </Text>
 
-            <Camera 
+            {/* <Camera 
               setCapturedImage={setCapturedImage}
               capturedImage={capturedImage}
-            />   
+            />    */}
 
-            <Record/>
 
+
+            {/* <Record/> */}
               <View className="mt-4 border border-gray-300 rounded-lg h-48 p-4 mx-4">
                 <TextInput
                   multiline
                   value={text}
                   onChangeText={setText}
-                  className="flex-1 text-gray-600"
+                  // className="flex-1 text-gray-600"
                   placeholder={t('screens.quickCapture.placeholder', 'Type here...')}
                   textAlignVertical="top"
                 />

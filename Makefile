@@ -18,7 +18,11 @@ fr:
 
 mb:
 	cd mobile && \
-	npx expo run:ios --device
+	DARK_MODE=media npx expo run:ios --device
+
+mb-fix:
+	cd mobile && \
+	npx expo prebuild --clean
 
 build:
 	docker compose build

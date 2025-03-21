@@ -8,12 +8,15 @@ import { RootStackParamList } from '../types/screen';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { API_URL } from '@env';
 import { useState } from 'react';
-
+import { Button, ButtonText } from '../components/ui/button'
+import { useTheme } from '../context/ThemeContext';
+// import { Button } from '../components/ui/button'
 
 const Login: React.FC = () => {
   const { saveSessionCookie, getUserInfo, userInfo } = useAuth();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [isLoading, setIsLoading] = useState(false);
+  const { toggleTheme, isDarkMode } = useTheme();
 
   const initiateLogin = async (): Promise<void> => {
     try {
@@ -52,7 +55,7 @@ const Login: React.FC = () => {
       }
       await saveSessionCookie(tokenValue);
       await getUserInfo();
-      navigation.navigate('QuickCapture');
+      // navigation.navigate('QuickCapture');
     } catch (error) {
       // !!! popup saying "Something went wrong logging in, please try again"
       console.log(error);
@@ -65,16 +68,25 @@ const Login: React.FC = () => {
     <DefaultLayout>
       <View className="flex-1 items-center p-6 pt-12 bg-white">
         <View className="items-center relative">
-          <TouchableOpacity
-            onPress={initiateLogin}
-            disabled={isLoading}
-            className={`absolute top-14 w-48 bg-[#8AD4FF] py-2 px-4 rounded-xl`}
-          >
-              <Text className="text-black text-center font-semibold text-lg">
-                Login
-              </Text>
-          </TouchableOpacity>
+
+
+        <Button className='bg-test-0 dark:bg-test-1 m-20' onPress={() => {
+              toggleTheme();
+              console.log(isDarkMode);
+            }}>
+              <ButtonText>
+                asd
+              </ButtonText>
+            </Button>
+
+        <Button onPress={initiateLogin} disabled={isLoading}>
+          <ButtonText>Login</ButtonText>
+        </Button>
+          {/* <Button>asd</Button> */}
         </View>
+
+        
+
       </View>
     </DefaultLayout>
   );
