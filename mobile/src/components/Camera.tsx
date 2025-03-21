@@ -7,8 +7,8 @@ import { Dimensions, Pressable, Text, View } from "react-native";
 import { Image } from "expo-image";
 import { Camera, Trash2, ArrowLeft, Maximize2 } from "lucide-react-native";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Button } from "./ui/button";
 import { t } from '../translations';
+// import { Button } from "./ui/button";
 
 interface CameraComponentProps {
   setCapturedImage: (image: string | null) => void;
@@ -30,7 +30,7 @@ export default function CameraComponent({ setCapturedImage, capturedImage }: Cam
         <Text className="text-center mb-4">
           {t('components.camera.permission', 'We need your permission to use the camera')}
         </Text>
-        <Button onPress={requestPermission} />
+        {/* <Button onPress={requestPermission} /> */}
       </View>
     );
   }
@@ -64,10 +64,11 @@ export default function CameraComponent({ setCapturedImage, capturedImage }: Cam
             <Maximize2 size={30} color="#1E1C1CB0"/>
           </View>
         </Pressable> :
-          <Button className="flex-row justify-center items-center gap-4 bg-blue-400 w-1/2 mx-auto">
-            <Camera size={35} strokeWidth={2} color="#000" />
-            <Text className="text-2xl font-bold">{t('components.camera.photo', 'Photo')}</Text>
-          </Button>
+        <View></View>
+          // <Button className="flex-row justify-center items-center gap-4 bg-blue-400 w-1/2 mx-auto">
+          //   <Camera size={35} strokeWidth={2} color="#000" />
+          //   <Text className="text-2xl font-bold">{t('components.camera.photo', 'Photo')}</Text>
+          // </Button>
         }
       </PopoverTrigger>
       <PopoverContent
