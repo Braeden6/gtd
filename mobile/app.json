@@ -5,11 +5,11 @@
     "scheme": "com.braeden6.gtd",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/splash-icon.jpeg",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/images/splash-icon.jpeg",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.jpeg",
+      "image": "./assets/images/splash-icon.jpeg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -18,32 +18,49 @@
       "bundleIdentifier": "com.braeden6.gtd"
     },
     "android": {
-      "package": "com.braeden6.gtd",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/splash-icon.jpeg",
+        "foregroundImage": "./assets/images/splash-icon.jpeg",
         "backgroundColor": "#ffffff"
       },
+      "package": "com.braeden6.gtd",
       "permissions": [
         "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
-      "favicon": "./assets/splash-icon.jpeg",
-      "bundler": "metro"
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/splash-icon.jpeg"
     },
     "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.jpeg",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ],
       [
         "expo-camera",
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera.",
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
         }
-    ]
+      ]
     ],
+    "experiments": {
+      "typedRoutes": true
+    },
     "extra": {
       "eas": {
         "projectId": "26e46064-7027-4ebf-98a7-fc3f38513d16"
       }
+    },
+    "developer": {
+      "url": "http://localhost:8081"
     }
   }
 }
