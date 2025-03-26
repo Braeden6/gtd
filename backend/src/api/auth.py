@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
 from src.auth.backend import auth_backend
-from src.models.user import User
-from src.schemas.user import UserRead, UserCreate, UserUpdate
-from src.core.dependencies import fastapi_users, current_active_user
+from src.schemas.user import UserRead, UserUpdate
+from src.core.dependencies import fastapi_users
 from src.auth.oauth import authentik_oauth_client
 from src.core.settings import settings
 
@@ -58,7 +57,7 @@ auth_router.include_router(
         auth_backend,
         state_secret=settings.AUTHENTIK_SECRET,
         associate_by_email=True,
-        redirect_url="com.braeden6.gtd://callback",
+        redirect_url="com.braeden6.gtd://",
         is_verified_by_default=True,
     ),
     prefix="/auth/oauth/mobile/authentik",
