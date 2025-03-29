@@ -1,3 +1,4 @@
+import React from "react";
 import {
     CameraView,
     useCameraPermissions,
@@ -5,7 +6,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { Dimensions } from "react-native";
 import { Image } from "expo-image";
-import { Trash2, ArrowLeft, Maximize2, X, CheckCheck } from "@/components/Icons";
+import { Trash2, X, CheckCheck } from "@/components/Icons";
 import { Button } from "@/components/ui/button";
 import { useFormStore } from "@/hooks/useLogForm";
 import { useRouter } from "expo-router";

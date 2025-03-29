@@ -21,11 +21,13 @@ const queryClient = new QueryClient();
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    SFPro: require("../assets/fonts/SF-Pro-Display-Regular.otf"),
+    "SFPro-Bold": require("../assets/fonts/SF-Pro-Display-Bold.otf"),
     ...FontAwesome.font,
   });
 
   const [styleLoaded, setStyleLoaded] = useState(false);
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
+
   useEffect(() => {
     if (error) throw error;
   }, [error]);
