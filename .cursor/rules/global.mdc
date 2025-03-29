@@ -1,0 +1,16 @@
+---
+description: 
+globs: 
+---
+
+# Global Rules
+
+- Add comments only when it makes sense. the code should speak for itself. Each line of code does not need a comment. Comments are for if some code needs explaining on why this approach was needed, or if code only has a complex solution and a short description is needed.
+
+# Application Description
+
+- GTD based mobile/web application, mobile for logging into inbox and web for organize, creating actions, project, refrences etc.
+- Focus for this application is clean, maintainable, and testable code. Strong focus on software engineering fundamentals 
+- A lot of the code is produced using AI, so keep this in mind, be comfortable creatiqueing the code and make it more organized and clean.
+
+

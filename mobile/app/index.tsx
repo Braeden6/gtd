@@ -6,11 +6,7 @@ import axios from 'axios';
 import * as WebBrowser from 'expo-web-browser';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from "expo-router";
-import { QueryClient } from "@tanstack/react-query";
 import { ThemeSelect } from "@/components/ThemeSelect";
-
-
-const queryClient = new QueryClient();
 
 export default function Home() {
   const { saveSessionCookie, getUserInfo, userInfo } = useAuth();
@@ -72,9 +68,9 @@ export default function Home() {
       <Box className="flex-1 justify-center items-center">
         <Box className="pb-10">
           <Box className="flex flex-col gap-8">
-            <Text className="text-4xl font-bold text-foreground underline decoration-secondary">Getting</Text>
-            <Text className="text-4xl font-bold text-foreground underline decoration-secondary">Things</Text>
-            <Text className="text-4xl font-bold text-foreground underline decoration-secondary">Done</Text>
+            <Text className="text-6xl font-bold text-foreground underline decoration-secondary">Getting</Text>
+            <Text className="text-6xl font-bold text-foreground underline decoration-secondary">Things</Text>
+            <Text className="text-6xl font-bold text-foreground underline decoration-secondary">Done</Text>
           </Box>
         </Box>
 

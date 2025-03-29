@@ -7,9 +7,9 @@ export interface CustomAlertDialogProps {
   isOpen: boolean;
   title: string;
   body: string;
-  cancelText: string;
+  cancelText?: string;
   actionText: string;
-  onCancel: () => void;
+  onCancel?: () => void;
   onAction: () => void;
   size?: "sm" | "md" | "lg" | "full";
 }
@@ -43,16 +43,18 @@ export function CustomAlertDialog({
           </Text>
         </AlertDialogBody>
         <AlertDialogFooter>
-          <Button
-            className="border-foreground"
-            variant="outline"
-            action="secondary"
-            onPress={onCancel}
-            size="sm"
+          {cancelText && (
+            <Button
+              className="border-foreground"
+              variant="outline"
+              action="secondary"
+              onPress={onCancel}
+              size="sm"
           >
-            <ButtonText className="text-foreground">{cancelText}</ButtonText>
-          </Button>
-          <Button size="sm" onPress={onAction}>
+              <ButtonText className="text-foreground">{cancelText}</ButtonText>
+            </Button>
+          )}
+          <Button size="sm" variant={cancelText ? "link" : "outline"} className="border-foreground" onPress={onAction}>
             <ButtonText className="text-foreground">{actionText}</ButtonText>
           </Button>
         </AlertDialogFooter>

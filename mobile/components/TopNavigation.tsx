@@ -8,7 +8,7 @@ import { useAuth } from "@/context/AuthContext"
 export const TopNavigation = () => {
     const { logout, userInfo } = useAuth();
     return (
-        <Box className="w-full flex flex-row justify-between items-center p-4 border-y border-border">
+        <Box className="w-full flex flex-row justify-between items-center p-4 border-y border-border z-20 bg-background">
         <Text className="text-foreground">{userInfo?.email}</Text>
         <Button onPress={logout} size="sm">
           <LogOut className="text-foreground" />

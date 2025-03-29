@@ -11,7 +11,11 @@ import {
   ArrowLeft,
   Maximize2,
   X,
-  CheckCheck
+  CheckCheck,
+  Mic,
+  Play,
+  Pause,
+  StopCircle
 } from 'lucide-react-native';
 import { cssInterop } from 'nativewind';
 
@@ -39,6 +43,11 @@ interopIcon(ArrowLeft);
 interopIcon(Maximize2);
 interopIcon(X);
 interopIcon(CheckCheck);
+interopIcon(Mic);
+interopIcon(Play);
+interopIcon(Pause);
+interopIcon(StopCircle);
+
 export { 
   AlertCircle, 
   CheckCircle, 
@@ -51,5 +60,9 @@ export {
   ArrowLeft,
   Maximize2,
   X,
-  CheckCheck
+  CheckCheck,
+  Mic,
+  Play,
+  Pause,
+  StopCircle
 }
