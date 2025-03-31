@@ -1,0 +1,107 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-to-https
+  namespace: gtd
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: gtd-tls-cert
+  namespace: gtd
+spec:
+  secretName: gtd-tls-cert
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - gtd.braeden6.com
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: api-gtd-tls-cert
+  namespace: gtd
+spec:
+  secretName: api-gtd-tls-cert
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - api.gtd.braeden6.com
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: frontend-ingressroute-http
+  namespace: gtd
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`gtd.braeden6.com`)
+      kind: Rule
+      middlewares:
+        - name: redirect-to-https
+      services:
+        - name: noop@internal
+          kind: TraefikService
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: frontend-ingress
+  namespace: gtd
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`gtd.braeden6.com`)
+      kind: Rule
+      middlewares:
+        - name: redirect-to-https
+      services:
+        - name: frontend
+          port: 80
+  tls:
+    secretName: gtd-tls-cert
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: frontend-ingress
+  namespace: gtd
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`gtd.braeden6.com`)
+      kind: Rule
+      middlewares:
+        - name: redirect-to-https
+      services:
+        - name: frontend
+          port: 80
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: backend-ingress
+  namespace: gtd
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`api.gtd.braeden6.com`)
+      kind: Rule
+      middlewares:
+        - name: redirect-to-https
+      services:
+        - name: backend
+          port: 80
+  tls:
+    secretName: api-gtd-tls-cert

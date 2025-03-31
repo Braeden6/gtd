@@ -11,8 +11,8 @@ import { useAuth } from '@/hooks/useAuth';
 import React from 'react';
 import AuthCallback from '@/pages/AuthCallback/AuthCallback';
 import { ThemeProvider } from '@/context/useTheme';
-import Inbox from '@/pages/Inbox/inbox';
 import { LoadingScreen } from './components/Loading';
+import Inbox from '@/pages/Inbox/Inbox';
 
 const queryClient = new QueryClient({
   defaultOptions: {

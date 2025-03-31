@@ -32,5 +32,20 @@ sdk:
 	pnpm generate-api && \
 	pnpm generate-api-mobile
 
+mb-build-preview:
+	cd mobile && \
+	eas build --platform ios --profile preview
+
+# remember to update .env
+fr-build:
+	cd frontend && \
+	docker build --platform linux/amd64 -t registry.braeden6.com/gtd/frontend:latest . && \
+	docker push registry.braeden6.com/gtd/frontend:latest
+
+bk-build:
+	cd backend && \
+	docker build --platform linux/amd64 -t registry.braeden6.com/gtd/backend:latest . && \
+	docker push registry.braeden6.com/gtd/backend:latest
+
 
 	
