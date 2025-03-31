@@ -3,43 +3,34 @@ import {
     CameraView,
     useCameraPermissions,
 } from "expo-camera";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Dimensions } from "react-native";
 import { Image } from "expo-image";
 import { Trash2, X, CheckCheck } from "@/components/Icons";
 import { Button } from "@/components/ui/button";
 import { useFormStore } from "@/hooks/useLogForm";
 import { useRouter } from "expo-router";
-import { CustomAlertDialog, CustomAlertDialogProps } from "@/components/CustomAlertDialog";
 import { Box } from "@/components/ui/box";
+import { useAlertDialogStore } from "@/hooks/useCustomAlertDialog";
 
 export default function CameraComponent() {
     const [permission, requestPermission] = useCameraPermissions();
     const router = useRouter();
     const { setImageUri, imageUri } = useFormStore();
     const cameraRef = useRef<CameraView>(null);
-    const [showAlertDialog, setShowAlertDialog] = useState<CustomAlertDialogProps>({
-        isOpen: false,
-        title: "",
-        body: "",
-        cancelText: "",
-        actionText: "",
-        onCancel: () => {},
-        onAction: () => {}
-    });
+    const { openDialog, closeDialog } = useAlertDialogStore();
 
     useEffect(() => {
         if (!permission) return;
         if (permission?.granted) return;
         if (!permission?.canAskAgain) {
-            setShowAlertDialog({
-                isOpen: true,
+            openDialog({
                 title: "Camera Access Was Denied",
                 body: "If you want to use the camera, please grant access in the settings. Click done once you have granted access.",
                 cancelText: "Cancel",
                 actionText: "Done",
                 onCancel: () => router.back(),
-                onAction: () => setShowAlertDialog(prev => ({...prev, isOpen: false}))
+                onAction: () => closeDialog()
             });
             return;
         }
@@ -53,16 +44,14 @@ export default function CameraComponent() {
 
     const handleClose = () => {
         if (imageUri) {
-            setShowAlertDialog({
-                isOpen: true,
+            openDialog({
                 title: "Closing will delete photo",
                 body: "If you want to save photo, click the checkmark button in the bottom right corner.",
                 cancelText: "Cancel",
                 actionText: "Delete",
-                onCancel: () => {
-                    setShowAlertDialog(prev => ({...prev, isOpen: false}));
-                },
+                onCancel: () => closeDialog(),
                 onAction: () => {
+                    closeDialog();
                     setImageUri(null);
                     router.back();
                 }
@@ -129,8 +118,6 @@ export default function CameraComponent() {
                     </Button>}
                     
                 </Box>
-
-                <CustomAlertDialog {...showAlertDialog}/>
             </>
     );
 }

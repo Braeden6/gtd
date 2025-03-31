@@ -2,33 +2,17 @@ import { AlertDialog, AlertDialogBackdrop, AlertDialogContent, AlertDialogHeader
 import { Button, ButtonText } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { useAlertDialogStore } from "@/hooks/useCustomAlertDialog";
 
-export interface CustomAlertDialogProps {
-  isOpen: boolean;
-  title: string;
-  body: string;
-  cancelText?: string;
-  actionText: string;
-  onCancel?: () => void;
-  onAction: () => void;
-  size?: "sm" | "md" | "lg" | "full";
-}
 
-export function CustomAlertDialog({
-  isOpen,
-  title,
-  body,
-  cancelText,
-  actionText,
-  onCancel,
-  onAction,
-  size = "md"
-}: CustomAlertDialogProps) {
+export function CustomAlertDialog() {
+  const { isOpen, title, body, cancelText, actionText, onCancel, onAction, headingSize } = useAlertDialogStore(); 
+  
   return (
     <AlertDialog 
       isOpen={isOpen} 
       onClose={onCancel} 
-      size={size}
+      size={headingSize}
     >
       <AlertDialogBackdrop className="bg-black/90" />
       <AlertDialogContent className="bg-secondary">

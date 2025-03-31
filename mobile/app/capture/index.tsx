@@ -11,10 +11,99 @@ import { useFormStore } from "@/hooks/useLogForm";
 import { KeyboardAvoidingView, Platform, Keyboard } from "react-native";
 import { Image } from "expo-image";
 import { Record } from "@/components/Record";
+import { CustomToast } from "@/components/CustomToast";
+import { useToast } from "@/components/ui/toast";
+import { InboxService } from "@/api/generated";
+import axios from "axios";
+
+
 
 export default function Capture() {
   const router = useRouter();
-  const { isEmpty, setText, text, imageUri, setImageUri } = useFormStore();
+  const { isEmpty, setText, text, imageUri, setImageUri, recordingUri, resetForm } = useFormStore();
+  const toast = useToast();
+
+  const submit = async () => {
+    try {
+      let audioFile: any = null;
+      let imageFile: any = null;
+      const formData = new FormData();
+      formData.append('content', text || "");
+      
+      if (imageUri) {
+        const fileExtension = imageUri.split('.').pop()?.toLowerCase() || 'jpg';
+        const mimeType = fileExtension === 'jpg' ? 'image/jpeg' : `image/${fileExtension}`;
+        imageFile = {
+          uri: Platform.OS === 'ios' ? imageUri.replace('file://', '') : imageUri,
+          name: `image.${fileExtension}`,
+          type: mimeType
+        } as any;
+        formData.append('image', imageFile);
+      }
+
+      if (recordingUri) {
+        audioFile = {
+          uri: Platform.OS === 'ios' ? recordingUri.replace('file://', '') : recordingUri,
+          name: 'recording.m4a',
+          type: 'audio/m4a'
+        } as any;
+        formData.append('audio', audioFile);
+      }
+      
+      // tech debt: figure out why the SDK is not working
+      // const response = await InboxService.createInboxItemInboxPost({
+      //   content: text || "",
+      //   audio: audioFile,
+      //   image: imageFile
+      // });
+      const apiUrl = `${process.env.EXPO_PUBLIC_API_URL || ''}/inbox/`;
+      const response = await axios.post(apiUrl, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Accept': 'application/json',
+        },
+        withCredentials: true,
+      });  
+      toast.show({
+        id: "submit-form-toast",
+        placement: "bottom",
+        duration: 3000,
+        render: () => {
+          return (
+            <CustomToast
+              toastProps={{
+                description: "Successfully submitted",
+                mainAction: {
+                  text: "Undo",
+                  onPress: () => {
+                    InboxService.deleteInboxItemInboxItemIdDelete(response.data.id);
+                    toast.close("submit-form-toast");
+                  }
+                }
+              }}
+            />
+          )
+        },
+      })
+      resetForm();
+    } catch {
+      toast.show({
+        id: "submit-form-toast-error",
+        placement: "bottom",
+        duration: 3000,
+        render: () => {
+          return (
+            <CustomToast
+              toastProps={{
+                description: "Error submitting. Please try again.",
+              }}
+            />
+          )
+        },
+      })
+      
+    }
+  }
 
   return (
     <>
@@ -67,7 +156,7 @@ export default function Capture() {
             <Record />
 
             <Textarea 
-              className="h-[200px] border-secondary w-[80vw] mb-10"
+              className="h-[150px] border-secondary w-[80vw] mb-10"
               onTouchStart={(e) => e.stopPropagation()}
             >
               <TextareaInput 
@@ -82,7 +171,7 @@ export default function Capture() {
             <Button 
               className={`bg-secondary w-[150px] ${isEmpty() ? "opacity-50" : "opacity-100"}`} 
               disabled={isEmpty()} 
-              onPress={() => console.log("submit")}
+              onPress={submit}
             >
               <Text>Submit</Text>
             </Button>
@@ -94,4 +183,8 @@ export default function Capture() {
       <ThemeSelect />
     </>
   );
+}
+
+function showToast(arg0: { description: string; action: { text: string; onPress: () => void; }; }) {
+  throw new Error("Function not implemented.");
 }
