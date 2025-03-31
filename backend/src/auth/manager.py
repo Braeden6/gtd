@@ -11,9 +11,7 @@ from src.core.database import get_user_db
 
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, UUID]):
     reset_password_token_secret = settings.PASSWORD_SECRET_KEY
