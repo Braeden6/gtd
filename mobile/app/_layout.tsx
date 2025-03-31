@@ -9,12 +9,15 @@ import "../global.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SafeAreaView } from "react-native";
-
+import { initializeApi } from "@/utils/api";
+import { CustomAlertDialog } from "@/components/CustomAlertDialog";
 export {
   ErrorBoundary,
 } from "expo-router";
 
 SplashScreen.preventAutoHideAsync();
+
+initializeApi();
 
 const queryClient = new QueryClient();
 
@@ -54,6 +57,7 @@ function RootLayoutNav() {
         <GluestackUIProvider mode={colorScheme === "dark" ? "dark" : "light"}>
           <SafeAreaView className="flex flex-1 justify-center items-center bg-background">
             <Slot />
+            <CustomAlertDialog />
           </SafeAreaView>
         </GluestackUIProvider>
       </AuthProvider>

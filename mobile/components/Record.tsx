@@ -1,29 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Mic, Play, Pause, StopCircle, Trash2 } from '@/components/Icons';
-import { CustomAlertDialog, CustomAlertDialogProps } from './CustomAlertDialog';
 import { Button } from '@/components/ui/button';
 import { Box } from '@/components/ui/box';
 import { useFormStore } from '@/hooks/useLogForm';
 import useAudioRecorder, { RecordingState } from '@/hooks/useAudioRecorder';
 import useAudioPlayer from '@/hooks/useAudioPlayer';
-
+import { useAlertDialogStore } from '@/hooks/useCustomAlertDialog';
 
 export function Record() {
-  const [showAlertDialog, setShowAlertDialog] = useState<CustomAlertDialogProps>({
-    isOpen: false,
-    title: "",
-    body: "",
-    cancelText: "",
-    actionText: "",
-    onCancel: () => {},
-    onAction: () => {}
-  });
   const [state, setState] = useState<RecordingState>("empty");
   const { recordingUri, setRecordingUri } = useFormStore();
-  
   const { permission, startRecording, stopRecording } = useAudioRecorder();
   const { playSound, pauseSound } = useAudioPlayer();
-
+  const { openDialog, closeDialog } = useAlertDialogStore();
+  
   useEffect(() => {
     if (recordingUri) {
       setState("paused");
@@ -32,12 +22,11 @@ export function Record() {
 
   const handleStartRecording = async () => {
     if (!permission?.granted && !permission?.canAskAgain) {
-      setShowAlertDialog({
-        isOpen: true,
+      openDialog({
         title: "Microphone Access Was Denied",
         body: "If you want to use the microphone, please grant access in the settings. Click done once you have granted access.",
         actionText: "Done",
-        onAction: () => setShowAlertDialog(prev => ({...prev, isOpen: false}))
+        onAction: () => closeDialog()
       });
       return;
     }
@@ -123,7 +112,6 @@ export function Record() {
   return (
     <Box className="flex-row justify-center gap-4">
       {renderRecordingControls()}
-      <CustomAlertDialog {...showAlertDialog}/>
     </Box>
   );
 }

@@ -27,10 +27,10 @@ mb-fix:
 build:
 	docker compose build
 
-generate-api:
+sdk:
 	cd frontend && \
-	pnpm generate-api # && \
-	# pnpm generate-api-mobile
+	pnpm generate-api && \
+	pnpm generate-api-mobile
 
 
 	
