@@ -7,37 +7,30 @@ up:
 down:
 	docker compose down
 
+bk:
+	source .venv/bin/activate && \
+	cd backend && \
+	uvicorn src.main:app --reload --host 0.0.0.0
+
+fr:
+	cd frontend && \
+	pnpm run dev
+
+mb:
+	cd mobile && \
+	DARK_MODE=media npx expo run:ios --device
+
+mb-fix:
+	cd mobile && \
+	npx expo prebuild --clean
 
 build:
 	docker compose build
 
-
-generate-swagger:
-	go install github.com/swaggo/swag/cmd/swag@latest
-	cd backend && $(HOME)/go/bin/swag init -g cmd/server/main.go -o ./docs
-
-generate-api:
+sdk:
 	cd frontend && \
-	pnpm generate-api # && \
-	# pnpm generate-api-mobile
+	pnpm generate-api && \
+	pnpm generate-api-mobile
+
+
 	
-# test-frontend:
-# 	docker compose run frontend pnpm test
-
-# test-backend:
-# 	docker compose run backend go test ./...
-
-# test: test-frontend test-backend
-
-
-# lint-frontend:
-# 	docker compose run frontend pnpm lint
-
-# lint-backend:
-# 	docker compose run backend golangci-lint run
-
-# lint: lint-frontend lint-backend
-
-# clean:
-# 	docker compose down -v
-# 	rm -rf data/*.db
