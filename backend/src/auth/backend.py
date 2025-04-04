@@ -10,6 +10,7 @@ cookie_transport = CookieTransport(
     cookie_secure=settings.COOKIE_SECURE,
     cookie_domain=settings.COOKIE_DOMAIN,
     cookie_httponly=True,
+    cookie_samesite='lax',
 )
 
 redis = Redis.from_url(settings.REDIS_URL, decode_responses=True)

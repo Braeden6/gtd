@@ -62,8 +62,6 @@ spec:
   routes:
     - match: Host(`gtd.braeden6.com`)
       kind: Rule
-      middlewares:
-        - name: redirect-to-https
       services:
         - name: frontend
           port: 80
@@ -73,19 +71,19 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: frontend-ingress
+  name: backend-ingressroute-http
   namespace: gtd
 spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`gtd.braeden6.com`)
+    - match: Host(`api.gtd.braeden6.com`)
       kind: Rule
       middlewares:
         - name: redirect-to-https
       services:
-        - name: frontend
-          port: 80
+        - name: noop@internal
+          kind: TraefikService
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -98,8 +96,6 @@ spec:
   routes:
     - match: Host(`api.gtd.braeden6.com`)
       kind: Rule
-      middlewares:
-        - name: redirect-to-https
       services:
         - name: backend
           port: 80

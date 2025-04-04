@@ -16,9 +16,10 @@ fr:
 	cd frontend && \
 	pnpm run dev
 
+
 mb:
 	cd mobile && \
-	DARK_MODE=media npx expo run:ios --device
+	npm run start
 
 mb-fix:
 	cd mobile && \
@@ -46,6 +47,11 @@ bk-build:
 	cd backend && \
 	docker build --platform linux/amd64 -t registry.braeden6.com/gtd/backend:latest . && \
 	docker push registry.braeden6.com/gtd/backend:latest
+
+# scp <user>@<server>:/etc/rancher/k3s/k3s.yaml /path/to/save/k3s.yaml
+# update the server ip
+k9s:
+	k9s --kubeconfig ../k3s.yaml
 
 
 	

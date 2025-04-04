@@ -1,22 +1,36 @@
 {
-    "build": {
-      "development": {
-        "developmentClient": true,
-        "distribution": "internal",
-        "env": {
-          "EXPO_PUBLIC_API_URL": "https://api.gtd.braeden6.com"
-        }
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://api.gtd.braeden6.com",
+        "APP_VARIANT": "development"
+      }
+    },
+    "local": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
       },
-      "preview": {
-        "distribution": "internal",
-        "env": {
-          "EXPO_PUBLIC_API_URL": "https://api.gtd.braeden6.com"
-        }
-      },
-      "production": {
-        "env": {
-          "EXPO_PUBLIC_API_URL": "https://api.gtd.braeden6.com"
-        }
+      "env": {
+        "EXPO_PUBLIC_API_URL": "http://10.0.0.174:8000",
+        "APP_VARIANT": "local"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://api.gtd.braeden6.com",
+        "APP_VARIANT": "preview"
+      }
+    },
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://api.gtd.braeden6.com",
+        "APP_VARIANT": "production"
       }
     }
   }
+}

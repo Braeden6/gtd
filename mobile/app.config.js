@@ -1,0 +1,120 @@
+const appJson = {
+    "expo": {
+        "name": "GTD",
+        "slug": "gtd",
+        "scheme": "com.braeden6.gtd",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/images/splash-icon.jpeg",
+        "userInterfaceStyle": "automatic",
+        "newArchEnabled": true,
+        "splash": {
+        "image": "./assets/images/splash-icon.jpeg",
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff"
+        },
+        "ios": {
+        "supportsTablet": true,
+        "bundleIdentifier": "com.braeden6.gtd"
+        },
+        "android": {
+        "adaptiveIcon": {
+            "foregroundImage": "./assets/images/splash-icon.jpeg",
+            "backgroundColor": "#ffffff"
+        },
+        "package": "com.braeden6.gtd",
+        "permissions": [
+            "android.permission.RECORD_AUDIO"
+        ]
+        },
+        "web": {
+        "bundler": "metro",
+        "output": "static",
+        "favicon": "./assets/images/splash-icon.jpeg"
+        },
+        "plugins": [
+        "expo-router",
+        [
+            "expo-splash-screen",
+            {
+            "image": "./assets/images/splash-icon.jpeg",
+            "imageWidth": 200,
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+            }
+        ],
+        [
+            "expo-camera",
+            {
+            "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera.",
+            "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
+            }
+        ]
+        ],
+        "experiments": {
+        "typedRoutes": true
+        },
+        "extra": {
+        "eas": {
+            "projectId": "dc925efc-442a-4be1-b26c-fd3e3095ccb9"
+        }
+        },
+        "developer": {
+        "url": "http://localhost:8081"
+        }
+    }
+}
+  
+const appVariant = process.env.APP_VARIANT || 'preview';
+
+export default () => {
+  const baseConfig = appJson.expo;
+  
+  const variantConfigs = {
+    local: {
+      name: `${baseConfig.name} (Local)`,
+      ios: {
+        ...baseConfig.ios,
+        bundleIdentifier: `${baseConfig.ios.bundleIdentifier}.local`
+      },
+      android: {
+        ...baseConfig.android,
+        package: `${baseConfig.android.package}.local`
+      }
+    },
+    development: {
+      name: `${baseConfig.name} (Dev)`,
+      ios: {
+        ...baseConfig.ios,
+        bundleIdentifier: `${baseConfig.ios.bundleIdentifier}.dev`
+      },
+      android: {
+        ...baseConfig.android,
+        package: `${baseConfig.android.package}.dev`
+      }
+    },
+    preview: {
+      name: `${baseConfig.name} (Preview)`,
+      ios: {
+        ...baseConfig.ios,
+        bundleIdentifier: `${baseConfig.ios.bundleIdentifier}.preview`
+      },
+      android: {
+        ...baseConfig.android,
+        package: `${baseConfig.android.package}.preview`
+      }
+    },
+    // production: baseConfig
+  };
+
+  // console.log(variantConfigs[appVariant]);
+
+  return {
+    ...baseConfig,
+    ...variantConfigs[appVariant],
+    extra: {
+      ...baseConfig.extra,
+      appVariant: appVariant
+    }
+  };
+};
