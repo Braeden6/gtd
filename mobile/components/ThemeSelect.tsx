@@ -1,3 +1,4 @@
+import React from "react";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Sun, Moon } from "@/components/Icons";

@@ -7,8 +7,12 @@ import * as WebBrowser from 'expo-web-browser';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from "expo-router";
 import { ThemeSelect } from "@/components/ThemeSelect";
+import { Image } from "@/components/ui/image";
+import { Dimensions, useColorScheme } from "react-native";
+import { AuthService } from "@/api/generated";
 
 export default function Home() {
+  const colorScheme = useColorScheme();
   const { saveSessionCookie, getUserInfo, userInfo } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -22,14 +26,14 @@ export default function Home() {
   const initiateLogin = async (): Promise<void> => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/auth/oauth/mobile/authentik/authorize?scopes=fastapi-users%3Aoauth-state`);
-      const authUrl = response.data.authorization_url;
-
-      const urlParams = new URLSearchParams(authUrl.split('?')[1]);
+      const response = await AuthService.oauthOauth2SessionAuthorizeAuthOauthMobileAuthentikAuthorizeGet(
+        ['fastapi-users:oauth-state']
+      );
+      const urlParams = new URLSearchParams(response.authorization_url.split('?')[1]);
       const state = urlParams.get('state');
       const redirectUrl = urlParams.get('redirect_url');
       const result = await WebBrowser.openAuthSessionAsync(
-        authUrl + '&scope=' + encodeURIComponent('openid profile email'),
+        response.authorization_url + '&scope=' + encodeURIComponent('openid profile email'),
         redirectUrl,
       );
       // @ts-ignore
@@ -65,7 +69,8 @@ export default function Home() {
 
   return (
     <>
-      <Box className="flex-1 justify-center items-center">
+      <Box className="flex-1 justify-center items-center pb-40">
+        <Text className="text-foreground pb-20 text-lg">A design based on the book called</Text>
         <Box className="pb-10">
           <Box className="flex flex-col gap-8">
             <Text className="text-6xl font-bold text-foreground underline decoration-secondary">Getting</Text>
@@ -78,6 +83,25 @@ export default function Home() {
           <ButtonText className="text-secondary-foreground">Sign In</ButtonText>
         </Button>
       </Box>
+
+      <Image 
+        source={
+          colorScheme === 'dark' ? 
+            require('@/assets/images/background-dark.png') : 
+            require('@/assets/images/background-light.png')
+        } 
+        style={{ 
+          width: '100%',
+          height: '100%',
+          alignSelf: 'stretch'
+        }}
+        className="w-full h-[30%] absolute bottom-0"
+        resizeMode="cover"
+        alt="Background decoration"
+      />
+
+      {/* <Text className="text-foreground">{process.env.EXPO_PUBLIC_API_URL}</Text>
+      <Text className="text-foreground">{process.env.APP_VARIANT}</Text> */}
 
       <ThemeSelect />
   </>

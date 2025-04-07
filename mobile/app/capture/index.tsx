@@ -15,13 +15,13 @@ import { CustomToast } from "@/components/CustomToast";
 import { useToast } from "@/components/ui/toast";
 import { InboxService } from "@/api/generated";
 import axios from "axios";
-
-
+import { useAlertDialogStore } from "@/hooks/useCustomAlertDialog";
 
 export default function Capture() {
   const router = useRouter();
   const { isEmpty, setText, text, imageUri, setImageUri, recordingUri, resetForm } = useFormStore();
   const toast = useToast();
+  const { openDialog, closeDialog } = useAlertDialogStore();
 
   const submit = async () => {
     try {
@@ -79,7 +79,8 @@ export default function Capture() {
                     InboxService.deleteInboxItemInboxItemIdDelete(response.data.id);
                     toast.close("submit-form-toast");
                   }
-                }
+                },
+                mainActionTextColor: "destructive"
               }}
             />
           )
@@ -103,6 +104,18 @@ export default function Capture() {
       })
       
     }
+  }
+
+  const handleDeleteImage = () => {
+    openDialog({
+      body: "Photo being deleted cannot be recovered!",
+      actionText: "Delete",
+      actionTextColor: "destructive",
+      onAction: () => {
+        setImageUri(null);
+        closeDialog();
+      },
+    })
   }
 
   return (
@@ -141,29 +154,29 @@ export default function Capture() {
                     </Box>
                   </Button>
                   <Button 
-                    onPress={() => setImageUri(null)}
-                    className="absolute right-0 bottom-0 bg-background rounded-full p-0 z-10"
+                    onPress={handleDeleteImage}
+                    className="absolute right-0 bottom-0 bg-background rounded-full p-0 z-10 w-10 h-10"
                   >
                     <Trash2 className="w-5 h-5 text-secondary" />
                   </Button>
                 </Box>
               :
               <Button onPress={() => router.push("/camera")} className="bg-secondary rounded-full w-16 h-16">
-                <Camera />
+                <Camera className="text-secondary-foreground" />
               </Button>
             }
 
             <Record />
 
             <Textarea 
-              className="h-[150px] border-secondary w-[80vw] mb-10"
+              className="h-[150px] border-0 bg-gray-200 w-[80vw] mb-10"
               onTouchStart={(e) => e.stopPropagation()}
             >
               <TextareaInput 
                 placeholder="Your text goes here..." 
                 onChangeText={(text) => setText(text)} 
                 value={text || ""} 
-                className="text-foreground placeholder:text-foreground"
+                className="text-secondary-foreground placeholder:text-secondary-foreground"
               />
             </Textarea>
 
@@ -173,7 +186,7 @@ export default function Capture() {
               disabled={isEmpty()} 
               onPress={submit}
             >
-              <Text>Submit</Text>
+              <Text className="text-secondary-foreground">Submit</Text>
             </Button>
 
           </Box>
@@ -183,8 +196,4 @@ export default function Capture() {
       <ThemeSelect />
     </>
   );
-}
-
-function showToast(arg0: { description: string; action: { text: string; onPress: () => void; }; }) {
-  throw new Error("Function not implemented.");
 }

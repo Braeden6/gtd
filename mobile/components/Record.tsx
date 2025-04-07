@@ -57,8 +57,16 @@ export function Record() {
   };
 
   const deleteRecording = () => {
-    setRecordingUri(null);
-    setState("empty");
+    openDialog({
+      body: "Recording being deleted cannot be recovered!",
+      actionText: "Delete",
+      actionTextColor: "destructive",
+      onAction: () => {
+        setRecordingUri(null);
+        setState("empty");
+        closeDialog();
+      },
+    })
   };
 
 
@@ -71,7 +79,7 @@ export function Record() {
             className="bg-secondary rounded-full w-16 h-16"
             accessibilityLabel="Start recording"
           >
-            <Mic />
+            <Mic className="text-secondary-foreground" />
           </Button>
         );
       case "recording":
@@ -81,7 +89,7 @@ export function Record() {
             className="bg-secondary rounded-full w-16 h-16"
             accessibilityLabel="Stop recording"
           >
-            <StopCircle />
+            <StopCircle className="text-secondary-foreground" />
           </Button>
         );
       case "playing":
@@ -93,11 +101,11 @@ export function Record() {
               className="bg-secondary rounded-full w-16 h-16"
               accessibilityLabel={state === "playing" ? "Pause playback" : "Play recording"}
             >
-              {state === "playing" ? <Pause /> : <Play />}
+              {state === "playing" ? <Pause className="text-secondary-foreground" /> : <Play className="text-secondary-foreground" />}
             </Button>
             <Button 
               onPress={deleteRecording}
-              className="absolute right-0 bottom-0 bg-transparent rounded-full p-0"
+              className="absolute right-0 bottom-0 bg-transparent rounded-full p-0 w-10 h-10"
               accessibilityLabel="Delete recording"
             >
               <Trash2 className="w-5 h-5 text-secondary" />

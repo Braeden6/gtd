@@ -1,11 +1,11 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { UserInfo } from '../types/auth';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
+import { AuthService, UserRead, UsersService } from '@/api/generated';
 
 interface AuthContextType {
-  userInfo: UserInfo | null;
+  userInfo: UserRead | null;
   saveSessionCookie: (tokenValue: string) => Promise<boolean>;
   getUserInfo: () => Promise<void>;
   logout: () => Promise<void>;
@@ -16,16 +16,25 @@ const GTD_AUTH_COOKIE_KEY = 'gtd_auth_cookie';
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [userInfo, setUserInfo] = useState<UserRead | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    try {
-      loadSessionCookie();
-      getUserInfo();
-    } catch {
-      setUserInfo(null);
-    }
+    const initAuth = async () => {
+      try {
+        const hasCookie = await loadSessionCookie();
+        if (hasCookie) {
+          await getUserInfo();
+        } else {
+          setUserInfo(null);
+        }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        setUserInfo(null);
+      }
+    };
+    
+    initAuth();
   }, []);
 
   useEffect(() => {
@@ -38,8 +47,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const cookie = await AsyncStorage.getItem(GTD_AUTH_COOKIE_KEY);
     if (cookie) {
       axios.defaults.headers.common['Cookie'] = `gtd_auth=${cookie}`;
+      return true;
     } else {
-      throw new Error('No cookie found');
+      delete axios.defaults.headers.common['Cookie'];
+      return false;
     }
   };
 
@@ -55,17 +66,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
+    await AuthService.authSessionLogoutAuthJwtLogoutPost();
     await AsyncStorage.removeItem(GTD_AUTH_COOKIE_KEY);
     axios.defaults.headers.common['Cookie'] = '';
     setUserInfo(null);
   }
 
   const getUserInfo = async () => {
-    const response = await axios.get<UserInfo>(`${process.env.EXPO_PUBLIC_API_URL}/users/me`, { withCredentials: true });
-    if (response.status === 200) {
-      setUserInfo(response.data);
-    } else {
-      throw new Error('Failed to get user info');
+    try {
+      const response = await UsersService.usersCurrentUserUsersMeGet();
+      setUserInfo(response);
+    } catch (error) {
+      console.error('Error fetching user info:', error);
+      setUserInfo(null);
+      await AsyncStorage.removeItem(GTD_AUTH_COOKIE_KEY);
+      delete axios.defaults.headers.common['Cookie'];
     }
   }
 

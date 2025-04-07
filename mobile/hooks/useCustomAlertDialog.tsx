@@ -1,10 +1,11 @@
 import { create } from 'zustand';
 
 interface AlertDialogProps {
-  title: string;
+  title?: string;
   body: string;
   cancelText?: string;
   actionText: string;
+  actionTextColor?: "destructive" | "secondary" | "primary";
   onCancel?: () => void;
   onAction: () => void;
   headingSize?: "sm" | "md" | "lg" | "full";
@@ -23,6 +24,7 @@ const emptyDialog: AlertDialogProps = {
   body: '',
   actionText: '',
   headingSize: 'md',
+  actionTextColor: 'primary',
   onAction: () => {},
 }
 
@@ -32,6 +34,7 @@ export const useAlertDialogStore = create<AlertDialogState>((set) => ({
   
   openDialog: (props) => set({ 
     isOpen: true,
+    ...emptyDialog,
     ...props
   }),
   

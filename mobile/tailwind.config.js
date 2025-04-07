@@ -18,8 +18,10 @@ module.exports = {
         foreground: 'var(--foreground)',
         card: 'var(--card)',
         'card-foreground': 'var(--cardForeground)',
-        popover: 'var(--popover)',
-        'popover-foreground': 'var(--popoverForeground)',
+        popover: {
+          DEFAULT: 'var(--popover)',
+          foreground: 'var(--popoverForeground)',
+        },
         primary: {
           DEFAULT: 'var(--primary)',
           foreground: 'var(--primaryForeground)',
@@ -27,6 +29,10 @@ module.exports = {
         secondary: {
           DEFAULT: 'var(--secondary)',
           foreground: 'var(--secondaryForeground)',
+        },
+        tertiary: {
+          DEFAULT: 'var(--tertiary)',
+          foreground: 'var(--tertiaryForeground)',
         },
         muted: {
           DEFAULT: 'var(--muted)',
