@@ -60,7 +60,10 @@ const appJson = {
         }
         },
         "developer": {
-        "url": "http://localhost:8081"
+        "url": "http://localhost:8081",
+        "runtimeVersion": {
+            "policy": "sdkVersion"
+        }
         }
     }
 }
@@ -103,11 +106,8 @@ export default () => {
         ...baseConfig.android,
         package: `${baseConfig.android.package}.preview`
       }
-    },
-    // production: baseConfig
+    }
   };
-
-  // console.log(variantConfigs[appVariant]);
 
   return {
     ...baseConfig,
