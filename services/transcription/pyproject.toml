@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gtd-transcription"
+version = "0.1.0"
+description = "GTD Transcription Service"
+authors = [
+    {name = "Braeden Norman", email = "braeden.norman6@gmail.com"},
+]
+requires-python = ">=3.10"
+dependencies = [
+    "redis>=5.0.0",
+    "faster-whisper",
+    "torch",
+    "gtd-shared"
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
