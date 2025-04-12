@@ -1,7 +1,5 @@
-from sqlalchemy import Column, Text, Boolean
+from sqlalchemy import Column, Text, Boolean, Index, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Index
-
 from src.models.base import SoftDeleteModel
 
 
@@ -12,9 +10,9 @@ class InboxItem(SoftDeleteModel):
 
     user_id = Column(UUID(as_uuid=True), nullable=False, index=True)
     content = Column(Text, nullable=False)
-    audio_path = Column(Text, nullable=True)
     image_path = Column(Text, nullable=True)
     processed = Column(Boolean, default=False)
+    audio_id = Column(UUID(as_uuid=True), ForeignKey("audios.id"), nullable=True, index=True)
 
     __table_args__ = (Index("idx_inbox_user_processed", "user_id", "processed"),)
 

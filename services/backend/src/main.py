@@ -1,9 +1,11 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+import asyncio
 
 from src.core.settings import settings
 from src.api.auth import auth_router
 from src.api.inbox import router as inbox_router
+from src.service.audio_transcription_result import AudioTranscriptionResultProcessor
 
 app = FastAPI(title="GTD Service")
 app.add_middleware(
@@ -14,6 +16,17 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+@app.on_event("startup")
+async def startup_event():
+    app.state.processor = AudioTranscriptionResultProcessor()
+    app.state.processor.start()
+    
+@app.on_event("shutdown")
+async def shutdown_event():
+    if hasattr(app.state, "processor"):
+        await app.state.processor.stop()
+
+# tech debt: issue with cookies in production
 @app.middleware("http")
 async def log_cookies_middleware(request: Request, call_next):
     if ",gtd_auth" in request.cookies.get("gtd_auth", ""):

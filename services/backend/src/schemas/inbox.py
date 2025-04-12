@@ -18,10 +18,11 @@ class InboxItemResponse(BaseModel):
     id: UUID4
     user_id: UUID4
     content: str
-    audio_path: Optional[str] = None
+    audio_id: Optional[UUID4] = None
     image_path: Optional[str] = None
     processed: bool
     created_at: datetime
+    transcription: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -30,9 +31,10 @@ class InboxItemResponse(BaseModel):
                 "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
                 "user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
                 "content": "Remember to check on the project status",
-                "audio_path": "audio/3fa85f64-5717-4562-b3fc-2c963f66afa6/20230615123045_a1b2c3d4.mp3",
+                "audio_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
                 "image_path": "image/3fa85f64-5717-4562-b3fc-2c963f66afa6/20230615123045_e5f6g7h8.jpg",
                 "processed": False,
                 "created_at": "2023-06-15T12:30:45.123Z",
+                "transcription": "Remember to check on the project status"
             }
         }

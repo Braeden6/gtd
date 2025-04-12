@@ -4,8 +4,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import BinaryIO, Optional
 import logging
-
-from src.core.storage.inteface import StorageInterface
+from sqlalchemy import Column
+from gtd_shared.core.storage.inteface import StorageInterface
 from src.repository.inbox import InboxRepository
 
 logger = logging.getLogger(__name__)
@@ -51,6 +51,6 @@ class FileService:
 
         return await self.storage.upload_file(image_data, file_path, content_type=content_type)
     
-    async def delete_file(self, file_path: str) -> None:
+    async def delete_file(self, file_path: str | Column[str]) -> None:
         """Delete a file from storage."""
-        await self.storage.delete_file(file_path)
+        await self.storage.delete_file(str(file_path))

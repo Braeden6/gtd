@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "gtd-service"
+name = "gtd-backend"
 version = "0.1.0"
-description = "GTD Microservice"
+description = "GTD Backend"
 authors = [
     {name = "Braeden Norman", email = "braeden.norman6@gmail.com"},
 ]
@@ -25,8 +25,12 @@ dependencies = [
     "structlog>=23.1.0",
     "httpx>=0.24.0",
     "python-multipart>=0.0.6",
-    "fastapi-users[sqlalchemy,oauth]>=12.1.0"
+    "fastapi-users[sqlalchemy,oauth]>=12.1.0",
+    "gtd-shared>=0.1.0"
 ]
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
@@ -42,7 +46,7 @@ dev = [
     "types-sqlalchemy>=1.4.0",
     "aiosqlite>=0.20.0",
     "pytest-cov>=4.0.0",
-    "pytest-watcher>=0.4.3",
+    "pytest-watcher>=0.4.3"
 ]
 
 [tool.pytest.ini_options]

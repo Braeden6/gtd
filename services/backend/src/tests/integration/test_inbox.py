@@ -8,7 +8,7 @@ from unittest.mock import patch
 @pytest.fixture
 def mock_minio_client():
     """Mock the MinIO client to avoid actual file uploads during tests."""
-    with patch("src.core.storage.minio.MinioStorage.upload_file") as mock_upload:
+    with patch("gtd_shared.core.storage.minio.MinioStorage.upload_file") as mock_upload:
 
         def custom_upload(*args, **kwargs):
             return f"mocked/file/{kwargs['content_type']}"

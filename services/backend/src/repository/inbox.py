@@ -24,4 +24,4 @@ class InboxRepository(SoftDeleteRepository[InboxItem]):
         query = query.order_by(InboxItem.created_at.desc())
 
         result = await self.db_session.execute(query)
-        return result.scalars().all()
+        return list(result.scalars().all())

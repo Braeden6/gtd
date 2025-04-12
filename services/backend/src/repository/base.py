@@ -46,7 +46,7 @@ class BaseRepository(RepositoryInterface[BaseModelType], Generic[BaseModelType])
             query = query.order_by(self.model_class.created_at.desc())
 
         result = await self.db_session.execute(query)
-        return result.scalars().all()
+        return list(result.scalars().all())
 
     async def update(self, id: UUID, data: Dict[str, Any]) -> Optional[BaseModelType]:
         """Update an entity."""
@@ -68,4 +68,4 @@ class BaseRepository(RepositoryInterface[BaseModelType], Generic[BaseModelType])
         query_conditions = [self.model_class.id == id]
         query = select(exists().where(and_(*query_conditions)))
         result = await self.db_session.execute(query)
-        return result.scalar()
+        return bool(result.scalar())

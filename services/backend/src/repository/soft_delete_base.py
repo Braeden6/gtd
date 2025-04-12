@@ -4,10 +4,9 @@ from datetime import datetime
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.models.base import SoftDeleteModel, SoftDeleteModelType
+from src.models.base import SoftDeleteModelType
 from src.repository.base import BaseRepository
-from sqlalchemy import and_, update
-
+from sqlalchemy import and_, update, Column
 
 class SoftDeleteRepository(BaseRepository[SoftDeleteModelType], Generic[SoftDeleteModelType]):
     """Repository implementation for models with soft delete capability."""
@@ -15,10 +14,8 @@ class SoftDeleteRepository(BaseRepository[SoftDeleteModelType], Generic[SoftDele
     def __init__(self, db_session: AsyncSession, model_class: Type[SoftDeleteModelType]):
         """Initialize with database session and model class."""
         super().__init__(db_session, model_class)
-        if not issubclass(model_class, SoftDeleteModel):
-            raise TypeError(f"Model class {model_class.__name__} must inherit from SoftDeleteModel")
-
-    async def delete(self, id: UUID) -> bool:
+        
+    async def delete(self, id: UUID | Column[UUID]) -> bool:
         """Soft delete an entity."""
         result = await self.update(id, {"deleted_at": datetime.utcnow()})
         return result is not None
@@ -31,7 +28,7 @@ class SoftDeleteRepository(BaseRepository[SoftDeleteModelType], Generic[SoftDele
         """Get all soft-deleted entities."""
         query = select(self.model_class).where(self.model_class.deleted_at.is_not(None))
         result = await self.db_session.execute(query)
-        return result.scalars().all()
+        return list(result.scalars().all())
 
     async def restore(self, id: UUID) -> Optional[SoftDeleteModelType]:
         """Restore a soft-deleted entity."""
@@ -61,18 +58,17 @@ class SoftDeleteRepository(BaseRepository[SoftDeleteModelType], Generic[SoftDele
         query = query.where(self.model_class.deleted_at.is_(None))
 
         result = await self.db_session.execute(query)
-        return result.scalars().all()
+        return list(result.scalars().all())
 
-    async def update(self, id: UUID, data: Dict[str, Any]) -> Optional[SoftDeleteModelType]:
+    async def update(self, id: UUID | Column[UUID], data: Dict[str, Any]) -> Optional[SoftDeleteModelType]:
         """Update an entity."""
         query_conditions = [self.model_class.id == id]
         query = update(self.model_class).where(and_(*query_conditions), self.model_class.deleted_at.is_(None)).values(**data).returning(self.model_class)
-
         result = await self.db_session.execute(query)
         await self.db_session.flush()
         return result.scalars().first()
 
-    async def get_by_id(self, id: UUID) -> Optional[SoftDeleteModelType]:
+    async def get_by_id(self, id: UUID | Column[UUID]) -> Optional[SoftDeleteModelType]:
         """Get an entity by ID."""
         query = select(self.model_class).where(and_(self.model_class.id == id, self.model_class.deleted_at.is_(None)))
         result = await self.db_session.execute(query)

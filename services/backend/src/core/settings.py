@@ -1,8 +1,9 @@
-from pydantic_settings import BaseSettings
+# from pydantic_settings import BaseSettings
+from gtd_shared.core.settings import Settings as SharedSettings
 from typing import Optional
 
 
-class Settings(BaseSettings):
+class Settings(SharedSettings):
     DATABASE_URL: Optional[str] = "postgresql+asyncpg://postgres:postgres@localhost:5432/gtd"
     PASSWORD_SECRET_KEY: str = "dasdasdasd"
     COOKIE_SECURE: bool = True
