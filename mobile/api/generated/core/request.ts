@@ -4,7 +4,7 @@
 /* eslint-disable */
 import axios from 'axios';
 import type { AxiosError, AxiosRequestConfig, AxiosResponse, AxiosInstance } from 'axios';
-import * as FormData from 'form-data';
+import FormData from 'form-data';
 
 import { ApiError } from './ApiError';
 import type { ApiRequestOptions } from './ApiRequestOptions';
@@ -39,7 +39,6 @@ export const isBlob = (value: any): value is Blob => {
 };
 
 export const isFormData = (value: any): value is FormData => {
-    // @ts-ignore
     return value instanceof FormData;
 };
 
@@ -110,16 +109,7 @@ const getUrl = (config: OpenAPIConfig, options: ApiRequestOptions): string => {
 };
 
 export const getFormData = (options: ApiRequestOptions): FormData | undefined => {
-    console.log('options.formData',options);
     if (options.formData) {
-        // Check if the input is already a React Native FormData object
-        if (options.formData._parts && Array.isArray(options.formData._parts)) {
-            // @ts-ignore
-            return options.formData;
-        }
-        
-        // Otherwise create a new FormData
-        // @ts-ignore
         const formData = new FormData();
 
         const process = (key: string, value: any) => {
@@ -306,7 +296,6 @@ export const request = <T>(config: OpenAPIConfig, options: ApiRequestOptions, ax
         try {
             const url = getUrl(config, options);
             const formData = getFormData(options);
-            console.log('test',formData);
             const body = getRequestBody(options);
             const headers = await getHeaders(config, options, formData);
 

@@ -17,6 +17,8 @@ export function Record() {
   useEffect(() => {
     if (recordingUri) {
       setState("paused");
+    } else {
+      setState("empty");
     }
   }, [recordingUri]);
 

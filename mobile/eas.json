@@ -5,7 +5,8 @@
       "env": {
         "EXPO_PUBLIC_API_URL": "https://api.gtd.braeden6.com",
         "APP_VARIANT": "development"
-      }
+      },
+      "channel": "development"
     },
     "local": {
       "developmentClient": true,
@@ -25,13 +26,15 @@
       "env": {
         "EXPO_PUBLIC_API_URL": "https://api.gtd.braeden6.com",
         "APP_VARIANT": "preview"
-      }
+      },
+      "channel": "preview"
     },
     "production": {
       "env": {
         "EXPO_PUBLIC_API_URL": "https://api.gtd.braeden6.com",
         "APP_VARIANT": "production"
-      }
+      },
+      "channel": "production"
     }
   }
 }

@@ -1,5 +1,6 @@
 .PHONY: up down dev build test lint clean
 
+MESSAGE ?=init commit
 
 up:
 	docker compose up
@@ -7,15 +8,30 @@ up:
 down:
 	docker compose down
 
+setup: 
+	uv venv && \
+	source .venv/bin/activate && \
+	cd shared && \
+	uv pip install -e . && \
+	cd ../services/transcription && \
+	uv pip install -e . && \
+	cd ../backend && \
+	uv pip install -e . #'.[dev]'
+
+
 bk:
 	source .venv/bin/activate && \
-	cd backend && \
+	cd services/backend && \
 	uvicorn src.main:app --reload --host 0.0.0.0
+
+transcription:
+	source .venv/bin/activate && \
+	cd services/transcription && \
+	python app/main.py
 
 fr:
 	cd frontend && \
 	pnpm run dev
-
 
 mb:
 	cd mobile && \
@@ -24,9 +40,6 @@ mb:
 mb-fix:
 	cd mobile && \
 	npx expo prebuild --clean
-
-build:
-	docker compose build
 
 sdk:
 	cd frontend && \
@@ -44,7 +57,7 @@ fr-build:
 	docker push registry.braeden6.com/gtd/frontend:latest
 
 bk-build:
-	cd backend && \
+	cd services/backend && \
 	docker build --platform linux/amd64 -t registry.braeden6.com/gtd/backend:latest . && \
 	docker push registry.braeden6.com/gtd/backend:latest
 

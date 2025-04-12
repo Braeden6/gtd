@@ -9,9 +9,10 @@ export type InboxItemResponse = {
     id: string;
     user_id: string;
     content: string;
-    audio_path?: (string | null);
+    audio_id?: (string | null);
     image_path?: (string | null);
     processed: boolean;
     created_at: string;
+    transcription?: (string | null);
 };
 

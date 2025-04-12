@@ -14,12 +14,12 @@ export const InboxItem = ({ item, onDelete, isDeletingItem }: InboxItemProps) =>
     >
       <div className="flex justify-between items-start">
         <div>
-          <p>{item.content}</p>
+          <p>{item.content || item.transcription}</p>
           <p className="text-sm text-muted-foreground mt-1">
             {new Date(item.created_at || '').toLocaleString()}
           </p>
           <p className="text-sm text-muted-foreground">
-            {item.audio_path ? 'Has audio ' : 'No audio '} | 
+            {item.audio_id ? 'Has audio ' : 'No audio '} | 
             {item.image_path ? ' Has image' : ' No image'}
           </p>
         </div>

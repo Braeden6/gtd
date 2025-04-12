@@ -66,7 +66,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
-    await AuthService.authSessionLogoutAuthJwtLogoutPost();
+    try {
+      await AuthService.authSessionLogoutAuthJwtLogoutPost();
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
     await AsyncStorage.removeItem(GTD_AUTH_COOKIE_KEY);
     axios.defaults.headers.common['Cookie'] = '';
     setUserInfo(null);

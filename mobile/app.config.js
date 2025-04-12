@@ -62,7 +62,10 @@ const appJson = {
         "developer": {
         "url": "http://localhost:8081",
         "runtimeVersion": {
-            "policy": "sdkVersion"
+            "policy": "appVersion"
+        },
+        "updates": {
+            "url": "https://u.expo.dev/dc925efc-442a-4be1-b26c-fd3e3095ccb9"
         }
         }
     }
