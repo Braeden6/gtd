@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gtd_shared"
+version = "0.1.0"
+description = "Shared libraries for GTD services"
+authors = [
+    {name = "Braeden Norman", email = "braeden.norman6@gmail.com"},
+]
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.100.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "sqlalchemy>=2.0.0",
+    "aioboto3>=11.0.0",
+    "redis>=5.0.0",
+    "fastapi-users[sqlalchemy,oauth]>=12.1.0"
+]
+[tool.hatch.build.targets.wheel]
+packages = ["src/gtd_shared"]
