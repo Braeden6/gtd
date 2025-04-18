@@ -1,3 +1,4 @@
+import { AuthService } from '@/api/generated';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
@@ -37,9 +38,7 @@ export function useAuth() {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      await axios.post(`${import.meta.env.VITE_API_URL}/auth/jwt/logout`, {}, {
-        withCredentials: true,
-      });
+      await AuthService.logoutAuthLogoutPost();
       localStorage.removeItem('isAuthenticated');
     },
     onSuccess: () => {
