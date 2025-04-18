@@ -3,6 +3,7 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
+    "prebuild": "APP_VARIANT=local pnpm expo prebuild --clean",
     "start": "DARK_MODE=media APP_VARIANT=local pnpm expo run:ios --device",
     "start:dev": "DARK_MODE=media APP_VARIANT=development pnpm expo run:ios --device",
     "build:dev": "eas build -p ios --profile development",
