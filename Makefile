@@ -9,6 +9,12 @@ down:
 	docker compose down
 
 setup: 
+	cd frontend && \
+	pnpm install && \
+	cd ../mobile && \
+	pnpm install && \
+	pnpm run prebuild && \
+	cd ../ && \
 	uv venv && \
 	source .venv/bin/activate && \
 	cd shared && \
@@ -35,11 +41,11 @@ fr:
 
 mb:
 	cd mobile && \
-	npm run start
+	pnpm run start
 
 mb-fix:
 	cd mobile && \
-	npx expo prebuild --clean
+	pnpm prebuild
 
 sdk:
 	cd frontend && \
