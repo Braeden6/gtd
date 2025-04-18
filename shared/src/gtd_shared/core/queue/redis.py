@@ -1,12 +1,12 @@
 import json
-import logging
 from typing import List, Optional, TypeVar
 import redis.asyncio as redis
 
 from gtd_shared.core.settings import settings
 from gtd_shared.core.queue.interface import QueueInterface
+from gtd_shared.core.logging import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger()
 
 T = TypeVar('T')
 

@@ -1,13 +1,11 @@
 import aioboto3  # type: ignore
 from typing import Any, BinaryIO, Optional
 from botocore.exceptions import ClientError  # type: ignore
-import logging
-
 from gtd_shared.core.storage.inteface import StorageInterface
 from gtd_shared.core.settings import settings
+from gtd_shared.core.logging import get_logger
 
-logger = logging.getLogger(__name__)
-
+logger = get_logger()
 
 class MinioStorage(StorageInterface):
     """MinIO implementation of the StorageInterface using aioboto3."""

@@ -3,13 +3,12 @@ import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import BinaryIO, Optional
-import logging
 from sqlalchemy import Column
 from gtd_shared.core.storage.inteface import StorageInterface
 from src.repository.inbox import InboxRepository
+from gtd_shared.core.logging import get_logger
 
-logger = logging.getLogger(__name__)
-
+logger = get_logger()
 
 class FileService:
     """Service for handling file operations."""
