@@ -3,7 +3,12 @@ from src.core.settings import settings
 from typing import Any, Dict, Tuple, cast
 import httpx
 import ssl
+from gtd_shared.core.logging import get_logger
+from httpx_oauth.clients.google import GoogleOAuth2
+from authlib.integrations.starlette_client import OAuth # type: ignore
+from starlette.config import Config # type: ignore
 
+logger = get_logger()
 
 class AuthentikOAuth2(OAuth2):
     def __init__(self):
@@ -31,8 +36,23 @@ class AuthentikOAuth2(OAuth2):
                 data = cast(Dict[str, Any], response.json())
                 return data["sub"], data["email"]
         except Exception as e:
-            print(f"Error in get_id_email: {str(e)}")
+            logger.error(f"Error in get_id_email: {str(e)}")
             raise
 
-
 authentik_oauth_client = AuthentikOAuth2()
+# Google People API must be enabled for this to work
+google_oauth_client = GoogleOAuth2(
+    settings.GOOGLE_CLIENT_ID, 
+    settings.GOOGLE_CLIENT_SECRET,
+    scopes=settings.GOOGLE_SCOPE.split(" "),
+)
+
+config = Config()
+google_oauth_mobile = OAuth(config)
+google_oauth_mobile.register(
+    name="google",
+    client_id=settings.GOOGLE_MOBILE_CLIENT_ID,
+    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+    client_kwargs={"scope": settings.GOOGLE_SCOPE},
+)
+google_oauth_mobile = google_oauth_mobile.google

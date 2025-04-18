@@ -1,4 +1,3 @@
-import logging
 import asyncio
 import io
 from gtd_shared.core.storage.minio import MinioStorage
