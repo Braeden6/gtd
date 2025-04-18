@@ -29,7 +29,7 @@ const AuthCallback = () => {
         localStorage.removeItem('auth_state');
         
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/auth/oauth/authentik/callback?code=${code}&state=${state}`, 
+          `${import.meta.env.VITE_API_URL}/auth/oauth/google/callback?code=${code}&state=${state}`, 
           { withCredentials: true }
         );
         

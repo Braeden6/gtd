@@ -9,7 +9,7 @@ import { useRouter } from "expo-router";
 import { ThemeSelect } from "@/components/ThemeSelect";
 import { Image } from "@/components/ui/image";
 import { Dimensions, useColorScheme } from "react-native";
-import { AuthService } from "@/api/generated";
+import { AuthService, InboxService } from "@/api/generated";
 
 export default function Home() {
   const colorScheme = useColorScheme();
@@ -26,15 +26,14 @@ export default function Home() {
   const initiateLogin = async (): Promise<void> => {
     try {
       setIsLoading(true);
-      const response = await AuthService.oauthOauth2SessionAuthorizeAuthOauthMobileAuthentikAuthorizeGet(
-        ['fastapi-users:oauth-state']
-      );
-      const urlParams = new URLSearchParams(response.authorization_url.split('?')[1]);
-      const state = urlParams.get('state');
-      const redirectUrl = urlParams.get('redirect_url');
+      const response = await AuthService.getAuthorizationUrlAuthOauthMobileGoogleAuthorizeGet();
+      const authorizationUrl = response.authorization_url;
+      const url = new URL(authorizationUrl);
+      const state = url.searchParams.get('state');
+      const redirectUri = url.searchParams.get('redirect_uri');
       const result = await WebBrowser.openAuthSessionAsync(
-        response.authorization_url + '&scope=' + encodeURIComponent('openid profile email'),
-        redirectUrl,
+        response.authorization_url,
+        redirectUri
       );
       // @ts-ignore
       const responseUrl =  new URLSearchParams(result.url.split('?')[1]);
@@ -48,7 +47,7 @@ export default function Home() {
       }
 
       const finalResponse = await axios.get(
-        `${process.env.EXPO_PUBLIC_API_URL}/auth/oauth/authentik/callback?code=${responseCode}&state=${responseState}`, 
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/oauth/mobile/google/callback?code=${responseCode}&state=${responseState}`, 
         { withCredentials: true }
       );
       const cookies = finalResponse.headers['set-cookie'];

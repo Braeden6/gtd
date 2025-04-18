@@ -1,9 +1,9 @@
-import axios from 'axios';
 import { useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { LockKeyhole } from 'lucide-react';
+import { AuthService } from '@/api/generated';
 
 const Login: React.FC = () => {
   const location = useLocation();
@@ -17,15 +17,13 @@ const Login: React.FC = () => {
     if (location.state && 'from' in location.state) {
       localStorage.setItem('auth_redirect', location.state.from as string);
     }
-    const response = await axios.get(`${import.meta.env.VITE_API_URL}/auth/oauth/authentik/authorize?scopes=fastapi-users%3Aoauth-state`);
-    const authUrl = response.data.authorization_url;
-
-    const urlParams = new URLSearchParams(authUrl.split('?')[1]);
-    const state = urlParams.get('state');
+    const response = await AuthService.oauthGoogleSessionAuthorizeAuthOauthGoogleAuthorizeGet();
+    const authUrl = new URL(response.authorization_url);
+    const state = authUrl.searchParams.get('state');
     if (state) {
       localStorage.setItem('auth_state', state);
     }
-    window.location.href = authUrl + '&scope=' + encodeURIComponent('openid profile email');
+    window.location.href = response.authorization_url;
   };
 
   return (
