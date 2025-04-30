@@ -2,12 +2,6 @@
 
 MESSAGE ?=init commit
 
-up:
-	docker compose up
-
-down:
-	docker compose down
-
 setup: 
 	cd frontend && \
 	pnpm install && \
@@ -25,25 +19,25 @@ setup:
 	uv pip install -e . #'.[dev]'
 
 
-bk:
+b:
 	source .venv/bin/activate && \
 	cd services/backend && \
 	uvicorn src.main:app --reload --host 0.0.0.0
 
-transcription:
+t:
 	source .venv/bin/activate && \
 	cd services/transcription && \
 	python app/main.py
 
-fr:
+f:
 	cd frontend && \
 	pnpm run dev
 
-mb:
+m:
 	cd mobile && \
 	pnpm run start
 
-mb-fix:
+mfix:
 	cd mobile && \
 	pnpm prebuild
 
@@ -52,20 +46,21 @@ sdk:
 	pnpm generate-api && \
 	pnpm generate-api-mobile
 
-mb-build-preview:
+mbuild:
 	cd mobile && \
 	eas build --platform ios --profile preview
 
-# remember to update .env
-fr-build:
-	cd frontend && \
-	docker build --platform linux/amd64 -t registry.braeden6.com/gtd/frontend:latest . && \
+fbuild:
+	docker build --platform linux/amd64 -t registry.braeden6.com/gtd/frontend:latest -f docker/Dockerfile.frontend . && \
 	docker push registry.braeden6.com/gtd/frontend:latest
 
-bk-build:
-	cd services/backend && \
-	docker build --platform linux/amd64 -t registry.braeden6.com/gtd/backend:latest . && \
+bbuild:
+	docker build --platform linux/amd64 -t registry.braeden6.com/gtd/backend:latest -f docker/Dockerfile.backend . && \
 	docker push registry.braeden6.com/gtd/backend:latest
+
+tbuild:
+	docker build --platform linux/amd64 -t registry.braeden6.com/gtd/transcription:latest -f docker/Dockerfile.transcription . && \
+	docker push registry.braeden6.com/gtd/transcription:latest
 
 # scp <user>@<server>:/etc/rancher/k3s/k3s.yaml /path/to/save/k3s.yaml
 # update the server ip

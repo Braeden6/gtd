@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: transcription-model-pvc
+  namespace: gtd
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transcription
+  namespace: gtd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: transcription
+  template:
+    metadata:
+      labels:
+        app: transcription
+    spec:
+      imagePullSecrets:
+      - name: harbor-creds
+      containers:
+      - name: transcription
+        image: registry.braeden6.com/gtd/transcription:latest
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "500m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+        env:
+        - name: REDIS_HOST
+          value: "redis"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: MINIO_ENDPOINT_URL
+          value: "http://minio:9000"
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: minio-credentials
+              key: access-key
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: minio-credentials
+              key: secret-key
+        - name: HF_HOME
+          value: "/models"
+        - name: TRANSFORMERS_CACHE
+          value: "/models/transformers"
+        - name: TORCH_HOME
+          value: "/models/torch"
+        volumeMounts:
+        - name: model-storage
+          mountPath: /models
+      volumes:
+      - name: model-storage
+        persistentVolumeClaim:
+          claimName: transcription-model-pvc

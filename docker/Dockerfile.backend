@@ -1,13 +1,22 @@
 FROM python:3.10-slim AS builder
 RUN pip install --no-cache-dir uv
 WORKDIR /app
-COPY pyproject.toml .
+
+# Copy shared package and install it
+COPY shared /app/shared
+WORKDIR /app/shared
 RUN uv pip install --system -e .
 
-# Runtime stage
+# Copy and install backend service
+WORKDIR /app
+COPY services/backend/pyproject.toml /app/
+RUN uv pip install --system -e .
+
 FROM python:3.10-slim AS prod
+
 WORKDIR /app
 COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
-COPY . .
+COPY services/backend/src /app/src
+COPY services/backend/.env.prod .env
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
