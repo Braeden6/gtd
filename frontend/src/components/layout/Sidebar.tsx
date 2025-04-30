@@ -84,7 +84,7 @@ function NavLink({
         'flex items-center gap-3 px-3 py-2 rounded-md',
         'text-sm font-medium',
         'hover:bg-muted/50 transition-colors',
-        isActive && 'bg-muted'
+        isActive && 'bg-secondary text-secondary-foreground'
       )}
     >
       <item.icon className="h-5 w-5" />

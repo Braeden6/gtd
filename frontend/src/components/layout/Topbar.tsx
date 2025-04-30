@@ -13,13 +13,13 @@ export function Topbar() {
   const { user, logout, isAuthenticated } = useAuth();
 
   return (
-    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10">
+    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 text-foreground">
       <div className="flex h-14 items-center justify-between px-6">
         <div className="font-semibold">GTD App</div>
         
         {isAuthenticated && (
           <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground mr-2">
+            <span className="text-sm mr-2">
               {user?.email}
             </span>
             <DropdownMenu>
