@@ -10,15 +10,15 @@ type InboxItemProps = {
 export const InboxItem = ({ item, onDelete, isDeletingItem }: InboxItemProps) => (
     <div
       key={item.id}
-      className="p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+      className="p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors text-card-foreground"
     >
       <div className="flex justify-between items-start">
         <div>
           <p>{item.content || item.transcription}</p>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-sm mt-1">
             {new Date(item.created_at || '').toLocaleString()}
           </p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm">
             {item.audio_id ? 'Has audio ' : 'No audio '} | 
             {item.image_path ? ' Has image' : ' No image'}
           </p>
