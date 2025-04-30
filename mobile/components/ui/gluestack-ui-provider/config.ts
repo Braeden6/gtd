@@ -26,10 +26,10 @@ export const config = {
   }),
   
   dark: vars({
-    background: '#0F172A',     
+    background: '#2E1A51',     
     foreground: '#FFFFFF',
-    card: '#1E293B',
-    cardForeground: '#FFFFFF',
+    card: '#ECE4FB',
+    cardForeground: '#000000',
     popover: '#F0EEF2',
     popoverForeground: '#000000',
     primary: '#8B5CF6',         
