@@ -6,17 +6,16 @@ from src.schemas.inbox import InboxItemResponse
 from src.service.file import FileService
 from src.repository.inbox import InboxRepository
 from src.repository.audio import AudioRepository
-from src.core.dependencies import get_file_service, get_inbox_repository, get_audio_repository, current_active_user
+from src.repository.images import ImageRepository
+from src.core.dependencies import get_file_service, get_inbox_repository, get_audio_repository, get_image_repository, get_inbox_view_repository, current_active_user
 from src.models.user import User
 from gtd_shared.core.queue.redis import RedisQueue
 from gtd_shared.services.transcription import TranscriptionRequest
 from gtd_shared.core.logging import get_logger
-from sqlalchemy import select
-from src.models.inbox import InboxItem
-from src.models.audio import Audio
-from gtd_shared.core.database import get_async_session 
-from sqlalchemy.ext.asyncio import AsyncSession
-
+from src.repository.inbox_view import InboxViewRepository
+from src.models.inbox import InboxItemCreate
+from src.models.audio import AudioCreate
+from src.models.image import ImageCreate
 
 logger = get_logger()
 
@@ -28,6 +27,7 @@ async def create_inbox_item(
     file_service: Annotated[FileService, Depends(get_file_service)],
     inbox_repo: Annotated[InboxRepository, Depends(get_inbox_repository)],
     audio_repo: Annotated[AudioRepository, Depends(get_audio_repository)],
+    image_repo: Annotated[ImageRepository, Depends(get_image_repository)],
     audio: Optional[UploadFile] = None,
     image: Optional[UploadFile] = None,
     current_user: User = Depends(current_active_user),
@@ -42,13 +42,13 @@ async def create_inbox_item(
     Returns the created inbox item.
     """
     try:
-        user_id: UUID = current_user.id  # type: ignore
+        user_id: UUID = current_user.id # type: ignore
         audio_id = None
         if audio:
             audio_data = await audio.read()
             audio_file = BytesIO(audio_data)
             audio_path = await file_service.upload_inbox_audio(user_id=user_id, audio_data=audio_file, filename=audio.filename)
-            audio_entry = await audio_repo.create(audio_path=audio_path)
+            audio_entry = await audio_repo.create(AudioCreate(audio_path=audio_path, user_id=user_id))
             audio_id = audio_entry.id
             queue: RedisQueue = RedisQueue(queue_name="transcription_jobs")
             request = TranscriptionRequest(
@@ -58,13 +58,23 @@ async def create_inbox_item(
             )
             await queue.push(request.model_dump())
 
-        image_path = None
+        image_id = None
         if image:
             image_data = await image.read()
             image_file = BytesIO(image_data)
             image_path = await file_service.upload_inbox_image(user_id=user_id, image_data=image_file, filename=image.filename)
+            image_entry = await image_repo.create(ImageCreate(image_path=image_path, user_id=user_id))
+            image_id = image_entry.id
+            
 
-        inbox_item = await inbox_repo.create(user_id=user_id, content=content, audio_id=audio_id, image_path=image_path)
+        inbox_item = await inbox_repo.create(
+            InboxItemCreate(
+                user_id=user_id, 
+                content=content, 
+                audio_id=audio_id, 
+                image_id=image_id
+            )
+        )
 
         await inbox_repo.db_session.commit()
 
@@ -79,8 +89,7 @@ async def create_inbox_item(
 
 @router.get("/", response_model=list[InboxItemResponse], status_code=status.HTTP_200_OK, summary="Get all inbox items for the current user")
 async def get_user_inbox_items(
-    db: Annotated[AsyncSession, Depends(get_async_session)],
-    # inbox_repo: Annotated[InboxRepository, Depends(get_inbox_repository)],
+    inbox_view_repo: Annotated[InboxViewRepository, Depends(get_inbox_view_repository)],
     current_user: User = Depends(current_active_user),
     processed: Optional[bool] = None,
 ):
@@ -93,29 +102,9 @@ async def get_user_inbox_items(
     """
     try:
         user_id: UUID = current_user.id  # type: ignore
-        # tech debt: this is a hack to get the transcription for the inbox item
-        query = (
-            select(InboxItem, Audio.transcription)
-            .outerjoin(Audio, InboxItem.audio_id == Audio.id)
-            .where(InboxItem.user_id == user_id)
-            .order_by(InboxItem.created_at.desc())
+        return await inbox_view_repo.get_all_for_user(
+            user_id=user_id, processed=processed
         )
-        
-        if processed is not None:
-            query = query.where(InboxItem.processed == processed)
-        
-        result = await db.execute(query)
-        rows = result.all()
-        
-        inbox_items = []
-        for row in rows:
-            inbox_item = row[0]
-            transcription = row[1]
-            # Add transcription as a transient attribute
-            setattr(inbox_item, "transcription", transcription)
-            inbox_items.append(inbox_item)
-        
-        return inbox_items
     
     except HTTPException:
         raise
@@ -141,24 +130,17 @@ async def delete_inbox_item(
     """
     try:
         user_id: UUID = current_user.id  # type: ignore
-        item = await inbox_repo.get_by_id(item_id)
-        
-        if not item:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Inbox item not found")
+        # tech debt: might want to delete the audio and image files here (include file and table rows)
+        # if item.audio_id:
+        #     audio = await audio_repo.get_by_id(item.audio_id)
+        #     if audio:
+        #         await file_service.delete_file(audio.audio_path)
+        #         await audio_repo.delete(item.audio_id)
             
-        if item.user_id != user_id:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to delete this inbox item")
+        # if item.image_path:
+        #     await file_service.delete_file(item.image_path)
         
-        if item.audio_id:
-            audio = await audio_repo.get_by_id(item.audio_id)
-            if audio:
-                await file_service.delete_file(audio.audio_path)
-                await audio_repo.delete(item.audio_id)
-            
-        if item.image_path:
-            await file_service.delete_file(item.image_path)
-        
-        await inbox_repo.delete(item_id)
+        await inbox_repo.delete(item_id, user_id)
         await inbox_repo.db_session.commit()
         
         return None

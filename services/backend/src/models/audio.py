@@ -1,10 +1,11 @@
 from sqlalchemy import Column, Text
 from sqlalchemy import Index
-from src.models.base import SoftDeleteModel
+from src.models.base import SoftDeleteModel, BaseCreateModel, BaseUpdateModel
+from typing import Optional
 
 
 class Audio(SoftDeleteModel):
-    """Inbox item model for storing user submissions."""
+    """Audio model for storing user submissions."""
 
     __tablename__ = "audios"
 
@@ -15,3 +16,12 @@ class Audio(SoftDeleteModel):
 
     def __repr__(self) -> str:
         return f"<Audio(id={self.id}, audio_path={self.audio_path}, transcription={self.transcription})>"
+    
+    
+class AudioCreate(BaseCreateModel):
+    audio_path: str
+    transcription: Optional[str] = None
+
+class AudioUpdate(BaseUpdateModel):
+    audio_path: Optional[str] = None
+    transcription: Optional[str] = None

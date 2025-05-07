@@ -12,10 +12,10 @@ export function useInboxItems() {
   } = useQuery({
     queryKey: ['inbox'],
     queryFn: () => InboxService.getUserInboxItemsInboxGet(),
-    refetchInterval: 5000,
+    refetchInterval: 5000000,
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: true,
-    staleTime: 5000,
+    staleTime: 5000000,
   });
 
   const createMutation = useMutation({
