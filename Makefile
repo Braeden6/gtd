@@ -1,7 +1,5 @@
 .PHONY: up down dev build test lint clean
 
-MESSAGE ?=init commit
-
 setup: 
 	cd frontend && \
 	pnpm install && \
@@ -23,6 +21,11 @@ b:
 	source .venv/bin/activate && \
 	cd services/backend && \
 	uvicorn src.main:app --reload --host 0.0.0.0
+
+alembic:
+	source .venv/bin/activate && \
+	cd services/backend && \
+	alembic revision --autogenerate -m "message"
 
 t:
 	source .venv/bin/activate && \
