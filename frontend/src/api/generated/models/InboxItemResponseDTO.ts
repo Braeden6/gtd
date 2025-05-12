@@ -5,7 +5,7 @@
 /**
  * Schema for inbox item response.
  */
-export type InboxItemResponse = {
+export type InboxItemResponseDTO = {
     id: string;
     user_id: string;
     content: string;
@@ -14,5 +14,8 @@ export type InboxItemResponse = {
     processed: boolean;
     created_at: string;
     transcription?: (string | null);
+    is_new: boolean;
+    action_id?: (string | null);
+    project_id?: (string | null);
 };
 

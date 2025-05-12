@@ -53,7 +53,13 @@ class SoftDeleteModel(BaseModel):
     @property
     def is_deleted(self) -> bool:
         return self.deleted_at is not None
+   
+   
+class BaseSearchModel(PydanticBaseModel):
+    user_id: UUID_TYPE
     
+    class Config:
+        arbitrary_types_allowed = True
     
 class BaseUpdateModel(PydanticBaseModel):
     id: UUID_TYPE

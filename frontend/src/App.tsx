@@ -4,6 +4,7 @@ import Dashboard from '@/pages/Dashboard/index';
 import NextActions from '@/pages/NextActions/index';
 import Projects from '@/pages/Projects/index';
 import NotFound from '@/pages/NotFound/index';
+import Inbox from '@/pages/Inbox/index';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Login from '@/pages/Login/Login';
@@ -12,7 +13,6 @@ import React from 'react';
 import AuthCallback from '@/pages/AuthCallback/AuthCallback';
 import { ThemeProvider } from '@/context/useTheme';
 import { LoadingScreen } from './components/Loading';
-import Inbox from '@/pages/Inbox/Inbox';
 
 const queryClient = new QueryClient({
   defaultOptions: {

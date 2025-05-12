@@ -22,10 +22,15 @@ b:
 	cd services/backend && \
 	uvicorn src.main:app --reload --host 0.0.0.0
 
-alembic:
+db-migrate:
 	source .venv/bin/activate && \
 	cd services/backend && \
 	alembic revision --autogenerate -m "message"
+
+db-upgrade:
+	source .venv/bin/activate && \
+	cd services/backend && \
+	alembic upgrade head
 
 t:
 	source .venv/bin/activate && \

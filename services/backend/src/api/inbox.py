@@ -1,8 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, Form, status
+from fastapi import APIRouter, Body, Depends, HTTPException, UploadFile, Form, status
 from typing import Annotated, Optional
 from io import BytesIO
 from uuid import UUID
-from src.schemas.inbox import InboxItemResponse
 from src.service.file import FileService
 from src.repository.inbox import InboxRepository
 from src.repository.audio import AudioRepository
@@ -13,15 +12,16 @@ from gtd_shared.core.queue.redis import RedisQueue
 from gtd_shared.services.transcription import TranscriptionRequest
 from gtd_shared.core.logging import get_logger
 from src.repository.inbox_view import InboxViewRepository
-from src.models.inbox import InboxItemCreate
+from src.models.inbox import InboxItemCreate, InboxItemUpdate, SearchInboxItem
 from src.models.audio import AudioCreate
 from src.models.image import ImageCreate
+from src.schemas.inbox import InboxItemUpdateDTO, InboxItemResponseDTO, SearchInboxItemDTO
 
 logger = get_logger()
 
 router = APIRouter(prefix="/inbox", tags=["inbox"])
 
-@router.post("/", response_model=InboxItemResponse, status_code=status.HTTP_201_CREATED, summary="Create a new inbox item with optional files")
+@router.post("/", response_model=InboxItemResponseDTO, status_code=status.HTTP_201_CREATED, summary="Create a new inbox item with optional files")
 async def create_inbox_item(
     content: Annotated[str, Form()],
     file_service: Annotated[FileService, Depends(get_file_service)],
@@ -87,7 +87,7 @@ async def create_inbox_item(
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to create inbox item: {str(e)}")
 
 
-@router.get("/", response_model=list[InboxItemResponse], status_code=status.HTTP_200_OK, summary="Get all inbox items for the current user")
+@router.get("/", response_model=list[InboxItemResponseDTO], status_code=status.HTTP_200_OK, summary="Get all inbox items for the current user")
 async def get_user_inbox_items(
     inbox_view_repo: Annotated[InboxViewRepository, Depends(get_inbox_view_repository)],
     current_user: User = Depends(current_active_user),
@@ -111,14 +111,58 @@ async def get_user_inbox_items(
     except Exception as e:
         logger.error(f"Error retrieving inbox items: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to retrieve inbox items: {str(e)}")
-    
-    
+   
+   
+@router.get("/search", response_model=list[InboxItemResponseDTO], status_code=status.HTTP_200_OK, summary="Search for inbox items")
+async def search_inbox_items(
+    inbox_repo: Annotated[InboxRepository, Depends(get_inbox_repository)],
+    current_user: User = Depends(current_active_user),
+    search_params: SearchInboxItemDTO = Depends(),
+):
+    try:
+        user_id: UUID = current_user.id  # type: ignore
+        search_model = SearchInboxItem(
+            user_id=user_id,
+            **search_params.model_dump()
+        )
+        return await inbox_repo.search(search_model)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error searching inbox items: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to search inbox items: {str(e)}")
+
+@router.put("/{item_id}", response_model=InboxItemResponseDTO, status_code=status.HTTP_200_OK, summary="Update an inbox item")
+async def update_inbox_item(
+    item_id: UUID,
+    inbox_repo: Annotated[InboxRepository, Depends(get_inbox_repository)],
+    current_user: User = Depends(current_active_user),
+    item: InboxItemUpdateDTO = Body(...)
+):
+    try:
+
+        user_id: UUID = current_user.id  # type: ignore
+        updated_item = InboxItemUpdate(
+            user_id=user_id,
+            id=item_id,
+            **item.model_dump()
+        )
+        new_item = await inbox_repo.update(updated_item)
+        await inbox_repo.db_session.commit()
+        return new_item
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating inbox item: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to update inbox item: {str(e)}")
+
 @router.delete("/{item_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Delete an inbox item")
 async def delete_inbox_item(
     item_id: UUID,
     inbox_repo: Annotated[InboxRepository, Depends(get_inbox_repository)],
     file_service: Annotated[FileService, Depends(get_file_service)],
     audio_repo: Annotated[AudioRepository, Depends(get_audio_repository)],
+    image_repo: Annotated[ImageRepository, Depends(get_image_repository)],
     current_user: User = Depends(current_active_user),
 ):
     """
@@ -130,15 +174,21 @@ async def delete_inbox_item(
     """
     try:
         user_id: UUID = current_user.id  # type: ignore
-        # tech debt: might want to delete the audio and image files here (include file and table rows)
-        # if item.audio_id:
-        #     audio = await audio_repo.get_by_id(item.audio_id)
-        #     if audio:
-        #         await file_service.delete_file(audio.audio_path)
-        #         await audio_repo.delete(item.audio_id)
+        item = await inbox_repo.get_by_id(item_id, user_id)
+        if not item:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Inbox item not found")
+        
+        if item.audio_id:
+            audio = await audio_repo.get_by_id(item.audio_id, user_id) # type: ignore
+            if audio:
+                await file_service.delete_file(audio.audio_path)
+                await audio_repo.delete(item.audio_id, user_id) # type: ignore
             
-        # if item.image_path:
-        #     await file_service.delete_file(item.image_path)
+        if item.image_id:
+            image = await image_repo.get_by_id(item.image_id, user_id) # type: ignore
+            if image:
+                await file_service.delete_file(image.image_path)
+                await image_repo.delete(item.image_id, user_id) # type: ignore
         
         await inbox_repo.delete(item_id, user_id)
         await inbox_repo.db_session.commit()

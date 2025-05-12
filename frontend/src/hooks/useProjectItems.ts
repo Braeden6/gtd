@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ProjectCreate, ProjectService } from '@/api/generated';
+import { ProjectCreate, ProjectResponse, ProjectService } from '@/api/generated';
+import { ItemType, KabanItem } from '@/lib/types';
 
 export function useProjectItems() {
   const queryClient = useQueryClient();
@@ -42,8 +43,19 @@ export function useProjectItems() {
     return deleteMutation.mutateAsync(id);
   };
 
+  const projectItemToKabanItem = (item: ProjectResponse): KabanItem => {
+    return {
+      id: item.id,
+      title: item.title,
+      priority: item.priority,
+      date: item.due_date,
+      type: ItemType.PROJECT,
+    };
+  }
+  
   return {
     projects,
+    kanbanProjects: projects.map(projectItemToKabanItem),
     isLoading,
     isError,
     error,

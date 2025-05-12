@@ -64,8 +64,15 @@ class SoftDeleteRepository(BaseRepository[SoftDeleteModelType, SoftDeleteCreateT
 
     async def update(self, update_data: SoftDeleteUpdateType) -> Optional[SoftDeleteModelType]:
         """Update an entity."""
+        update_values = {k: v for k, v in update_data.model_dump().items() 
+                        if v is not None and k not in ['id', 'user_id']}
+        
         query_conditions = [self.model_class.id == update_data.id, self.model_class.user_id == update_data.user_id]
-        query = update(self.model_class).where(and_(*query_conditions), self.model_class.deleted_at.is_(None)).values(**update_data.model_dump()).returning(self.model_class)
+        query = update(self.model_class).where(
+            and_(*query_conditions), 
+            self.model_class.deleted_at.is_(None)
+        ).values(**update_values).returning(self.model_class)
+        
         result = await self.db_session.execute(query)
         await self.db_session.flush()
         return result.scalars().first()

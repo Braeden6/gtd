@@ -15,7 +15,7 @@ class Action(SoftDeleteModel):
     priority: Column[Priority] = Column(Enum(Priority, name="priority_enum"), nullable=True)
     due_date = Column(DateTime, nullable=True)
     status: Column[ActionStatus] = Column(Enum(ActionStatus, name="action_status_enum"), default=ActionStatus.PENDING)
-    inbox_item_id = Column(UUID(as_uuid=True), ForeignKey("inbox_items.id"), nullable=True, index=True)
+    
     project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id"), index=True, nullable=True)
 
     

@@ -3,7 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { Body_create_inbox_item_inbox__post } from '../models/Body_create_inbox_item_inbox__post';
-import type { InboxItemResponse } from '../models/InboxItemResponse';
+import type { InboxItemResponseDTO } from '../models/InboxItemResponseDTO';
+import type { InboxItemUpdateDTO } from '../models/InboxItemUpdateDTO';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -18,12 +19,12 @@ export class InboxService {
      *
      * Returns the created inbox item.
      * @param formData
-     * @returns InboxItemResponse Successful Response
+     * @returns InboxItemResponseDTO Successful Response
      * @throws ApiError
      */
     public static createInboxItemInboxPost(
         formData: Body_create_inbox_item_inbox__post,
-    ): CancelablePromise<InboxItemResponse> {
+    ): CancelablePromise<InboxItemResponseDTO> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/inbox/',
@@ -42,18 +43,86 @@ export class InboxService {
      *
      * Returns a list of inbox items ordered by creation date (newest first).
      * @param processed
-     * @returns InboxItemResponse Successful Response
+     * @returns InboxItemResponseDTO Successful Response
      * @throws ApiError
      */
     public static getUserInboxItemsInboxGet(
         processed?: (boolean | null),
-    ): CancelablePromise<Array<InboxItemResponse>> {
+    ): CancelablePromise<Array<InboxItemResponseDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/inbox/',
             query: {
                 'processed': processed,
             },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Search for inbox items
+     * @param content
+     * @param actionId
+     * @param projectId
+     * @param processed
+     * @param hasImage
+     * @param hasAudio
+     * @param isNew
+     * @param orderBy
+     * @param orderDirection
+     * @returns InboxItemResponseDTO Successful Response
+     * @throws ApiError
+     */
+    public static searchInboxItemsInboxSearchGet(
+        content?: (string | null),
+        actionId?: (string | boolean | null),
+        projectId?: (string | boolean | null),
+        processed?: (boolean | null),
+        hasImage?: (boolean | null),
+        hasAudio?: (boolean | null),
+        isNew?: (boolean | null),
+        orderBy?: ('created_at' | 'due_date' | 'priority' | null),
+        orderDirection?: ('asc' | 'desc' | null),
+    ): CancelablePromise<Array<InboxItemResponseDTO>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/inbox/search',
+            query: {
+                'content': content,
+                'action_id': actionId,
+                'project_id': projectId,
+                'processed': processed,
+                'has_image': hasImage,
+                'has_audio': hasAudio,
+                'is_new': isNew,
+                'order_by': orderBy,
+                'order_direction': orderDirection,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Update an inbox item
+     * @param itemId
+     * @param requestBody
+     * @returns InboxItemResponseDTO Successful Response
+     * @throws ApiError
+     */
+    public static updateInboxItemInboxItemIdPut(
+        itemId: string,
+        requestBody: InboxItemUpdateDTO,
+    ): CancelablePromise<InboxItemResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/inbox/{item_id}',
+            path: {
+                'item_id': itemId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: `Validation Error`,
             },

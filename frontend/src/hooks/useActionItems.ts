@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ActionCreate, ActionService } from '@/api/generated';
+import { ActionCreate, ActionResponse, ActionService } from '@/api/generated';
+import { ItemType, KabanItem } from '@/lib/types';
 
 export function useActionItems() {
   const queryClient = useQueryClient();
@@ -42,8 +43,21 @@ export function useActionItems() {
     return deleteMutation.mutateAsync(id);
   };
 
+  const actionItemToKabanItem = (item: ActionResponse): KabanItem => {
+    return {
+      id: item.id,
+      title: item.title,
+      priority: item.priority,
+      date: item.due_date,
+      type: ItemType.ACTION,
+    };
+  } 
+  
+
+
   return {
     actions,
+    kanbanActions: actions.map(actionItemToKabanItem),
     isLoading,
     isError,
     error,
