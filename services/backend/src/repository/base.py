@@ -18,9 +18,7 @@ class BaseRepository(RepositoryInterface[BaseModelType, CreateType, UpdateType])
 
     async def create(self, create_data: CreateType) -> BaseModelType:
         """Create a new entity."""
-        print(create_data.model_dump())
         entity = self.model_class(**create_data.model_dump())
-        print(entity)
         self.db_session.add(entity)
         await self.db_session.flush()
         await self.db_session.refresh(entity)

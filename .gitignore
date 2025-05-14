@@ -4,6 +4,7 @@ data/**
 deployment/secrets.yml
 
 *.pyc
+.venv/
 
 *.env*
 

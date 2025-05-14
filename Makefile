@@ -3,9 +3,6 @@
 setup: 
 	cd frontend && \
 	pnpm install && \
-	cd ../mobile && \
-	pnpm install && \
-	pnpm run prebuild && \
 	cd ../ && \
 	uv venv && \
 	source .venv/bin/activate && \

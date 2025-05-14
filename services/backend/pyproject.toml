@@ -26,7 +26,10 @@ dependencies = [
     "httpx>=0.24.0",
     "python-multipart>=0.0.6",
     "fastapi-users[sqlalchemy,oauth]>=12.1.0",
-    "gtd-shared>=0.1.0"
+    "gtd-shared>=0.1.0",
+    "sqlmodel",
+    "authlib",
+    "itsdangerous",
 ]
 
 [tool.hatch.metadata]

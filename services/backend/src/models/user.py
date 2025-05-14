@@ -1,26 +1,39 @@
+from typing import Optional, List
+from sqlmodel import SQLModel, Field, Relationship
+from uuid import UUID
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime, ForeignKey, Text
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, relationship
-from src.models.base import SQLAlchemyBase
-from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyBaseOAuthAccountTable
 import uuid
 
-
-class OAuthAccount(SQLAlchemyBaseOAuthAccountTable[UUID], SQLAlchemyBase):  # type: ignore
-    __tablename__ = "oauth_accounts"
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  # type: ignore
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    access_token = Column(Text, nullable=False)  # type: ignore
-    refresh_token = Column(Text, nullable=True)  # type: ignore
-
-
-class User(SQLAlchemyBaseUserTableUUID, SQLAlchemyBase):  # type: ignore
+class User(SQLModel, table=True):
     __tablename__ = "users"
+    id: UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    first_name: Optional[str] = Field(default=None)
+    last_name: Optional[str] = Field(default=None)
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+    updated_at: datetime = Field(default_factory=lambda: datetime.now())
+    email: str = Field(default=None)
+    hashed_password: str = Field(default=None) # required for fastapi-users but not used
+    is_active: bool = Field(default=True)
+    is_superuser: bool = Field(default=False)
+    is_verified: bool = Field(default=False)
+    # deleted_at??
+    
+    oauth_accounts: List["OAuthAccount"] = Relationship(back_populates="user")
+    
+class OAuthAccount(SQLModel, table=True):
+    __tablename__ = "oauth_accounts"
+    id: UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    user_id: UUID = Field(foreign_key="users.id")
+    user: User = Relationship(back_populates="oauth_accounts")
+    access_token: str = Field(default=None)
+    refresh_token: Optional[str] = Field(default=None)
+    oauth_name: str = Field(default=None)
+    expires_at: int = Field(default=None)
+    account_id: str = Field(default=None)
+    account_email: str = Field(default=None)
+    
+class AccessToken(SQLModel, table=True):
+    user_id: UUID = Field(foreign_key="users.id")
+    token: str = Field(default=None, primary_key=True)
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  # type: ignore
-    first_name = Column(String(length=255), nullable=True)
-    last_name = Column(String(length=255), nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
-    oauth_accounts: Mapped[list[OAuthAccount]] = relationship("OAuthAccount", lazy="joined")
