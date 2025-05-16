@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Body, Depends, HTTPException, UploadFile, Form, status
+from fastapi import Body, Depends, HTTPException, UploadFile, Form, status
 from typing import Annotated, Optional
 from io import BytesIO
 from uuid import UUID
+from src.models.audio import Audio
+from src.models.image import Image
 from src.service.file import FileService
 from src.repository.inbox import InboxRepository
 from src.repository.audio import AudioRepository
@@ -12,14 +14,13 @@ from gtd_shared.core.queue.redis import RedisQueue
 from gtd_shared.services.transcription import TranscriptionRequest
 from gtd_shared.core.logging import get_logger
 from src.repository.inbox_view import InboxViewRepository
-from src.models.inbox import InboxItemCreate, InboxItemUpdate, SearchInboxItem
-from src.models.audio import AudioCreate
-from src.models.image import ImageCreate
-from src.schemas.inbox import InboxItemUpdateDTO, InboxItemResponseDTO, SearchInboxItemDTO
+from src.models.inbox import InboxItem, InboxItemUpdate, SearchInboxItem
+from src.schemas.inbox import InboxItemResponseDTO, SearchInboxItemDTO
+from src.core.dependencies import get_protected_router
 
 logger = get_logger()
 
-router = APIRouter(prefix="/inbox", tags=["inbox"])
+router = get_protected_router(prefix="/inbox", tags=["inbox"])
 
 @router.post("/", response_model=InboxItemResponseDTO, status_code=status.HTTP_201_CREATED, summary="Create a new inbox item with optional files")
 async def create_inbox_item(
@@ -48,7 +49,7 @@ async def create_inbox_item(
             audio_data = await audio.read()
             audio_file = BytesIO(audio_data)
             audio_path = await file_service.upload_inbox_audio(user_id=user_id, audio_data=audio_file, filename=audio.filename)
-            audio_entry = await audio_repo.create(AudioCreate(audio_path=audio_path, user_id=user_id))
+            audio_entry = await audio_repo.create(Audio(audio_path=audio_path, user_id=user_id, mimetype=audio.content_type))
             audio_id = audio_entry.id
             queue: RedisQueue = RedisQueue(queue_name="transcription_jobs")
             request = TranscriptionRequest(
@@ -62,13 +63,14 @@ async def create_inbox_item(
         if image:
             image_data = await image.read()
             image_file = BytesIO(image_data)
+            print(f"Image file type: {image.content_type}")
             image_path = await file_service.upload_inbox_image(user_id=user_id, image_data=image_file, filename=image.filename)
-            image_entry = await image_repo.create(ImageCreate(image_path=image_path, user_id=user_id))
+            image_entry = await image_repo.create(Image(image_path=image_path, user_id=user_id, mimetype=image.content_type))
             image_id = image_entry.id
             
 
         inbox_item = await inbox_repo.create(
-            InboxItemCreate(
+            InboxItem(
                 user_id=user_id, 
                 content=content, 
                 audio_id=audio_id, 
@@ -120,12 +122,8 @@ async def search_inbox_items(
     search_params: SearchInboxItemDTO = Depends(),
 ):
     try:
-        user_id: UUID = current_user.id  # type: ignore
-        search_model = SearchInboxItem(
-            user_id=user_id,
-            **search_params.model_dump()
-        )
-        return await inbox_repo.search(search_model)
+        search_model = SearchInboxItem(**search_params.model_dump())
+        return await inbox_repo.search(current_user.id, search_model)
     except HTTPException:
         raise
     except Exception as e:
@@ -137,17 +135,10 @@ async def update_inbox_item(
     item_id: UUID,
     inbox_repo: Annotated[InboxRepository, Depends(get_inbox_repository)],
     current_user: User = Depends(current_active_user),
-    item: InboxItemUpdateDTO = Body(...)
+    item: InboxItemUpdate = Body(...)
 ):
     try:
-
-        user_id: UUID = current_user.id  # type: ignore
-        updated_item = InboxItemUpdate(
-            user_id=user_id,
-            id=item_id,
-            **item.model_dump()
-        )
-        new_item = await inbox_repo.update(updated_item)
+        new_item = await inbox_repo.update(user_id=current_user.id , id=item_id, update_data=item)
         await inbox_repo.db_session.commit()
         return new_item
     except HTTPException:
@@ -187,7 +178,8 @@ async def delete_inbox_item(
         if item.image_id:
             image = await image_repo.get_by_id(item.image_id, user_id) # type: ignore
             if image:
-                await file_service.delete_file(image.image_path)
+                if image.image_path:
+                    await file_service.delete_file(image.image_path)
                 await image_repo.delete(item.image_id, user_id) # type: ignore
         
         await inbox_repo.delete(item_id, user_id)

@@ -1,9 +1,9 @@
-from src.models.base import SoftDeleteModel
-from sqlalchemy import Column, Text
+from src.models.base import BaseModel
+from sqlmodel import Field
+from typing import Optional
 
-class Tag(SoftDeleteModel):
-    """Categorization system"""
+class Tag(BaseModel, table=True):
     __tablename__ = "tags"
     
-    name = Column(Text, nullable=False, unique=True)
-    type = Column(Text, nullable=True) 
+    name: str = Field(nullable=False, unique=True)
+    type: Optional[str] = Field(nullable=True) 

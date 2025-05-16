@@ -1,12 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+from src.models.audio import Audio, AudioUpdate, SearchAudio
+from src.repository.base import BaseSoftDeleteRepository
 
-from src.repository.soft_delete_base import SoftDeleteRepository
-from src.models.audio import Audio, AudioCreate, AudioUpdate
-
-
-class AudioRepository(SoftDeleteRepository[Audio, AudioCreate, AudioUpdate]):
-    """Repository for CRUD operations on InboxItem."""
-
+class AudioRepository(BaseSoftDeleteRepository[Audio, AudioUpdate, SearchAudio]):
     def __init__(self, db_session: AsyncSession):
-        """Initialize with database session."""
-        super().__init__(db_session, Audio)
+        super().__init__(db_session, Audio, SearchAudio, AudioUpdate)

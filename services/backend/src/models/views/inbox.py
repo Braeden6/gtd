@@ -1,28 +1,20 @@
+from sqlmodel import SQLModel, Field
+from uuid import UUID
+from datetime import datetime
 
-
-
-from sqlalchemy import Column, Text, Boolean, DateTime
-from sqlalchemy.dialects.postgresql import UUID
-from src.models.base import SQLAlchemyBase as ViewBase
-
-
-class InboxItemWithTranscription(ViewBase):
-    """View model for inbox items with transcription."""
-    
+class InboxItemWithTranscription(SQLModel, table=True):
     __tablename__ = "inbox_items_with_transcription"
     
-    __table_args__ = {'info': {'is_view': True}}
-    
-    id = Column(UUID(as_uuid=True), primary_key=True)
-    user_id = Column(UUID(as_uuid=True), nullable=False)
-    content = Column(Text, nullable=False)
-    image_id = Column(UUID(as_uuid=True), nullable=True)
-    audio_id = Column(UUID(as_uuid=True), nullable=True)
-    processed = Column(Boolean, default=False)
-    created_at = Column(DateTime, nullable=False)
-    updated_at = Column(DateTime, nullable=False)
-    deleted_at = Column(DateTime, nullable=True)
-    transcription = Column(Text, nullable=True)
+    id: UUID = Field(primary_key=True)
+    user_id: UUID = Field(nullable=False)
+    content: str = Field(nullable=False)
+    image_id: UUID | None = Field(nullable=True)
+    audio_id: UUID | None = Field(nullable=True)
+    processed: bool = Field(default=False)
+    created_at: datetime = Field(nullable=False)
+    updated_at: datetime = Field(nullable=False)
+    deleted_at: datetime | None = Field(nullable=True)
+    transcription: str | None = Field(nullable=True)
     
     @classmethod
     def create_view(cls, op):

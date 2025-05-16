@@ -1,18 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status
 from typing import Annotated
 from uuid import UUID
+from src.models.project import Project
 from src.schemas.project import ProjectResponse, ProjectCreate
-from src.models.project import ProjectCreate as ProjectCreateModel
 from src.core.dependencies import get_project_repository, current_active_user
 from src.models.user import User
-
+from src.core.dependencies import get_protected_router
 from gtd_shared.core.logging import get_logger
 
 from src.repository.project import ProjectRepository
 
 logger = get_logger()
 
-router = APIRouter(prefix="/project", tags=["project"])
+router = get_protected_router(prefix="/project", tags=["project"])
 
 @router.get("/", response_model=list[ProjectResponse], status_code=status.HTTP_200_OK, summary="Get all projects for the current user")
 async def get_user_projects(
@@ -36,7 +36,7 @@ async def get_user_projects(
     
 @router.post("/", response_model=None, status_code=status.HTTP_201_CREATED, summary="Create a new project for the current user")
 async def create_project(
-    project: ProjectCreate,
+    create_project: ProjectCreate,
     project_repo: Annotated[ProjectRepository, Depends(get_project_repository)],
     current_user: User = Depends(current_active_user),
 ):
@@ -45,12 +45,8 @@ async def create_project(
     """
     try:
         user_id: UUID = current_user.id  # type: ignore
-        project = await project_repo.create(
-            ProjectCreateModel(
-                user_id=user_id, 
-                **project.model_dump()
-            )
-        )
+        new_project = Project(user_id=user_id, **create_project.model_dump())
+        project = await project_repo.create(new_project)
         await project_repo.db_session.commit()
         return project
     except HTTPException:

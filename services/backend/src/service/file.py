@@ -34,6 +34,9 @@ class FileService:
         content_type = "audio/mpeg"
 
         return await self.storage.upload_file(audio_data, file_path, content_type=content_type)
+    
+    async def get_file(self, file_path: str) -> bytes:
+        return await self.storage.download_file(file_path)
 
     async def upload_inbox_image(self, user_id: UUID, image_data: BinaryIO, filename: Optional[str] = None) -> str:
         """Upload image file for an inbox item."""

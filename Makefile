@@ -29,6 +29,11 @@ db-upgrade:
 	cd services/backend && \
 	alembic upgrade head
 
+db-downgrade:
+	source .venv/bin/activate && \
+	cd services/backend && \
+	alembic downgrade -1
+
 t:
 	source .venv/bin/activate && \
 	cd services/transcription && \

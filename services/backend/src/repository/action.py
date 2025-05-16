@@ -1,15 +1,7 @@
-from gtd_shared.core.logging import get_logger
 from sqlalchemy.ext.asyncio import AsyncSession
+from src.models.action import Action, ActionUpdate, SearchAction
+from src.repository.base import BaseSoftDeleteRepository
 
-from src.repository.soft_delete_base import SoftDeleteRepository
-from src.models.action import Action, ActionCreate, ActionUpdate
-
-
-logger = get_logger()
-
-class ActionRepository(SoftDeleteRepository[Action, ActionCreate, ActionUpdate]):
-    """Repository for CRUD operations on Action."""
-
+class ActionRepository(BaseSoftDeleteRepository[Action, ActionUpdate, SearchAction]):
     def __init__(self, db_session: AsyncSession):
-        """Initialize with database session."""
-        super().__init__(db_session, Action)
+        super().__init__(db_session, Action, SearchAction, ActionUpdate)

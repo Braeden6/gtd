@@ -16,15 +16,15 @@ from fastapi_users.schemas import BaseUserCreate
 
 logger = get_logger()
 
-auth_router = APIRouter()
+router = APIRouter()
 
-auth_router.include_router(
+router.include_router(
     fastapi_users.get_users_router(UserRead, UserUpdate),
     prefix="/users",
     tags=["users"],
 )
 
-auth_router.include_router(
+router.include_router(
     fastapi_users.get_oauth_router(
         authentik_oauth_client,
         auth_backend,
@@ -37,7 +37,7 @@ auth_router.include_router(
     tags=["auth"],
 )
 
-auth_router.include_router(
+router.include_router(
     fastapi_users.get_oauth_router(
         google_oauth_client,
         auth_backend,
@@ -50,7 +50,7 @@ auth_router.include_router(
     tags=["auth"],
 )
 
-auth_router.include_router(
+router.include_router(
     fastapi_users.get_oauth_router(
         authentik_oauth_client,
         auth_backend,
@@ -67,7 +67,7 @@ get_user_token = Authenticator([auth_backend], get_user_manager).current_user_to
     active=True, verified=True
 )
 
-@auth_router.post("/auth/logout", tags=["auth"])
+@router.post("/auth/logout", tags=["auth"])
 async def logout(
         request: Request, 
         strategy: DatabaseStrategy = Depends(get_database_strategy),
@@ -78,7 +78,7 @@ async def logout(
     await auth_backend.logout(strategy, user, token)
     return {"message": "Logged out"}
 
-@auth_router.get("/auth/oauth/mobile/google/authorize", tags=["auth"])
+@router.get("/auth/oauth/mobile/google/authorize", tags=["auth"])
 async def get_authorization_url(request: Request) -> dict[str, str]:
     code_verifier = secrets.token_urlsafe(48)
     code_challenge = create_s256_code_challenge(code_verifier)
@@ -95,7 +95,7 @@ async def get_authorization_url(request: Request) -> dict[str, str]:
     )
     return {"authorization_url": uri["url"]}
 
-@auth_router.get("/auth/oauth/mobile/google/callback", tags=["auth"])
+@router.get("/auth/oauth/mobile/google/callback", tags=["auth"])
 async def auth_callback(
     request: Request,
     code: str = Query(...),

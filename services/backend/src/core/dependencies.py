@@ -1,9 +1,9 @@
 from typing import Annotated
-from fastapi import Depends
+from fastapi import Depends, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_users import FastAPIUsers
 from uuid import UUID
-
+from enum import Enum
 from gtd_shared.core.storage.inteface import StorageInterface
 from gtd_shared.core.storage.minio import MinioStorage
 from src.repository.inbox import InboxRepository
@@ -17,6 +17,8 @@ from src.repository.inbox_view import InboxViewRepository
 from src.repository.images import ImageRepository
 from src.repository.action import ActionRepository
 from src.repository.project import ProjectRepository
+
+
 
 async def get_storage() -> StorageInterface:
     """Get storage service instance."""
@@ -64,3 +66,11 @@ fastapi_users = FastAPIUsers[User, UUID](
 )
 
 current_active_user = fastapi_users.current_user(active=True)
+
+
+def get_protected_router(prefix: str, tags: list[str | Enum]):
+    return APIRouter(
+        prefix=prefix,
+        tags=tags,
+        dependencies=[Depends(current_active_user)]
+    )

@@ -1,39 +1,36 @@
-from src.models.base import SoftDeleteModel, SQLAlchemyBase as BaseModel, BaseCreateModel, BaseUpdateModel
-from sqlalchemy import Column, Text, Enum, DateTime
+from src.models.base import BaseSoftDeleteModel, BaseUpdateSoftDeleteModel, BaseSearchable
 from src.models.base import Priority, ProjectStatus
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import ForeignKey
-from typing import Optional
+from typing import Optional, List, TYPE_CHECKING
+if TYPE_CHECKING:
+    from src.models.inbox import InboxItem
 from datetime import datetime
+from sqlmodel import SQLModel, Field, Relationship
+from uuid import UUID
 
-class ProjectLinkInbox(BaseModel):
-    """Many-to-many relationship between InboxItems and Projects"""
+
+class ProjectLinkInbox(SQLModel, table=True):
     __tablename__ = "capture_project_links"
     
-    capture_item_id = Column(UUID(as_uuid=True), ForeignKey("inbox_items.id"), primary_key=True)
-    project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id"), primary_key=True)
-    relationship_type = Column(Text, nullable=True)  # 'source', 'related', etc.
+    capture_item_id: UUID = Field(foreign_key="inbox_items.id", primary_key=True)
+    project_id: UUID = Field(foreign_key="projects.id", primary_key=True)
 
-class Project(SoftDeleteModel):
-    """Project grouping of actions and references"""
+class Project(BaseSoftDeleteModel, table=True):
     __tablename__ = "projects"
     
-    title = Column(Text, nullable=False)
-    description = Column(Text, nullable=True)
-    priority: Column[Priority] = Column(Enum(Priority, name="priority_enum"), nullable=True)
-    due_date = Column(DateTime, nullable=True)
-    status: Column[ProjectStatus] = Column(Enum(ProjectStatus, name="project_status_enum"), default=ProjectStatus.ACTIVE)
-    
-class ProjectCreate(BaseCreateModel):
-    title: str
-    description: Optional[str] = None
-    priority: Optional[Priority] = None
-    due_date: Optional[datetime] = None
-    status: Optional[ProjectStatus] = None
+    title: str = Field(nullable=False)
+    description: Optional[str] = Field(nullable=True)
+    priority: Optional[Priority] = Field(nullable=True)
+    due_date: Optional[datetime] = Field(nullable=True)
+    status: Optional[ProjectStatus] = Field(default=ProjectStatus.ACTIVE)
+    inbox_items: List["InboxItem"] = Relationship(back_populates="project")
 
-class ProjectUpdate(BaseUpdateModel):
+class ProjectUpdate(BaseUpdateSoftDeleteModel):
     title: Optional[str] = None
     description: Optional[str] = None
     priority: Optional[Priority] = None
     due_date: Optional[datetime] = None
     status: Optional[ProjectStatus] = None
+
+
+class SearchProject(BaseSearchable):
+    pass

@@ -1,27 +1,24 @@
-from sqlalchemy import Column, Text
-from sqlalchemy import Index
-from src.models.base import SoftDeleteModel, BaseCreateModel, BaseUpdateModel
-from typing import Optional
+from sqlmodel import Field, Relationship
+from src.models.base import BaseSoftDeleteModel, BaseUpdateSoftDeleteModel, BaseSearchable
+from src.models.base.search import ComparisonSearch, LikeSearch
+from typing import Optional, List, TYPE_CHECKING
+if TYPE_CHECKING:
+    from src.models.inbox import InboxItem
 
-
-class Audio(SoftDeleteModel):
-    """Audio model for storing user submissions."""
-
+class Audio(BaseSoftDeleteModel, table=True):
     __tablename__ = "audios"
 
-    audio_path = Column(Text, nullable=True)
-    transcription = Column(Text, nullable=True)
+    audio_path: str = Field()
+    transcription: Optional[str] = Field(default=None)
+    inbox_items: List["InboxItem"] = Relationship(back_populates="audio")
+    mimetype: Optional[str] = Field(default=None)
 
-    __table_args__ = (Index("idx_audio_transcription", "transcription"),)
-
-    def __repr__(self) -> str:
-        return f"<Audio(id={self.id}, audio_path={self.audio_path}, transcription={self.transcription})>"
-    
-    
-class AudioCreate(BaseCreateModel):
-    audio_path: str
-    transcription: Optional[str] = None
-
-class AudioUpdate(BaseUpdateModel):
+class AudioUpdate(BaseUpdateSoftDeleteModel):
     audio_path: Optional[str] = None
     transcription: Optional[str] = None
+    mimetype: Optional[str] = None
+    
+class SearchAudio(BaseSearchable):
+    audio_path: Optional[ComparisonSearch] = None
+    transcription: Optional[LikeSearch] = None
+    mimetype: Optional[LikeSearch] = None

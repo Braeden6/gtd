@@ -5,13 +5,8 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 from src.core.settings import settings
-from src.models.base import SQLAlchemyBase
-import importlib
-import pkgutil
-import src.models
-
-from src.auth.backend import AccessToken
-
+from src.models import * # noqa
+from sqlmodel import SQLModel
 
 config = context.config
 
@@ -19,12 +14,7 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-
-for _, module_name, _ in pkgutil.iter_modules(src.models.__path__): # type: ignore
-    importlib.import_module(f"src.models.{module_name}")
-
-
-target_metadata = SQLAlchemyBase.metadata
+target_metadata = SQLModel.metadata
 
 
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL or "")

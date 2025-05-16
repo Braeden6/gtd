@@ -2,17 +2,13 @@ from typing import List, Optional
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-
 from src.models.views.inbox import InboxItemWithTranscription
 
 class InboxViewRepository:
-    """Repository for the inbox items with transcription view."""
-    
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
     
     async def get_all_for_user(self, user_id: UUID, processed: Optional[bool] = None) -> List[InboxItemWithTranscription]:
-        """Get all inbox items with transcription for a user."""
         query = (
             select(InboxItemWithTranscription)
             .where(InboxItemWithTranscription.user_id == user_id)

@@ -1,27 +1,23 @@
-from sqlalchemy import Column, Text
-from sqlalchemy import Index
-from src.models.base import SoftDeleteModel, BaseCreateModel, BaseUpdateModel
-from typing import Optional
+from sqlmodel import Field, Relationship
+from src.models.base import BaseSoftDeleteModel, BaseUpdateSoftDeleteModel, BaseSearchable
+from src.models.base.search import ComparisonSearch, LikeSearch
+from typing import Optional, List, TYPE_CHECKING
+if TYPE_CHECKING:
+    from src.models.inbox import InboxItem
 
-
-class Image(SoftDeleteModel):
-    """Image model for storing user submissions."""
-
+class Image(BaseSoftDeleteModel, table=True):
     __tablename__ = "images"
 
-    image_path = Column(Text, nullable=True)
-    ai_description = Column(Text, nullable=True)
-
-    __table_args__ = (Index("idx_image_ai_description", "ai_description"),)
-
-    def __repr__(self) -> str:
-        return f"<Image(id={self.id}, image_path={self.image_path}, ai_description={self.ai_description})>"
-    
-    
-class ImageCreate(BaseCreateModel):
-    image_path: str
-    ai_description: Optional[str] = None
-
-class ImageUpdate(BaseUpdateModel):
+    image_path: Optional[str] = Field(nullable=False)
+    ai_description: Optional[str] = Field(nullable=True)
+    inbox_items: List["InboxItem"] = Relationship(back_populates="image")
+    mimetype: Optional[str] = Field(default=None)
+class ImageUpdate(BaseUpdateSoftDeleteModel):
     image_path: Optional[str] = None
     ai_description: Optional[str] = None
+    mimetype: Optional[str] = None
+    
+class SearchImage(BaseSearchable):
+    image_path: Optional[ComparisonSearch] = None
+    ai_description: Optional[LikeSearch] = None
+    mimetype: Optional[LikeSearch] = None

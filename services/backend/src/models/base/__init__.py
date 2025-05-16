@@ -26,63 +26,6 @@ class ProjectStatus(PythonEnum):
     COMPLETED = "completed"
 
 
-# class BaseModel(SQLAlchemyBase):  # type: ignore
-#     """Base model with common fields for all entities."""
-
-#     __abstract__ = True
-
-#     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-#     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
-#     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
-#     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True)
-
-#     def __repr__(self) -> str:
-#         return f"<{self.__class__.__name__}(id={self.id})>"
-
-
-# class SoftDeleteModel(BaseModel):
-#     """Base model with soft delete capability."""
-
-#     __abstract__ = True
-
-#     deleted_at = Column(DateTime, nullable=True, index=True)
-
-#     @property
-#     def is_deleted(self) -> bool:
-#         return self.deleted_at is not None
-   
-   
-# class BaseSearchModel(PydanticBaseModel):
-#     user_id: UUID_TYPE
-    
-#     class Config:
-#         arbitrary_types_allowed = True
-    
-# class BaseUpdateModel(PydanticBaseModel):
-#     id: UUID_TYPE
-#     user_id: UUID_TYPE
-    
-#     class Config:
-#         arbitrary_types_allowed = True
-    
-# class BaseCreateModel(PydanticBaseModel):
-#     user_id: UUID_TYPE
-    
-#     class Config:
-#         arbitrary_types_allowed = True
-    
-# BaseModelType = TypeVar("BaseModelType", bound=BaseModel)
-# CreateType = TypeVar("CreateType", bound=BaseCreateModel)
-# UpdateType = TypeVar("UpdateType", bound=BaseUpdateModel)
-# SoftDeleteModelType = TypeVar("SoftDeleteModelType", bound=SoftDeleteModel)
-# SoftDeleteCreateType = TypeVar("SoftDeleteCreateType", bound=BaseCreateModel)
-# SoftDeleteUpdateType = TypeVar("SoftDeleteUpdateType", bound=BaseUpdateModel)
-
-
-
-
-# --- New ---- #
-
 class BaseModel(SQLModel, table=False):
     id: UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     user_id: UUID = Field(foreign_key="users.id")

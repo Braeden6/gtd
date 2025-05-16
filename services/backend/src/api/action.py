@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status
 from typing import Annotated
 from uuid import UUID
+from src.models.action import Action
 from src.schemas.action import ActionResponse, ActionCreate
-from src.models.action import ActionCreate as ActionCreateModel
 from src.core.dependencies import get_action_repository, current_active_user
 from src.models.user import User
+from src.core.dependencies import get_protected_router
 
 from gtd_shared.core.logging import get_logger
 
@@ -12,7 +13,7 @@ from src.repository.action import ActionRepository
 
 logger = get_logger()
 
-router = APIRouter(prefix="/action", tags=["action"])
+router = get_protected_router(prefix="/action", tags=["action"])
 
 @router.get("/", response_model=list[ActionResponse], status_code=status.HTTP_200_OK, summary="Get all actions for the current user")
 async def get_user_actions(
@@ -36,7 +37,7 @@ async def get_user_actions(
     
 @router.post("/", response_model=None, status_code=status.HTTP_201_CREATED, summary="Create a new action for the current user")
 async def create_action(
-    action: ActionCreate,
+    create_action: ActionCreate,
     action_repo: Annotated[ActionRepository, Depends(get_action_repository)],
     current_user: User = Depends(current_active_user),
 ):
@@ -45,16 +46,8 @@ async def create_action(
     """
     try:
         user_id: UUID = current_user.id  # type: ignore
-        action = await action_repo.create(
-            ActionCreateModel(
-                user_id=user_id, 
-                title="", 
-                # description=action.description, 
-                # priority=action.priority, 
-                # due_date=action.due_date,
-                # project_id=None
-            )
-        )
+        new_action = Action(user_id=user_id, title=create_action.title)
+        action = await action_repo.create(new_action)
         await action_repo.db_session.commit()
         return action
     except HTTPException:
