@@ -1,4 +1,4 @@
-from pydantic import BaseModel, UUID4
+from pydantic import BaseModel
 from typing import Optional, Union, Literal
 from datetime import datetime
 from uuid import UUID
@@ -57,17 +57,17 @@ class SearchInboxItemDTO(BaseModel):
 class InboxItemResponseDTO(BaseModel):
     """Schema for inbox item response."""
 
-    id: UUID4
-    user_id: UUID4
+    id: UUID
+    user_id: UUID
     content: str
-    audio_id: Optional[UUID4] = None
-    image_path: Optional[str] = None
+    audio_id: Optional[UUID] = None
+    image_id: Optional[UUID] = None
     processed: bool
     created_at: datetime
     transcription: Optional[str] = None
     is_new: bool
-    action_id: Optional[UUID4] = None
-    project_id: Optional[UUID4] = None
+    action_id: Optional[UUID] = None
+    project_id: Optional[UUID] = None
     
     class Config:
         from_attributes = True
@@ -77,7 +77,7 @@ class InboxItemResponseDTO(BaseModel):
                 "user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
                 "content": "Remember to check on the project status",
                 "audio_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                "image_path": "image/3fa85f64-5717-4562-b3fc-2c963f66afa6/20230615123045_e5f6g7h8.jpg",
+                "image_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
                 "processed": False,
                 "is_new": True,
                 "created_at": "2023-06-15T12:30:45.123Z",

@@ -1,4 +1,4 @@
-from fastapi import Depends, status
+from fastapi import Depends, status, Response
 from typing import Annotated
 from uuid import UUID
 from src.core.dependencies import current_active_user
@@ -23,16 +23,19 @@ async def get_audio_by_id(
 ):
     return await audio_repo.get_by_id(id=audio_id, user_id=current_user.id)
 
-@router.get("/{audio_id}/file", response_model=bytes, status_code=status.HTTP_200_OK, summary="Get audio file by id")
+@router.get("/{audio_id}/file", status_code=status.HTTP_200_OK, summary="Get audio file by id")
 async def get_audio_file_by_id(
     audio_id: UUID,
     audio_repo: Annotated[AudioRepository, Depends(get_audio_repository)],
     file_service: Annotated[FileService, Depends(get_file_service)],
     current_user: User = Depends(current_active_user),
 ):
-    # !!! mimetype
     audio = await audio_repo.get_by_id(id=audio_id, user_id=current_user.id)
-    return await file_service.get_file(audio.audio_path)
+    file_content = await file_service.get_file(audio.audio_path)
+    return Response(
+        content=file_content,
+        media_type=audio.mimetype
+    )
 
 @router.get("/", response_model=list[Audio], status_code=status.HTTP_200_OK, summary="Get all audio")
 async def get_all_audio(

@@ -15,7 +15,7 @@ from gtd_shared.services.transcription import TranscriptionRequest
 from gtd_shared.core.logging import get_logger
 from src.repository.inbox_view import InboxViewRepository
 from src.models.inbox import InboxItem, InboxItemUpdate, SearchInboxItem
-from src.schemas.inbox import InboxItemResponseDTO, SearchInboxItemDTO
+from src.schemas.inbox import InboxItemResponseDTO
 from src.core.dependencies import get_protected_router
 
 logger = get_logger()
@@ -33,15 +33,6 @@ async def create_inbox_item(
     image: Optional[UploadFile] = None,
     current_user: User = Depends(current_active_user),
 ):
-    """
-    Create a new inbox item with optional audio and image attachments.
-
-    - **content**: Text content for the inbox item
-    - **audio**: Optional audio file attachment (MP3, WAV, etc.)
-    - **image**: Optional image file attachment (JPG, PNG, etc.)
-
-    Returns the created inbox item.
-    """
     try:
         user_id: UUID = current_user.id # type: ignore
         audio_id = None
@@ -95,13 +86,6 @@ async def get_user_inbox_items(
     current_user: User = Depends(current_active_user),
     processed: Optional[bool] = None,
 ):
-    """
-    Retrieve all inbox items for the current user.
-
-    - **processed**: Optional filter for processed status (True/False)
-    
-    Returns a list of inbox items ordered by creation date (newest first).
-    """
     try:
         user_id: UUID = current_user.id  # type: ignore
         return await inbox_view_repo.get_all_for_user(
@@ -115,15 +99,14 @@ async def get_user_inbox_items(
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to retrieve inbox items: {str(e)}")
    
    
-@router.get("/search", response_model=list[InboxItemResponseDTO], status_code=status.HTTP_200_OK, summary="Search for inbox items")
+@router.post("/search", response_model=list[InboxItemResponseDTO], status_code=status.HTTP_200_OK, summary="Search for inbox items")
 async def search_inbox_items(
     inbox_repo: Annotated[InboxRepository, Depends(get_inbox_repository)],
     current_user: User = Depends(current_active_user),
-    search_params: SearchInboxItemDTO = Depends(),
+    search_params: SearchInboxItem = Body(...),
 ):
     try:
-        search_model = SearchInboxItem(**search_params.model_dump())
-        return await inbox_repo.search(current_user.id, search_model)
+        return await inbox_repo.search(current_user.id, search_params)
     except HTTPException:
         raise
     except Exception as e:
@@ -156,13 +139,6 @@ async def delete_inbox_item(
     image_repo: Annotated[ImageRepository, Depends(get_image_repository)],
     current_user: User = Depends(current_active_user),
 ):
-    """
-    Delete an inbox item and its associated files.
-
-    - **item_id**: UUID of the inbox item to delete
-
-    Returns no content on successful deletion.
-    """
     try:
         user_id: UUID = current_user.id  # type: ignore
         item = await inbox_repo.get_by_id(item_id, user_id)

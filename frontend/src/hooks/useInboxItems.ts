@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { InboxItemResponseDTO, InboxItemUpdateDTO, InboxService } from '@/api/generated';
+import { InboxItemResponseDTO, InboxService, InboxItemUpdate, BasicComparison } from '@/api/generated';
 import { ItemType, KabanItem } from '@/lib/types';
 
 export function useInboxItems() {
@@ -12,21 +12,16 @@ export function useInboxItems() {
     error 
   } = useQuery({
     queryKey: ['inbox'],
-    queryFn: () => InboxService.searchInboxItemsInboxSearchGet(
-      undefined,
-      undefined,
-      undefined,
-      false,
-      undefined,
-      undefined,
-      undefined,
-      'created_at',
-      'desc'
-    ),
-    refetchInterval: 5000000,
+    queryFn: () => InboxService.searchInboxItemsInboxSearchPost({
+      processed:{
+        value: false,
+        option: BasicComparison.EQ
+      }
+  }),
+    refetchInterval: 50000,//1000,
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: true,
-    staleTime: 5000000,
+    staleTime: 50000, //1000
   });
 
   const createMutation = useMutation({
@@ -47,14 +42,14 @@ export function useInboxItems() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, item }: { id: string; item: InboxItemUpdateDTO }) => 
+    mutationFn: ({ id, item }: { id: string; item: InboxItemUpdate }) => 
       InboxService.updateInboxItemInboxItemIdPut(id, item),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inbox'] });
     },
   });
   
-  const updateItem = async (id: string, item: InboxItemUpdateDTO) => {
+  const updateItem = async (id: string, item: InboxItemUpdate) => {
     return updateMutation.mutateAsync({ id, item });
   };
 
@@ -73,7 +68,7 @@ export function useInboxItems() {
       title: item.content,
       date: item.created_at,
       isNew: item.is_new,
-      type: ItemType.INBOX,
+      type: ItemType.INBOX
     };
   }
 

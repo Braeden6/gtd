@@ -2,6 +2,7 @@ from src.models.base import BaseSearchable, BaseUpdateSoftDeleteModel, BaseSoftD
 from typing import Optional
 from uuid import UUID
 from sqlmodel import Field, Relationship
+from src.models.base.search import BooleanSearch, ComparisonSearch, StringComparison
 from src.models.image import Image
 from src.models.audio import Audio
 from src.models.action import Action
@@ -34,4 +35,9 @@ class InboxItemUpdate(BaseUpdateSoftDeleteModel):
     is_new: Optional[bool] = None
     
 class SearchInboxItem(BaseSearchable):
-    pass
+    content: Optional[StringComparison] = None
+    image_id: Optional[ComparisonSearch] = None
+    processed: Optional[BooleanSearch] = None
+    is_new: Optional[BooleanSearch] = None
+    action_id: Optional[ComparisonSearch] = None
+    project_id: Optional[ComparisonSearch] = None

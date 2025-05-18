@@ -5,6 +5,8 @@ from uuid import UUID
 from typing import Optional
 from datetime import datetime
 from typing import List, TYPE_CHECKING
+from src.models.base.search import ComparisonSearch, StringComparison, SearchBaseEnumComparison
+
 if TYPE_CHECKING:
     from src.models.inbox import InboxItem
 
@@ -26,6 +28,15 @@ class ActionUpdate(BaseUpdateSoftDeleteModel):
     due_date: Optional[datetime] = None
     status: Optional[ActionStatus] = None
     project_id: Optional[UUID] = None
+
+
+class SearchEnumComparison(SearchBaseEnumComparison[ActionStatus], table=False):
+    value: ActionStatus = Field(...)  
     
 class SearchAction(BaseSearchable):
-    pass
+    title: Optional[StringComparison] = None
+    description: Optional[StringComparison] = None
+    priority: Optional[ComparisonSearch] = None
+    due_date: Optional[ComparisonSearch] = None
+    status: Optional[SearchEnumComparison] = None
+    project_id: Optional[ComparisonSearch] = None

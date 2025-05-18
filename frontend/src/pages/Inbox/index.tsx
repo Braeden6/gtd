@@ -22,12 +22,15 @@ import { KabanColumn } from "@/components/KandanColumn";
 import { ItemType, KabanItem } from "@/lib/types";
 import { useViewInbox } from "@/hooks/popover/useViewInbox";
 import ViewInbox from "@/components/popovers/ViewInbox";
+import { PopoverType, useAction } from "@/hooks/popover/useAction";
+import ActionPopover from "@/components/popovers/Action";
 
 export default function Inbox() {
   const { items, updateItem, kanbanItems } = useInboxItems();
   const { kanbanActions } = useActionItems();
   const { kanbanProjects } = useProjectItems();
   const { setPopoverOpen, setPopoverItem } = useViewInbox();
+  const { setPopover: setActionPopover } = useAction();
   const [activeItem, setActiveItem] = useState<KabanItem | null>(null);
 
   const sensors = useSensors(
@@ -73,6 +76,36 @@ export default function Inbox() {
       setPopoverOpen(true);
     }
   }
+
+  const handleInboxItemToAction = (id: string) => {
+    const inboxItem = items.find(item => item.id === id);
+    if (inboxItem) {
+      if (inboxItem.is_new) {
+        updateItem(id, {
+          is_new: false
+        })
+      }
+      setPopoverItem(inboxItem);
+      setActionPopover({
+        isOpen: true,
+        type: PopoverType.CREATE,
+        item: {}
+      });
+    }
+  }
+
+  const handleActionClick = (id: string) => {
+    const actionItem = kanbanActions.find(item => item.id === id);
+    const inboxItem = items.find(item => item.action_id === id);
+    if (actionItem) {
+      setPopoverItem(inboxItem || null);
+      setActionPopover({
+        isOpen: true,
+        type: PopoverType.EDIT,
+        item: actionItem
+      });
+    }
+  }
   
   const handleDragEnd = (event: DragEndEvent) => {
     const source = activeItem?.type;
@@ -81,6 +114,14 @@ export default function Inbox() {
     switch (true) {
       case source === ItemType.INBOX && target === ItemType.INBOX:
         handleInboxItemClick(activeItem?.id as string);
+        break;
+
+      case source === ItemType.INBOX && target === ItemType.ACTION:
+        handleInboxItemToAction(activeItem?.id as string);
+        break;
+
+      case source === ItemType.ACTION && target === ItemType.ACTION:
+        handleActionClick(activeItem?.id as string);
         break;
 
       default:
@@ -173,6 +214,7 @@ export default function Inbox() {
       </DndContext>
 
       <ViewInbox />
+      <ActionPopover />
     </>
   );
 }

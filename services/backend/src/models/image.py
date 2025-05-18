@@ -1,6 +1,6 @@
 from sqlmodel import Field, Relationship
 from src.models.base import BaseSoftDeleteModel, BaseUpdateSoftDeleteModel, BaseSearchable
-from src.models.base.search import ComparisonSearch, LikeSearch
+from src.models.base.search import ComparisonSearch, StringComparison
 from typing import Optional, List, TYPE_CHECKING
 if TYPE_CHECKING:
     from src.models.inbox import InboxItem
@@ -19,5 +19,5 @@ class ImageUpdate(BaseUpdateSoftDeleteModel):
     
 class SearchImage(BaseSearchable):
     image_path: Optional[ComparisonSearch] = None
-    ai_description: Optional[LikeSearch] = None
-    mimetype: Optional[LikeSearch] = None
+    ai_description: Optional[StringComparison] = None
+    mimetype: Optional[StringComparison] = None

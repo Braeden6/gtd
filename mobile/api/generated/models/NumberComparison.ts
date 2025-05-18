@@ -2,9 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UpdateTest = {
-    content?: (string | null);
-    relationship?: (string | null);
-    processed?: (boolean | null);
-};
-
+export enum NumberComparison {
+    EQ = 'eq',
+    NE = 'ne',
+    GT = 'gt',
+    GE = 'ge',
+    LT = 'lt',
+    LE = 'le',
+}

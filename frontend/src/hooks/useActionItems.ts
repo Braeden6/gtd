@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ActionCreate, ActionResponse, ActionService } from '@/api/generated';
+import { ActionCreate, ActionResponse, ActionService, ActionStatus, ActionUpdate, BasicComparison } from '@/api/generated';
 import { ItemType, KabanItem } from '@/lib/types';
 
 export function useActionItems() {
@@ -12,7 +12,12 @@ export function useActionItems() {
     error 
   } = useQuery({
     queryKey: ['action'],
-    queryFn: () => ActionService.getUserActionsActionGet(),
+    queryFn: () => ActionService.searchActionsActionSearchPost({
+      status: {
+        value: ActionStatus.COMPLETED,
+        option: BasicComparison.NE
+      }
+    }),
     refetchInterval: 5000000,
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: true,
@@ -29,6 +34,14 @@ export function useActionItems() {
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => ActionService.deleteActionActionActionIdDelete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['action'] });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, item }: { id: string; item: ActionUpdate }) => 
+      ActionService.updateActionActionActionIdPut(id, item),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['action'] });
     },
@@ -52,9 +65,11 @@ export function useActionItems() {
       type: ItemType.ACTION,
     };
   } 
+
+  const updateAction = async (id: string, action: ActionUpdate) => {
+    return updateMutation.mutateAsync({ id, item: action });
+  };
   
-
-
   return {
     actions,
     kanbanActions: actions.map(actionItemToKabanItem),
@@ -63,6 +78,7 @@ export function useActionItems() {
     error,
     addAction,
     deleteAction,
+    updateAction,
     isAddingAction: createMutation.isPending,
     isDeletingAction: deleteMutation.isPending
   };

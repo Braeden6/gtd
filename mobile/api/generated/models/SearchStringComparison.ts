@@ -2,11 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export enum ComparisonType {
+export enum SearchStringComparison {
     EQ = 'eq',
     NE = 'ne',
-    GT = 'gt',
-    GE = 'ge',
-    LT = 'lt',
-    LE = 'le',
+    LIKE = 'like',
 }

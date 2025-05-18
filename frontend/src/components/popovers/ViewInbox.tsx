@@ -4,10 +4,42 @@ import { Popover, PopoverContent } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDate } from "@/lib/date";
 import { useViewInbox } from "@/hooks/popover/useViewInbox";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function ViewInbox() {
     const { updateItem } = useInboxItems();
     const { popoverOpen, setPopoverOpen, popoverItem } = useViewInbox();
+    const [image, setImage] = useState<string | null>(null);
+    const [audio, setAudio] = useState<string | null>(null);
+
+    useEffect(() => {
+        const getAudio = async () => {
+          if (!popoverItem?.audio_id) {
+            setAudio(null);
+            return;
+          };
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/audio/${popoverItem.audio_id}/file`, { responseType: 'arraybuffer' });
+          const blob = new Blob([response.data], { type: 'audio/mpeg' });
+          const audioUrl = URL.createObjectURL(blob);
+          setAudio(audioUrl);
+        }
+
+        const getImage = async () => {
+          if (!popoverItem?.image_id) {
+            setImage(null);
+            return;
+          };
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/image/${popoverItem.image_id}/file`, { responseType: 'arraybuffer' });
+          const blob = new Blob([response.data], { type: 'image/jpeg' });
+          const imageUrl = URL.createObjectURL(blob);
+          setImage(imageUrl);
+        }
+
+        getAudio();
+        getImage();
+    }, [popoverItem]);
+
     return (
     <Popover open={popoverOpen}>
         <PopoverContent 
@@ -28,17 +60,11 @@ export default function ViewInbox() {
                 <label htmlFor="captureDate" className="text-sm">{formatDate(popoverItem?.created_at as string)}</label>
               </div>
               
-              <div className="mb-4">
+              <div className="mb-4 ga-1">
                 <div className="font-medium mb-2">Content</div>
-                <div className="flex gap-2 mb-2">
-                  <button className="border rounded p-2 flex items-center justify-center">
-                    <img  alt="arrow-right" className="w-4 h-4" />
-                  </button>
-                  <button className="border rounded p-2 flex items-center justify-center text-gray-500">
-                  </button>
-                </div>
-                
-                <Textarea className="w-full border rounded-md p-2 h-24 text-sm" value={popoverItem?.content} />
+                {image && (<img src={image} alt="image" className="w-full h-auto max-h-64 object-contain cursor-pointer" />)}
+                {audio && <audio src={audio} controls className="custom-audio-player" />}
+                {popoverItem?.content && <Textarea className="w-full border rounded-md p-2 h-24 text-sm" value={popoverItem?.content} />}
               </div>
             </div>
             

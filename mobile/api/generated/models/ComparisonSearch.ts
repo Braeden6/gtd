@@ -2,9 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ComparisonType } from './ComparisonType';
+import type { NumberComparison } from './NumberComparison';
 export type ComparisonSearch = {
     value: (number | string);
-    option?: ComparisonType;
+    option?: NumberComparison;
 };
 

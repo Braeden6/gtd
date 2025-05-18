@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type LikeValue = {
-    value: string;
-};
-
+export enum BasicComparison {
+    EQ = 'eq',
+    NE = 'ne',
+}

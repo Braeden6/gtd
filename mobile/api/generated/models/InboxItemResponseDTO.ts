@@ -10,7 +10,7 @@ export type InboxItemResponseDTO = {
     user_id: string;
     content: string;
     audio_id?: (string | null);
-    image_path?: (string | null);
+    image_id?: (string | null);
     processed: boolean;
     created_at: string;
     transcription?: (string | null);

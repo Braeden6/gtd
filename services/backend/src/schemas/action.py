@@ -1,8 +1,9 @@
-from pydantic import BaseModel, Field, UUID4
+from pydantic import BaseModel, Field, UUID4, validator
 from typing import Optional
 from datetime import datetime
 from src.models.base import Priority, ActionStatus
 from uuid import UUID
+
 class ActionCreate(BaseModel):
     """Schema for creating a new action."""
 
@@ -12,6 +13,12 @@ class ActionCreate(BaseModel):
     due_date: Optional[datetime] = Field(None, description="Due date of the action")
     status: Optional[ActionStatus] = Field(None, description="Status of the action")
     project_id: Optional[UUID] = Field(None, description="Project ID of the action")
+    
+    @validator('due_date')
+    def convert_timezone_aware_to_naive(cls, v):
+        if v is not None and v.tzinfo is not None:
+            return v.replace(tzinfo=None)
+        return v
 
     class Config:
         json_schema_extra = {
