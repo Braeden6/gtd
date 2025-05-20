@@ -4,9 +4,6 @@
 /* eslint-disable */
 import type { Priority } from './Priority';
 import type { ProjectStatus } from './ProjectStatus';
-/**
- * Schema for project response.
- */
 export type ProjectResponse = {
     id: string;
     title: string;

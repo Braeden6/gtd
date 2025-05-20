@@ -1,8 +1,8 @@
 from fastapi import Depends, HTTPException, status
-from typing import Annotated, Any
+from typing import Annotated
 from uuid import UUID
 from src.models.action import Action, ActionUpdate, SearchAction
-from src.schemas.action import ActionResponse, ActionCreate
+from src.models.action import ActionResponse, ActionCreate
 from src.core.dependencies import get_action_repository, current_active_user
 from src.models.user import User
 from src.core.dependencies import get_protected_router

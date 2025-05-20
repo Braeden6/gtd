@@ -5,7 +5,9 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 from src.core.settings import settings
+# tech debt: convert all to new structure and will be auto imported below
 from src.models import * # noqa
+from src.core.util import get_all_models
 from sqlmodel import SQLModel
 
 config = context.config
@@ -13,6 +15,9 @@ config = context.config
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
+
+# import all models from features
+get_all_models()
 
 target_metadata = SQLModel.metadata
 

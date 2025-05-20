@@ -10,15 +10,14 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { ActionStatus, Priority } from "@/api/generated";
 import { useInboxItems } from "@/hooks/useInboxItems";
-import { useActionItems } from "@/hooks/useActionItems";
+import { useActions } from "@/hooks/useActions";
 import { LabeledInput } from "../LabelField";
-
 
 export default function ActionPopover() {
     const { popoverItem: inboxPopoverItem } = useViewInbox();
     const { popover, setPopover } = useAction();
     const { updateItem } = useInboxItems();
-    const { addAction, updateAction } = useActionItems();
+    const { addAction, updateAction } = useActions();
     const [image, setImage] = useState<string | null>(null);
     const [audio, setAudio] = useState<string | null>(null);
 

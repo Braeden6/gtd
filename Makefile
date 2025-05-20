@@ -1,23 +1,29 @@
 .PHONY: up down dev build test lint clean
 
+# uv add <package>
+# uv add --dev <package>
+
+# uv run -- radon cc -s -a
+# uv run -- radon mi src/ -s
+
 setup: 
 	cd frontend && \
 	pnpm install && \
 	cd ../ && \
 	uv venv && \
-	source .venv/bin/activate && \
+	uv sync && \
 	cd shared && \
-	uv pip install -e . && \
+	uv sync && \
 	cd ../services/transcription && \
-	uv pip install -e . && \
+	uv sync && \
 	cd ../backend && \
-	uv pip install -e . #'.[dev]'
+	uv sync --dev
 
 
 b:
 	source .venv/bin/activate && \
 	cd services/backend && \
-	uvicorn src.main:app --reload --host 0.0.0.0
+	uv run -- uvicorn src.main:app --reload --host 0.0.0.0
 
 db-migrate:
 	source .venv/bin/activate && \
@@ -37,7 +43,7 @@ db-downgrade:
 t:
 	source .venv/bin/activate && \
 	cd services/transcription && \
-	python app/main.py
+	uv run -- python app/main.py
 
 f:
 	cd frontend && \

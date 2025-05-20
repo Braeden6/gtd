@@ -4,26 +4,12 @@
 /* eslint-disable */
 import type { Priority } from './Priority';
 import type { ProjectStatus } from './ProjectStatus';
-export type ProjectCreate = {
-    /**
-     * Title of the project
-     */
-    title: string;
-    /**
-     * Description of the project
-     */
+export type ProjectUpdate = {
+    deleted_at?: (string | null);
+    title?: (string | null);
     description?: (string | null);
-    /**
-     * Priority of the project
-     */
     priority?: (Priority | null);
-    /**
-     * Due date of the project
-     */
     due_date?: (string | null);
-    /**
-     * Status of the project
-     */
     status?: (ProjectStatus | null);
 };
 

@@ -4,9 +4,6 @@
 /* eslint-disable */
 import type { Priority } from './Priority';
 import type { ProjectStatus } from './ProjectStatus';
-/**
- * Schema for creating a new project.
- */
 export type ProjectCreate = {
     /**
      * Title of the project

@@ -2,10 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ActionStatusComparison } from './ActionStatusComparison';
 import type { ComparisonSearch } from './ComparisonSearch';
+import type { PriorityComparison } from './PriorityComparison';
+import type { ProjectStatusComparison } from './ProjectStatusComparison';
 import type { StringComparison } from './StringComparison';
-export type SearchAction = {
+export type SearchProject = {
     offset?: number;
     limit?: (number | null);
     page?: (number | null);
@@ -13,9 +14,7 @@ export type SearchAction = {
     updated_at?: (ComparisonSearch | null);
     title?: (StringComparison | null);
     description?: (StringComparison | null);
-    priority?: (ComparisonSearch | null);
-    due_date?: (ComparisonSearch | null);
-    status?: (ActionStatusComparison | null);
-    project_id?: (ComparisonSearch | null);
+    priority?: (PriorityComparison | null);
+    status?: (ProjectStatusComparison | null);
 };
 

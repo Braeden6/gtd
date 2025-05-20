@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "gtd_shared"
+name = "gtd-shared"
 version = "0.1.0"
 description = "Shared libraries for GTD services"
 authors = [
@@ -19,5 +19,9 @@ dependencies = [
     "redis>=5.0.0",
     "fastapi-users[sqlalchemy,oauth]>=12.1.0"
 ]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/gtd_shared"]

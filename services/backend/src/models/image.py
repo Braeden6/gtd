@@ -12,6 +12,7 @@ class Image(BaseSoftDeleteModel, table=True):
     ai_description: Optional[str] = Field(nullable=True)
     inbox_items: List["InboxItem"] = Relationship(back_populates="image")
     mimetype: Optional[str] = Field(default=None)
+    
 class ImageUpdate(BaseUpdateSoftDeleteModel):
     image_path: Optional[str] = None
     ai_description: Optional[str] = None

@@ -2,7 +2,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ActionCreate, ActionResponse, ActionService, ActionStatus, ActionUpdate, BasicComparison } from '@/api/generated';
 import { ItemType, KabanItem } from '@/lib/types';
 
-export function useActionItems() {
+const QUERY_CLIENT_KEY = 'action';
+
+export function useActions() {
   const queryClient = useQueryClient();
 
   const { 
@@ -28,22 +30,22 @@ export function useActionItems() {
     mutationFn: (action: ActionCreate) => 
       ActionService.createActionActionPost(action),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['action'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_CLIENT_KEY] });
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => ActionService.deleteActionActionActionIdDelete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['action'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_CLIENT_KEY] });
     },
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, item }: { id: string; item: ActionUpdate }) => 
-      ActionService.updateActionActionActionIdPut(id, item),
+    mutationFn: ({ id, action }: { id: string; action: ActionUpdate }) => 
+      ActionService.updateActionActionActionIdPut(id, action),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['action'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_CLIENT_KEY] });
     },
   });
 
@@ -56,23 +58,23 @@ export function useActionItems() {
     return deleteMutation.mutateAsync(id);
   };
 
-  const actionItemToKabanItem = (item: ActionResponse): KabanItem => {
+  const actionToKabanItem = (action: ActionResponse): KabanItem => {
     return {
-      id: item.id,
-      title: item.title,
-      priority: item.priority,
-      date: item.due_date,
+      id: action.id,
+      title: action.title,
+      priority: action.priority,
+      date: action.due_date,
       type: ItemType.ACTION,
     };
   } 
 
   const updateAction = async (id: string, action: ActionUpdate) => {
-    return updateMutation.mutateAsync({ id, item: action });
+    return updateMutation.mutateAsync({ id, action });
   };
   
   return {
     actions,
-    kanbanActions: actions.map(actionItemToKabanItem),
+    kanbanActions: actions.map(actionToKabanItem),
     isLoading,
     isError,
     error,

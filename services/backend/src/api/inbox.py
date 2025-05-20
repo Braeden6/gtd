@@ -14,8 +14,7 @@ from gtd_shared.core.queue.redis import RedisQueue
 from gtd_shared.services.transcription import TranscriptionRequest
 from gtd_shared.core.logging import get_logger
 from src.repository.inbox_view import InboxViewRepository
-from src.models.inbox import InboxItem, InboxItemUpdate, SearchInboxItem
-from src.schemas.inbox import InboxItemResponseDTO
+from src.models.inbox import InboxItem, InboxItemUpdate, SearchInboxItem, InboxItemResponseDTO
 from src.core.dependencies import get_protected_router
 
 logger = get_logger()

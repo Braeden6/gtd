@@ -1,30 +1,20 @@
 import uuid
 from datetime import datetime
-from typing import TypeVar, Optional
+from typing import Annotated, TypeVar, Optional
 from uuid import UUID
-from sqlalchemy.ext.declarative import declarative_base
-from enum import Enum as PythonEnum
+from enum import Enum 
+from pydantic import BeforeValidator
 from sqlmodel import SQLModel, Field
-from src.models.base.search import ComparisonSearch
+from src.models.base.search import ComparisonSearch, SearchBaseEnumComparison
+from dateutil import parser # type: ignore
 
-SQLAlchemyBase = declarative_base()
-
-class Priority(PythonEnum):
+class Priority(Enum):
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
-
-class ActionStatus(PythonEnum):
-    PENDING = "pending"
-    IN_PROGRESS = "in_progress"
-    COMPLETED = "completed"
-    DEFERRED = "deferred"
-
-class ProjectStatus(PythonEnum):
-    ACTIVE = "active"
-    ON_HOLD = "on_hold"
-    COMPLETED = "completed"
-
+    
+class PriorityComparison(SearchBaseEnumComparison[Priority], table=False):
+    value: Priority = Field(...)  
 
 class BaseModel(SQLModel, table=False):
     id: UUID = Field(default_factory=uuid.uuid4, primary_key=True)
@@ -45,11 +35,27 @@ class BaseSearchable(SQLModel, table=False):
 class BaseUpdateSoftDeleteModel(SQLModel, table=False):
     deleted_at: Optional[datetime] = Field(default=None)
 
-
-
 UpdateType = TypeVar("UpdateType", bound=SQLModel)
 BaseModelType = TypeVar("BaseModelType", bound=BaseModel)
 SearchableType = TypeVar("SearchableType", bound=BaseSearchable)
 
 SoftDeleteModelType = TypeVar("SoftDeleteModelType", bound=BaseSoftDeleteModel)
 UpdateSoftDeleteType = TypeVar("UpdateSoftDeleteType", bound=BaseUpdateSoftDeleteModel)
+
+
+def convert_to_naive_datetime(dt: Optional[datetime]) -> Optional[datetime]:
+    if dt is None:
+        return None
+    
+    if isinstance(dt, str):
+        try:
+            
+            dt = parser.parse(dt)
+        except (ImportError, ValueError):
+            return dt
+    if hasattr(dt, 'tzinfo') and dt.tzinfo is not None:
+        return dt.replace(tzinfo=None)
+    
+    return dt
+
+NaiveDateTime = Annotated[datetime, BeforeValidator(convert_to_naive_datetime)]

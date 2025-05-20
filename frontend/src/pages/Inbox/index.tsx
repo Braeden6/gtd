@@ -14,8 +14,7 @@ import {
 import {
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import { useActionItems } from "@/hooks/useActionItems";
-import { useProjectItems } from "@/hooks/useProjectItems";
+import { useActions } from "@/hooks/useActions";
 import { useInboxItems } from "@/hooks/useInboxItems";
 import KanbanCard from "@/components/KanbanCard";
 import { KabanColumn } from "@/components/KandanColumn";
@@ -24,11 +23,12 @@ import { useViewInbox } from "@/hooks/popover/useViewInbox";
 import ViewInbox from "@/components/popovers/ViewInbox";
 import { PopoverType, useAction } from "@/hooks/popover/useAction";
 import ActionPopover from "@/components/popovers/Action";
+import { useProjects } from "@/hooks/useProjects";
 
 export default function Inbox() {
   const { items, updateItem, kanbanItems } = useInboxItems();
-  const { kanbanActions } = useActionItems();
-  const { kanbanProjects } = useProjectItems();
+  const { kanbanActions } = useActions();
+  const { kanbanProjects } = useProjects();
   const { setPopoverOpen, setPopoverItem } = useViewInbox();
   const { setPopover: setActionPopover } = useAction();
   const [activeItem, setActiveItem] = useState<KabanItem | null>(null);

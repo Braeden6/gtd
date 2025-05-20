@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ActionStatus } from './ActionStatus';
 import type { BasicComparison } from './BasicComparison';
-export type SearchEnumComparison = {
-    value: ActionStatus;
+import type { Priority } from './Priority';
+export type PriorityComparison = {
+    value: Priority;
     option?: BasicComparison;
 };
 
