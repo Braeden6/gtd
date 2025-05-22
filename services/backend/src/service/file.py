@@ -5,18 +5,14 @@ from pathlib import Path
 from typing import BinaryIO, Optional
 from sqlalchemy import Column
 from gtd_shared.core.storage.inteface import StorageInterface
-from src.repository.inbox import InboxRepository
 from gtd_shared.core.logging import get_logger
 
 logger = get_logger()
 
+# tech debt: update and reorganize code. do we want to hard delete files? maybe move to deleted file and clear that folder every month?
 class FileService:
-    """Service for handling file operations."""
-
-    def __init__(self, storage: StorageInterface, inbox_repo: InboxRepository):
-        """Initialize with storage implementation and inbox repository."""
+    def __init__(self, storage: StorageInterface):
         self.storage = storage
-        self.inbox_repo = inbox_repo
 
     def _generate_file_path(self, user_id: UUID, file_type: str, filename: Optional[str] = None) -> str:
         """Generate a unique path for storing a file."""

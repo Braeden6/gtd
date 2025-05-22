@@ -5,7 +5,7 @@ from uuid import uuid4
 
 from src.api.inbox import router
 from src.models.inbox import InboxItem
-from src.models.user import User
+from src.features.user.model import User
 
 
 @pytest.fixture

@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.core.settings import settings
-from src.api import routers
 from src.core.util import get_all_routers
 from src.service.audio_transcription_result import AudioTranscriptionResultProcessor
 from starlette.middleware.sessions import SessionMiddleware
@@ -24,13 +23,9 @@ app.add_middleware(
 
 app.add_middleware(SessionMiddleware, secret_key=settings.SESSION_SECRET_KEY)
 
-# tech debt: convert all to new structure and will be auto imported below
-for router in routers:
-    app.include_router(router)
-    
+   
 all_routers = get_all_routers()
 for router in all_routers:
-    print(router)
     app.include_router(router)
     
 

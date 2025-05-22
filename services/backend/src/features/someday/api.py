@@ -5,7 +5,7 @@ from src.features.someday.schemas import SearchSomeday, SomedayCreate, SomedayUp
 from src.features.someday.service import SomedayService
 from src.core.dependencies import current_active_user
 from src.features.someday.model import SomedayMaybe
-from src.models.user import User
+from src.features.user.model import User
 from src.core.dependencies import get_protected_router
 from gtd_shared.core.logging import get_logger
 
@@ -36,7 +36,7 @@ async def search_someday(
 ):
     return await someday_service.search(current_user.id, search_someday)
 
-@router.put("/{someday_id}", response_model=SomedayMaybe, status_code=status.HTTP_200_OK, summary="Update a someday item for the current user")
+@router.patch("/{someday_id}", response_model=SomedayMaybe, status_code=status.HTTP_200_OK, summary="Update a someday item for the current user")
 async def update_someday(
     someday_id: UUID,
     update_someday: SomedayUpdate,

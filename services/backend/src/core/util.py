@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from gtd_shared.core.logging import get_logger
 import importlib
 from pathlib import Path
-
+from types import ModuleType
 logger = get_logger()
 
 def get_all_routers() -> list[APIRouter]:
@@ -23,7 +23,7 @@ def get_all_routers() -> list[APIRouter]:
                 
     return routers
 
-def get_all_models():
+def get_all_models() -> list[ModuleType]:
     imported_modules = []
     features_dir = Path(__file__).parent.parent / "features"
     
@@ -40,7 +40,6 @@ def get_all_models():
                 logger.debug(f"Imported model from {module_path}")
             except Exception as e:
                 logger.error(f"Failed to import model from {feature_dir}: {e}")
-    
     return imported_modules
 
     

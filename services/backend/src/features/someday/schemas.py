@@ -33,7 +33,7 @@ class SomedayCreate(SQLModel, table=False):
             }
         }
 
-class ProjectResponse(SQLModel, table=False):
+class SomedayResponse(SQLModel, table=False):
     id: UUID
     review_date: Optional[datetime] = None
     notes: Optional[str] = None

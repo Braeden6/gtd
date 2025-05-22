@@ -6,6 +6,11 @@
 # uv run -- radon cc -s -a
 # uv run -- radon mi src/ -s
 
+# wily build .
+# wily report <file>
+
+# prospector src/api
+
 setup: 
 	cd frontend && \
 	pnpm install && \
@@ -18,7 +23,6 @@ setup:
 	uv sync && \
 	cd ../backend && \
 	uv sync --dev
-
 
 b:
 	source .venv/bin/activate && \

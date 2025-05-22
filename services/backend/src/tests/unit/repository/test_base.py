@@ -1,9 +1,6 @@
 import pytest
 from unittest.mock import AsyncMock
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Type
-from src.repository.base import BaseRepository
-from src.models.base import BaseModelType
 
 
 @pytest.fixture
@@ -13,9 +10,6 @@ def mock_db_session():
     return session
 
 
-class MockBaseRepository(BaseRepository[BaseModelType]):
-    def __init__(self, db_session: AsyncSession, model_class: Type[BaseModelType]):
-        super().__init__(db_session, model_class)
 
 
 @pytest.mark.unit
