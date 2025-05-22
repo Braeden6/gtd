@@ -7,7 +7,7 @@ from gtd_shared.core.database import get_async_session
 from fastapi_users.authentication.strategy.db import AccessTokenDatabase, DatabaseStrategy
 from fastapi_users_db_sqlalchemy.access_token import SQLAlchemyAccessTokenDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.models.user import AccessToken
+from src.features.user.model import AccessToken
 
 async def get_access_token_db(
     session: AsyncSession = Depends(get_async_session),

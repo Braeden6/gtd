@@ -12,10 +12,11 @@ dependencies = []
 [tool.uv.sources]
 gtd-shared = { workspace = true }
 gtd-backend = { workspace = true }
+gtd-transcription = { workspace = true }
 
 [tool.uv.workspace]
 members = [
-  "shared", "services/backend"
+  "shared", "services/backend", "services/transcription"
 ]
 
 [tool.uv]

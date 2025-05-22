@@ -9,7 +9,7 @@ from gtd_shared.core.logging import get_logger
 from src.core.settings import settings
 from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.models.user import User, OAuthAccount
+from src.features.user.model import User, OAuthAccount
 from gtd_shared.core.database import get_async_session
 
 logger = get_logger()

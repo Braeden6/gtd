@@ -14,12 +14,7 @@ class QueryType(ABC):
 class SearchStringComparison(Enum):
     EQ = "eq"
     NE = "ne"
-    LIKE = "like"
-    
-# class StringComparison(Enum):
-#     EQ = "eq"
-#     NE = "ne"
-#     LIKE = "like"    
+    LIKE = "like"   
     
 class BasicComparison(Enum):
     EQ = "eq"

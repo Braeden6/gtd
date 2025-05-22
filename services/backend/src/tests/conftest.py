@@ -8,7 +8,7 @@ from uuid import uuid4
 
 from src.models.base import SQLAlchemyBase
 from src.main import app
-from src.models.user import User
+from src.features.user.model import User
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///./test.db"
 
