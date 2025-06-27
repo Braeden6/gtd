@@ -1,42 +1,6 @@
 version: '3.8'
 
 services:
-  # frontend:
-  #   build: 
-  #     context: ./frontend
-  #     dockerfile: Dockerfile.dev
-  #   volumes:
-  #     - ./frontend:/app
-  #     - /app/node_modules
-  #   ports:
-  #     - "5173:5173"
-  #   environment:
-  #     - VITE_API_URL=http://localhost:8000
-  #   networks:
-  #     - app-network
-
-  # backend:
-  #   build: 
-  #     context: ./backend
-  #     dockerfile: Dockerfile.dev
-  #   volumes:
-  #     - ./backend:/app
-  #   ports:
-  #     - "8000:8000"
-  #   environment:
-  #     - DB_HOST=postgres
-  #     - DB_USER=postgres
-  #     - DB_PASSWORD=postgres
-  #     - DB_NAME=gtd
-  #     - DB_PORT=5432
-  #     - REDIS_HOST=redis
-  #     - REDIS_PORT=6379
-  #     - MINIO_URL=http://minio:9000
-  #     - MINIO_ACCESS_KEY=minioadmin
-  #     - MINIO_SECRET_KEY=minioadmin
-  #   networks:
-  #     - app-network
-
   postgres:
     image: postgres:16
     environment:
@@ -59,16 +23,6 @@ services:
     command: redis-server --save 60 1 --loglevel warning
     networks:
       - app-network
-  
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=pgadmin@pgadmin.org
-      - PGADMIN_DEFAULT_PASSWORD=pgadmin
-    ports:
-      - "5050:80"
-    networks:
-      - app-network
 
   minio:
     image: minio/minio
@@ -84,12 +38,27 @@ services:
     networks:
       - app-network
 
+  supertokens:
+    image: registry.supertokens.io/supertokens/supertokens-postgresql:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3567:3567"
+    environment:
+      POSTGRESQL_CONNECTION_URI: "postgresql://postgres:postgres@postgres:5432/gtd"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3567/hello"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
 volumes:
-  go-modules:
   postgres_data:
   minio_data:
-  caddy_data:
-  caddy_config:
   redis_data:
 
 networks:

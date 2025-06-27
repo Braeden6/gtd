@@ -1,13 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Card } from '@/components/ui/card';
-import { useInboxItems } from '@/hooks/useInboxItems';
+// import { useInboxItems } from '@/hooks/useInboxItems';
+import { DefaultService } from '@gtd/shared';
 
 export const Route = createFileRoute('/_main/')({
   component: Dashboard,
 })
 
 function Dashboard() {
-  const { items } = useInboxItems();
+  // const { items } = useInboxItems();
+
+  DefaultService.protectedRouteProtectedGet();
   return (
       <div className="space-y-6">
         <div>
@@ -20,7 +23,7 @@ function Dashboard() {
           {/* Inbox Card */}
           <Card className="p-6">
             <h2 className="text-lg font-semibold mb-2">Inbox</h2>
-            <div className="text-2xl text-primary">{items.filter(item => !item.processed).length} of {items.length} items</div>
+            {/* <div className="text-2xl text-primary">{items.filter(item => !item.processed).length} of {items.length} items</div> */}
             <p className="text-sm text-muted-foreground">Items need processing</p>
           </Card>
 

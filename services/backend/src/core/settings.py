@@ -12,7 +12,9 @@ class Settings(SharedSettings):
     REDIS_PORT: int = 6379
     REDIS_DB: int = 0
     
-    FRONTEND_URL: str = "http://localhost:5173"
+    FRONTEND_URL: str = "http://localhost:3000"
+    API_URL: str = "http://localhost:8000"
+    SUPERTOKENS_URL: str = "http://localhost:3567"
     
     # tech debt: a refresh token strategy should be used instead of this long session expiration
     SESSION_EXPIRATION: int = 3600 * 24 * 7  # 1 week
