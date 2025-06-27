@@ -9,7 +9,7 @@ import { useRouter } from "expo-router";
 import { ThemeSelect } from "@/components/ThemeSelect";
 import { Image } from "@/components/ui/image";
 import { Dimensions, useColorScheme } from "react-native";
-import { AuthService, InboxService } from "@/api/generated";
+import { AuthService, InboxService } from "@gtd/shared'";
 
 export default function Home() {
   const colorScheme = useColorScheme();

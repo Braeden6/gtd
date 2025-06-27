@@ -1,4 +1,4 @@
-import { OpenAPI } from '@/api/generated/core/OpenAPI';
+import { OpenAPI } from '@gtd/shared'/core/OpenAPI';
 import axios from 'axios';
 
 export function initializeApi() {

@@ -1,0 +1,30 @@
+{
+  "name": "@gtd/shared",
+  "version": "1.0.0",
+  "main": "dist/shared.cjs.js",
+  "module": "dist/shared.es.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch --mode development"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.2",
+    "vite": "^6.1.0",
+    "vite-plugin-dts": "^3.0.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.10.0",
+    "form-data": "^4.0.3"
+  }
+}

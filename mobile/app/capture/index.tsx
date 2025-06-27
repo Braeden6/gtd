@@ -13,7 +13,7 @@ import { Image } from "expo-image";
 import { Record } from "@/components/Record";
 import { CustomToast } from "@/components/CustomToast";
 import { useToast } from "@/components/ui/toast";
-import { InboxService } from "@/api/generated";
+import { InboxService } from "@gtd/shared'";
 import axios from "axios";
 import { useAlertDialogStore } from "@/hooks/useCustomAlertDialog";
 
