@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from src.features.reference_tag.model import ReferenceTagLink
 
 class Tag(BaseModel, table=True):
-    __tablename__ = "tags"
+    __tablename__ = "tags" # type: ignore
     
     name: str = Field(nullable=False, unique=True)
     color: Optional[str] = Field(default=None)

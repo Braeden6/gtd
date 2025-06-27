@@ -20,14 +20,14 @@ export function Topbar() {
         {isAuthenticated && (
           <div className="flex items-center gap-4">
             <span className="text-sm mr-2">
-              {user?.email}
+              {user?.first_name} {user?.last_name}
             </span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
                   <Avatar className="h-8 w-8">
                     <AvatarFallback>
-                      {user?.email?.charAt(0).toUpperCase() || 'U'}
+                      {user?.first_name?.charAt(0).toUpperCase() || 'U'}
                     </AvatarFallback>
                   </Avatar>
                 </Button>

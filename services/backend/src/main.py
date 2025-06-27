@@ -1,26 +1,21 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import Depends
 from src.core.settings import settings
 from src.core.util import get_all_routers
 from src.service.audio_transcription_result import AudioTranscriptionResultProcessor
 from starlette.middleware.sessions import SessionMiddleware
 from supertokens_python import init, InputAppInfo, SupertokensConfig
-from supertokens_python.recipe import session, emailpassword
+from supertokens_python.recipe import session
 from supertokens_python import get_all_cors_headers
-from supertokens_python.recipe.session.framework.fastapi import verify_session
 from supertokens_python.framework.fastapi.fastapi_middleware import get_middleware
-from supertokens_python.recipe.session import SessionContainer
 from supertokens_python.recipe import thirdparty
 from supertokens_python.recipe.thirdparty import ProviderInput, ProviderConfig, ProviderClientConfig, SignInAndUpFeature
-
 
 async def lifespan(app: FastAPI):
     app.state.processor = AudioTranscriptionResultProcessor()
     app.state.processor.start()
     yield
     await app.state.processor.stop()
-    
     
 init(
     app_info=InputAppInfo(
@@ -32,7 +27,6 @@ init(
         connection_uri=settings.SUPERTOKENS_URL,
     ),
     framework="fastapi",
-    # recipe_list=[emailpassword.init(), session.init()],
       recipe_list=[
         session.init(),
         thirdparty.init(
@@ -55,7 +49,7 @@ init(
     ]
 )
 
-app = FastAPI(title="GTD Service", lifespan=lifespan)
+app = FastAPI(title="GTD Service", lifespan=lifespan) # type: ignore
 app.add_middleware(get_middleware())
 app.add_middleware(
     CORSMiddleware,
@@ -67,19 +61,11 @@ app.add_middleware(
 
 app.add_middleware(SessionMiddleware, secret_key=settings.SESSION_SECRET_KEY)
 
-   
-# all_routers = get_all_routers()
-# for router in all_routers:
-#     app.include_router(router)
+all_routers = get_all_routers()
+for router in all_routers:
+    app.include_router(router)
     
 
 @app.get("/health")
 async def health_check():
     return "ok"
-
-
-
-@app.get("/protected")
-async def protected_route(session: SessionContainer = Depends(verify_session())):
-    user_id = session.get_user_id()
-    return {"user_id": user_id}

@@ -17,15 +17,4 @@ export class DefaultService {
             url: '/health',
         });
     }
-    /**
-     * Protected Route
-     * @returns any Successful Response
-     * @throws ApiError
-     */
-    public static protectedRouteProtectedGet(): CancelablePromise<any> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/protected',
-        });
-    }
 }

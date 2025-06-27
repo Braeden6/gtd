@@ -7,12 +7,12 @@ if TYPE_CHECKING:
     # from src.features.reference_tag.model import ReferenceTagLink
     
 class Reference(BaseSoftDeleteModel, table=True):
-    __tablename__ = "references"
+    __tablename__ = "references" # type: ignore
     
     title: str = Field(nullable=False)
     content: str = Field(nullable=False)  # Markdown content
     ai_summary: Optional[str] = Field(nullable=True)
     # embedding = Column(JSONB, nullable=True)  # For future vector search
     
-    inbox_items: List["InboxItem"] = Relationship(back_populates="reference")
+    # inbox_items: List["InboxItem"] = Relationship(back_populates="reference")
     # tag_links: List["ReferenceTagLink"] = Relationship(back_populates="reference")

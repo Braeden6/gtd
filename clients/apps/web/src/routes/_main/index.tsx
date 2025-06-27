@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Card } from '@/components/ui/card';
 // import { useInboxItems } from '@/hooks/useInboxItems';
-import { DefaultService } from '@gtd/shared';
 
 export const Route = createFileRoute('/_main/')({
   component: Dashboard,
@@ -10,7 +9,6 @@ export const Route = createFileRoute('/_main/')({
 function Dashboard() {
   // const { items } = useInboxItems();
 
-  DefaultService.protectedRouteProtectedGet();
   return (
       <div className="space-y-6">
         <div>

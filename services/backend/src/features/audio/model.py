@@ -5,10 +5,10 @@ if TYPE_CHECKING:
     from src.features.inbox.model import InboxItem
 
 class Audio(BaseSoftDeleteModel, table=True):
-    __tablename__ = "audios"
+    __tablename__ = "audios" # type: ignore
 
     audio_path: str = Field()
     transcription: Optional[str] = Field(default=None)
     mimetype: Optional[str] = Field(default=None)
     
-    inbox_items: List["InboxItem"] = Relationship(back_populates="audio")
+    # inbox_items: List["InboxItem"] = Relationship(back_populates="audio")

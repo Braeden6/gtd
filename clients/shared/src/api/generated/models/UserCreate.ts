@@ -2,7 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type OAuth2AuthorizeResponse = {
-    authorization_url: string;
+export type UserCreate = {
+    first_name?: (string | null);
+    last_name?: (string | null);
+    email?: (string | null);
 };
 

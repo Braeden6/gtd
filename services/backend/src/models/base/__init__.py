@@ -42,7 +42,6 @@ SearchableType = TypeVar("SearchableType", bound=BaseSearchable)
 SoftDeleteModelType = TypeVar("SoftDeleteModelType", bound=BaseSoftDeleteModel)
 UpdateSoftDeleteType = TypeVar("UpdateSoftDeleteType", bound=BaseUpdateSoftDeleteModel)
 
-
 def convert_to_naive_datetime(dt: Optional[datetime]) -> Optional[datetime]:
     if dt is None:
         return None

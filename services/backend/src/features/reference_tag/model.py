@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Optional
     # from src.features.reference.model import Reference
 
 class ReferenceTagLink(SQLModel, table=True):
-    __tablename__ = "reference_tag_links"
+    __tablename__ = "reference_tag_links" # type: ignore
     
     reference_id: UUID = Field(foreign_key="references.id", primary_key=True)
     tag_id: UUID = Field(foreign_key="tags.id", primary_key=True)
