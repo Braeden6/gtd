@@ -15,7 +15,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="GTD Service", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.FRONTEND_URL],
+    allow_origins=[settings.FRONTEND_URL.split(',')],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]

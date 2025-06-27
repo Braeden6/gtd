@@ -14,6 +14,18 @@
 setup: 
 	cd clients && \
 	pnpm install
+
+	cd clients/shared && \
+	pnpm install
+
+	cd clients/apps/frontend && \
+	pnpm install
+
+	cd clients/apps/chrome && \
+	pnpm install
+
+
+
 # tech debt: fix setup
 # cd frontend && \
 # pnpm install && \
