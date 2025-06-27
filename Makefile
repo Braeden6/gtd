@@ -12,22 +12,56 @@
 # prospector src/api
 
 setup: 
-	cd frontend && \
-	pnpm install && \
-	cd ../ && \
-	uv venv && \
-	uv sync && \
-	cd shared && \
-	uv sync && \
-	cd ../services/transcription && \
-	uv sync && \
-	cd ../backend && \
-	uv sync --dev
+	cd clients && \
+	pnpm install
+# tech debt: fix setup
+# cd frontend && \
+# pnpm install && \
+# cd ../ && \
+# uv venv && \
+# uv sync && \
+# cd shared && \
+# uv sync && \
+# cd ../services/transcription && \
+# uv sync && \
+# cd ../backend && \
+# uv sync --dev
 
-b:
+sdk:
+	cd clients && \
+	pnpm generate-api
+
+# run services
+backend:
 	source .venv/bin/activate && \
 	cd services/backend && \
 	uv run -- uvicorn src.main:app --reload --host 0.0.0.0
+
+transcription:
+	source .venv/bin/activate && \
+	cd services/transcription && \
+	uv run -- python app/main.py
+
+# make sure to run this for hot reloading on shared components
+shared:
+	cd clients/shared && \
+	pnpm run dev
+
+frontend:
+	cd clients/apps/frontend && \
+	pnpm run dev
+
+chrome:
+	cd clients/apps/chrome && \
+	pnpm run dev
+
+mobile:
+	cd mobile && \
+	pnpm run start
+
+
+
+
 
 db-migrate:
 	source .venv/bin/activate && \
@@ -44,27 +78,12 @@ db-downgrade:
 	cd services/backend && \
 	alembic downgrade -1
 
-t:
-	source .venv/bin/activate && \
-	cd services/transcription && \
-	uv run -- python app/main.py
 
-f:
-	cd frontend && \
-	pnpm run dev
 
-m:
-	cd mobile && \
-	pnpm run start
 
 mfix:
 	cd mobile && \
 	pnpm prebuild
-
-sdk:
-	cd frontend && \
-	pnpm generate-api && \
-	pnpm generate-api-mobile
 
 mbuild:
 	cd mobile && \

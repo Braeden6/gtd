@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "shared"
+  ],
+  "scripts": {
+    "generate-api": "openapi --input http://localhost:8000/openapi.json --output ./shared/src/api/generated --client axios"
+  },
+  "devDependencies": {
+    "openapi-typescript-codegen": "^0.29.0"
+  }
+}

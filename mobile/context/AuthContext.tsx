@@ -2,7 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { AuthService, UserRead, UsersService } from '@/api/generated';
+import { AuthService, UserRead, UsersService } from '@gtd/shared'';
 
 interface AuthContextType {
   userInfo: UserRead | null;
