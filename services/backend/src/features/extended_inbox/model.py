@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Any
 
 class ExtendedInbox(SQLModel, table=True):
-    __tablename__ = "extended_inbox"
+    __tablename__ = "extended_inbox" # type: ignore
     
     id: UUID = Field(primary_key=True)
     user_id: UUID = Field(nullable=False)

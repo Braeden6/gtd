@@ -2,13 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UserUpdate = {
-    password?: (string | null);
-    email?: (string | null);
-    is_active?: (boolean | null);
-    is_superuser?: (boolean | null);
-    is_verified?: (boolean | null);
+export type UserReadDTO = {
+    id: string;
     first_name?: (string | null);
     last_name?: (string | null);
+    email?: (string | null);
+    created_at: string;
+    updated_at: string;
 };
 

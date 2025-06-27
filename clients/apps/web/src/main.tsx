@@ -20,27 +20,27 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuth();
-  const location = useLocation();
+// const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+//   const { isAuthenticated, isLoading } = useAuth();
+//   const location = useLocation();
 
-  if (isLoading) {
-    return <LoadingScreen 
-      title="Authenticating" 
-      description="Verifying your credentials..." 
-      showProgress={false}
-    />;
-  }
+//   if (isLoading) {
+//     return <LoadingScreen 
+//       title="Authenticating" 
+//       description="Verifying your credentials..." 
+//       showProgress={false}
+//     />;
+//   }
 
-  if (!isAuthenticated) {
-    return <Navigate 
-      to="/login" 
-      params={{ from: location.pathname }} 
-      replace 
-    />;
-  }
-  return <>{children}</>;
-};
+//   if (!isAuthenticated) {
+//     return <Navigate 
+//       to="/login" 
+//       params={{ from: location.pathname }} 
+//       replace 
+//     />;
+//   }
+//   return <>{children}</>;
+// };
 
 const router = createRouter({
   routeTree,
@@ -63,7 +63,6 @@ SuperTokens.init({
     websiteBasePath: "/auth",
   },
 recipeList: [
-    // EmailPassword.init(),
     ThirdPartyReact.init({
       signInAndUpFeature: {
         providers: [Google.init()],

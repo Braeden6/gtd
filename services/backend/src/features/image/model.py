@@ -5,11 +5,11 @@ if TYPE_CHECKING:
     from src.features.inbox.model import InboxItem
 
 class Image(BaseSoftDeleteModel, table=True):
-    __tablename__ = "images"
+    __tablename__ = "images" # type: ignore
 
     image_path: Optional[str] = Field(nullable=False)
     ai_description: Optional[str] = Field(nullable=True)
     mimetype: Optional[str] = Field(default=None)
     
-    inbox_items: List["InboxItem"] = Relationship(back_populates="image")
+    # inbox_items: List["InboxItem"] = Relationship(back_populates="image")
     

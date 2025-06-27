@@ -9,32 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TestRouteImport } from './routes/test'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as MainRouteImport } from './routes/_main'
-import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as MainIndexRouteImport } from './routes/_main/index'
+import { Route as UserCreateRouteImport } from './routes/user.create'
 import { Route as MainProjectsRouteImport } from './routes/_main/projects'
 import { Route as MainNextActionsRouteImport } from './routes/_main/next-actions'
 import { Route as MainInboxRouteImport } from './routes/_main/inbox'
-import { Route as AuthLoginRouteImport } from './routes/_auth.login'
 
-const TestRoute = TestRouteImport.update({
-  id: '/test',
-  path: '/test',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MainRoute = MainRouteImport.update({
   id: '/_main',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/_auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const MainIndexRoute = MainIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => MainRoute,
+} as any)
+const UserCreateRoute = UserCreateRouteImport.update({
+  id: '/user/create',
+  path: '/user/create',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const MainProjectsRoute = MainProjectsRouteImport.update({
   id: '/projects',
@@ -51,69 +51,68 @@ const MainInboxRoute = MainInboxRouteImport.update({
   path: '/inbox',
   getParentRoute: () => MainRoute,
 } as any)
-const AuthLoginRoute = AuthLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => AuthRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
-  '/test': typeof TestRoute
-  '/login': typeof AuthLoginRoute
+  '/login': typeof LoginRoute
   '/inbox': typeof MainInboxRoute
   '/next-actions': typeof MainNextActionsRoute
   '/projects': typeof MainProjectsRoute
+  '/user/create': typeof UserCreateRoute
   '/': typeof MainIndexRoute
 }
 export interface FileRoutesByTo {
-  '/test': typeof TestRoute
-  '/login': typeof AuthLoginRoute
+  '/login': typeof LoginRoute
   '/inbox': typeof MainInboxRoute
   '/next-actions': typeof MainNextActionsRoute
   '/projects': typeof MainProjectsRoute
+  '/user/create': typeof UserCreateRoute
   '/': typeof MainIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_auth': typeof AuthRouteWithChildren
   '/_main': typeof MainRouteWithChildren
-  '/test': typeof TestRoute
-  '/_auth/login': typeof AuthLoginRoute
+  '/login': typeof LoginRoute
   '/_main/inbox': typeof MainInboxRoute
   '/_main/next-actions': typeof MainNextActionsRoute
   '/_main/projects': typeof MainProjectsRoute
+  '/user/create': typeof UserCreateRoute
   '/_main/': typeof MainIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/test' | '/login' | '/inbox' | '/next-actions' | '/projects' | '/'
+  fullPaths:
+    | '/login'
+    | '/inbox'
+    | '/next-actions'
+    | '/projects'
+    | '/user/create'
+    | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/test' | '/login' | '/inbox' | '/next-actions' | '/projects' | '/'
+  to: '/login' | '/inbox' | '/next-actions' | '/projects' | '/user/create' | '/'
   id:
     | '__root__'
-    | '/_auth'
     | '/_main'
-    | '/test'
-    | '/_auth/login'
+    | '/login'
     | '/_main/inbox'
     | '/_main/next-actions'
     | '/_main/projects'
+    | '/user/create'
     | '/_main/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AuthRoute: typeof AuthRouteWithChildren
   MainRoute: typeof MainRouteWithChildren
-  TestRoute: typeof TestRoute
+  LoginRoute: typeof LoginRoute
+  UserCreateRoute: typeof UserCreateRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/test': {
-      id: '/test'
-      path: '/test'
-      fullPath: '/test'
-      preLoaderRoute: typeof TestRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_main': {
@@ -123,19 +122,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_main/': {
       id: '/_main/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof MainIndexRouteImport
       parentRoute: typeof MainRoute
+    }
+    '/user/create': {
+      id: '/user/create'
+      path: '/user/create'
+      fullPath: '/user/create'
+      preLoaderRoute: typeof UserCreateRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_main/projects': {
       id: '/_main/projects'
@@ -158,25 +157,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainInboxRouteImport
       parentRoute: typeof MainRoute
     }
-    '/_auth/login': {
-      id: '/_auth/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof AuthLoginRouteImport
-      parentRoute: typeof AuthRoute
-    }
   }
 }
-
-interface AuthRouteChildren {
-  AuthLoginRoute: typeof AuthLoginRoute
-}
-
-const AuthRouteChildren: AuthRouteChildren = {
-  AuthLoginRoute: AuthLoginRoute,
-}
-
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface MainRouteChildren {
   MainInboxRoute: typeof MainInboxRoute
@@ -195,9 +177,9 @@ const MainRouteChildren: MainRouteChildren = {
 const MainRouteWithChildren = MainRoute._addFileChildren(MainRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  AuthRoute: AuthRouteWithChildren,
   MainRoute: MainRouteWithChildren,
-  TestRoute: TestRoute,
+  LoginRoute: LoginRoute,
+  UserCreateRoute: UserCreateRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -24,7 +24,7 @@ class ActionStatusComparison(SearchBaseEnumComparison[ActionStatus], table=False
     
 # ----- MODELs ----- #
 class Action(BaseSoftDeleteModel, table=True):
-    __tablename__ = "actions"
+    __tablename__ = "actions" # type: ignore
     
     title: str = Field(nullable=False)
     description: Optional[str] = Field(nullable=True)
@@ -34,5 +34,5 @@ class Action(BaseSoftDeleteModel, table=True):
     project_id: Optional[UUID] = Field(default=None, foreign_key="projects.id")
     inbox_id: Optional[UUID] = Field(default=None, foreign_key="inbox_items.id")
     
-    project: Optional["Project"] = Relationship(back_populates="actions")
-    inbox_item: Optional["InboxItem"] = Relationship(back_populates="action")
+    # project: Optional["Project"] = Relationship(back_populates="actions")
+    # inbox_item: Optional["InboxItem"] = Relationship(back_populates="action")

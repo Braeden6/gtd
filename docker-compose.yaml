@@ -46,7 +46,7 @@ services:
     ports:
       - "3567:3567"
     environment:
-      POSTGRESQL_CONNECTION_URI: "postgresql://postgres:postgres@postgres:5432/gtd"
+      POSTGRESQL_CONNECTION_URI: "postgresql://postgres:postgres@postgres:5432/supertokens"
     networks:
       - app-network
     healthcheck:
