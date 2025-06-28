@@ -1,16 +1,18 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
-
 import * as TanStackQueryProvider from './integrations/tanstack-query/root-provider.tsx'
-
-// Import the generated route tree
-import { routeTree } from './routeTree.gen.ts'
-
+import { routeTree } from './routeTree.gen'
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
+import { ThemeProvider } from './hooks/useTheme.tsx'
+import SuperTokens, { SuperTokensWrapper } from "supertokens-auth-react";
+import Session from "supertokens-auth-react/recipe/session";
+import { canHandleRoute, getRoutingComponent } from 'supertokens-auth-react/ui/index'
+import Passwordless from "supertokens-auth-react/recipe/passwordless";
+import { PasswordlessPreBuiltUI } from 'supertokens-auth-react/recipe/passwordless/prebuiltui';
+import { initializeApi } from '@gtd/shared'
 
-// Create a new router instance
 const router = createRouter({
   routeTree,
   context: {
@@ -22,27 +24,47 @@ const router = createRouter({
   defaultPreloadStaleTime: 0,
 })
 
-// Register the router instance for type safety
+SuperTokens.init({
+  appInfo: {
+    appName: "GTD",
+    apiDomain: "http://localhost:8000",
+    websiteDomain: "http://localhost:3001",
+    apiBasePath: "/auth",
+    websiteBasePath: "/auth",
+  },
+recipeList: [
+    Passwordless.init({
+      contactMethod: "EMAIL"
+    }),
+    Session.init()
+  ]
+});
+
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router
   }
 }
 
-// Render the app
+initializeApi(import.meta.env.VITE_API_URL)
+
 const rootElement = document.getElementById('app')
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <TanStackQueryProvider.Provider>
-        <RouterProvider router={router} />
-      </TanStackQueryProvider.Provider>
-    </StrictMode>,
-  )
+    {canHandleRoute([PasswordlessPreBuiltUI]) ? (
+      getRoutingComponent([PasswordlessPreBuiltUI])
+    ) : (
+      <SuperTokensWrapper>
+        <ThemeProvider>
+            <TanStackQueryProvider.Provider>
+              <RouterProvider router={router} />
+            </TanStackQueryProvider.Provider>
+        </ThemeProvider>
+      </SuperTokensWrapper>
+    )}
+  </StrictMode>)
 }
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals()

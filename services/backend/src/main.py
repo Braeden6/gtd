@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from src.core.settings import settings
 from src.core.util import get_all_routers
 from src.service.audio_transcription_result import AudioTranscriptionResultProcessor
@@ -10,6 +11,9 @@ from supertokens_python import get_all_cors_headers
 from supertokens_python.framework.fastapi.fastapi_middleware import get_middleware
 from supertokens_python.recipe import thirdparty
 from supertokens_python.recipe.thirdparty import ProviderInput, ProviderConfig, ProviderClientConfig, SignInAndUpFeature
+from supertokens_python.recipe.passwordless.asyncio import create_magic_link, signinup
+from supertokens_python.recipe import passwordless
+from supertokens_python.recipe.passwordless import ContactEmailOnlyConfig
 
 async def lifespan(app: FastAPI):
     app.state.processor = AudioTranscriptionResultProcessor()
@@ -27,8 +31,16 @@ init(
         connection_uri=settings.SUPERTOKENS_URL,
     ),
     framework="fastapi",
-      recipe_list=[
-        session.init(),
+    recipe_list=[
+        session.init(
+            # tech debt: should be removed or addition of CSRF protection
+            cookie_same_site="none",
+            cookie_secure=True,
+        ),
+        passwordless.init(
+            flow_type="MAGIC_LINK",
+            contact_config=ContactEmailOnlyConfig()
+        ),
         thirdparty.init(
             sign_in_and_up_feature=SignInAndUpFeature(
                 providers=[
@@ -49,7 +61,23 @@ init(
     ]
 )
 
+
+
 app = FastAPI(title="GTD Service", lifespan=lifespan) # type: ignore
+
+# tech debt: temp fix for chrome extension, restrict origins because we are using cookies same site none
+@app.middleware("http")
+async def origin_validation_middleware(request: Request, call_next):
+    origin = request.headers.get("origin")
+    if origin and origin not in settings.FRONTEND_URL.split(','):
+        return JSONResponse(
+            status_code=403,
+            content={"detail": "Origin not allowed"}
+        )
+    
+    return await call_next(request)
+
+
 app.add_middleware(get_middleware())
 app.add_middleware(
     CORSMiddleware,

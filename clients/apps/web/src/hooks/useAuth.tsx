@@ -1,11 +1,13 @@
 import { UsersService } from '@gtd/shared';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
+import { useSessionContext } from 'supertokens-auth-react/recipe/session';
 import { signOut } from 'supertokens-auth-react/recipe/thirdparty'
 
 export function useAuth() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const session = useSessionContext();
 
   const { 
     data: user = null, 
@@ -43,12 +45,11 @@ export function useAuth() {
 
   const logout = async (): Promise<void> => {
     logoutMutation.mutate();
-    signOut();
   };
 
   return {
     user,
-    isAuthenticated: !!user,
+    isAuthenticated: !!session,
     isLoading,
     logout,
     isLoggingOut: logoutMutation.isPending

@@ -1,15 +1,7 @@
-frontend/dev-dist/**
-backend/docs/**
-data/**
-deployment/secrets.yml
-
 *.pyc
 .venv/
-
 *.env*
-
 .coverage
-
 
 # Logs
 logs
@@ -24,46 +16,22 @@ node_modules
 dist
 dist-ssr
 *.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-
-
-
-
-# Binaries
-bin/
-tmp/
-
-# Dependencies
-vendor/
-
-# IDE
-.idea/
-.vscode/
-
-# Database
 *.db
 *.db-journal
 
 # Logs
 *.log
-
-# Air
-tmp/
-
 *.pem
-
-
 .expo/
 ios/
 android/
 node_modules/
+count.txt
+.vite
+

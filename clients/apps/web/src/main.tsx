@@ -1,46 +1,21 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
-import { Navigate, RouterProvider, createRouter, useLocation } from '@tanstack/react-router'
+import { RouterProvider, createRouter } from '@tanstack/react-router'
 import * as TanStackQueryProvider from './integrations/tanstack-query/root-provider.tsx'
 import { routeTree } from './routeTree.gen'
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
-import { useAuth } from './hooks/useAuth.tsx'
-import { LoadingScreen } from './components/Loading.tsx'
 import { ThemeProvider } from './context/useTheme.tsx'
-import { initializeApi } from './lib/api.ts'
+import { initializeApi } from '@gtd/shared'
 import SuperTokens, { SuperTokensWrapper } from "supertokens-auth-react";
-import ThirdPartyReact, { signOut } from 'supertokens-auth-react/recipe/thirdparty'
+import ThirdPartyReact from 'supertokens-auth-react/recipe/thirdparty'
 import { Google } from 'supertokens-auth-react/recipe/thirdparty';
 import Session from "supertokens-auth-react/recipe/session";
 import { canHandleRoute, getRoutingComponent } from 'supertokens-auth-react/ui/index'
 import { ThirdPartyPreBuiltUI } from 'supertokens-auth-react/recipe/thirdparty/prebuiltui'
+// import Passwordless from "supertokens-auth-react/recipe/passwordless";
+// import { PasswordlessPreBuiltUI } from 'supertokens-auth-react/recipe/passwordless/prebuiltui';
 
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-}
-
-// const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-//   const { isAuthenticated, isLoading } = useAuth();
-//   const location = useLocation();
-
-//   if (isLoading) {
-//     return <LoadingScreen 
-//       title="Authenticating" 
-//       description="Verifying your credentials..." 
-//       showProgress={false}
-//     />;
-//   }
-
-//   if (!isAuthenticated) {
-//     return <Navigate 
-//       to="/login" 
-//       params={{ from: location.pathname }} 
-//       replace 
-//     />;
-//   }
-//   return <>{children}</>;
-// };
 
 const router = createRouter({
   routeTree,
@@ -52,7 +27,6 @@ const router = createRouter({
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
 })
-
 
 SuperTokens.init({
   appInfo: {
@@ -68,16 +42,12 @@ recipeList: [
         providers: [Google.init()],
       },
     }),
+    // Passwordless.init({
+    //   contactMethod: "EMAIL"
+    // }),
     Session.init()
   ],
-  getRedirectionURL: async (context) => {
-    if (context.action === "SUCCESS" && context.newSessionCreated) {
-        return "/";
-    }
-},
 });
-
-
 
 declare module '@tanstack/react-router' {
   interface Register {
@@ -85,23 +55,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
-initializeApi()
+initializeApi(import.meta.env.VITE_API_URL)
 
 const rootElement = document.getElementById('app')
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-    {canHandleRoute([ThirdPartyPreBuiltUI]) ? (
-      getRoutingComponent([ThirdPartyPreBuiltUI])
+    {canHandleRoute([ThirdPartyPreBuiltUI, 
+    // PasswordlessPreBuiltUI
+  ]) ? (
+      getRoutingComponent([ThirdPartyPreBuiltUI, 
+        // PasswordlessPreBuiltUI
+      ])
     ) : (
       <SuperTokensWrapper>
         <ThemeProvider>
-          {/* <ProtectedRoute> */}
             <TanStackQueryProvider.Provider>
               <RouterProvider router={router} />
             </TanStackQueryProvider.Provider>
-          {/* </ProtectedRoute> */}
         </ThemeProvider>
       </SuperTokensWrapper>
     )}
