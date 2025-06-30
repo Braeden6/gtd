@@ -1,7 +1,6 @@
 import { Calendar, X } from "lucide-react";
 import { useInboxItems } from "@/hooks/useInboxItems";
-import { Popover, PopoverContent } from "@/components/ui/popover";
-import { Textarea } from "@/components/ui/textarea";
+import { Popover, PopoverContent, Textarea } from "@gtd/shared";
 import { formatDate } from "@/lib/date";
 import { useViewInbox } from "@/hooks/popover/useViewInbox";
 import { useEffect, useState } from "react";

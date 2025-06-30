@@ -1,6 +1,5 @@
 import { Loader2 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, Progress } from "@gtd/shared";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 

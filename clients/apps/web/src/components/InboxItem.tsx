@@ -1,5 +1,4 @@
-import { Button } from '@/components/ui/button';
-import { type InboxItemResponseDTO } from '@gtd/shared';
+import { Button, type InboxItemResponseDTO } from '@gtd/shared';
 
 type InboxItemProps = {
   item: InboxItemResponseDTO;

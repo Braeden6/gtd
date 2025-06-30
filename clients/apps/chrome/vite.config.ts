@@ -2,14 +2,22 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import tanstackRouter from '@tanstack/router-plugin/vite'
+import { crx } from '@crxjs/vite-plugin'
 import path from "path"
+import manifest from './public/manifest.json'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     tanstackRouter({ autoCodeSplitting: true }),
     react(),
     tailwindcss(),
+    // @ts-expect-error
+    crx({
+      manifest,
+      contentScripts: {
+        injectCss: true,
+      }
+    })
   ],
   resolve: {
     alias: {

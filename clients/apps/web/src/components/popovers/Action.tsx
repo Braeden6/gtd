@@ -1,10 +1,16 @@
-import { Popover, PopoverContent } from "@/components/ui/popover";
-import { PopoverType, useAction } from "@/hooks/popover/useAction";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { DatePicker } from "@/components/ui/datepicker";
+import { 
+  Popover, 
+  PopoverContent,
+  Input,
+  Textarea,
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue, 
+  DatePicker} from "@gtd/shared";
 import { X } from "lucide-react";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useViewInbox } from "@/hooks/popover/useViewInbox";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -12,6 +18,7 @@ import { ActionStatus, Priority } from "@gtd/shared";
 import { useInboxItems } from "@/hooks/useInboxItems";
 import { useActions } from "@/hooks/useActions";
 import { LabeledInput } from "@/components/LabelField";
+import { PopoverType, useAction } from "@/hooks/popover/useAction";
 
 export default function ActionPopover() {
     const { popoverItem: inboxPopoverItem } = useViewInbox();

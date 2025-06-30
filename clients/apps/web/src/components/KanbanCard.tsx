@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@gtd/shared";
 import { Calendar } from "lucide-react";
 import { GripVertical } from "lucide-react";
 import { Priority } from "@gtd/shared";

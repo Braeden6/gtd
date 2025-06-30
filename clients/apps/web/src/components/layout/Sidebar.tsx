@@ -9,10 +9,10 @@ import {
   Home
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { Sun, Moon } from 'lucide-react';
 import { useInboxItems } from '@/hooks/useInboxItems';
 import { useTheme } from '@/context/useTheme';
+import { Button } from '@gtd/shared';
 
 type NavigationItem = {
   name: string;

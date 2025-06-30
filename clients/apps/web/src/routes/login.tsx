@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { AuthPage } from 'supertokens-auth-react/ui';
 import { ThirdPartyPreBuiltUI } from 'supertokens-auth-react/recipe/thirdparty/prebuiltui';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@gtd/shared';
 import { LockKeyhole } from 'lucide-react';
 
 export const Route = createFileRoute('/login')({

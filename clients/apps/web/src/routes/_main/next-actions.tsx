@@ -1,8 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button, Input } from '@gtd/shared';
 import { useInboxItems } from '@/hooks/useInboxItems';
 import { InboxItemsList } from '@/components/InboxItemsList';
 import { LoadingScreen } from '@/components/Loading'

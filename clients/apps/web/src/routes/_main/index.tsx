@@ -1,5 +1,5 @@
+import { Card } from '@gtd/shared';
 import { createFileRoute } from '@tanstack/react-router';
-import { Card } from '@/components/ui/card';
 // import { useInboxItems } from '@/hooks/useInboxItems';
 
 export const Route = createFileRoute('/_main/')({

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "version": "1.0.0",
-  "short_name": "TanStack App",
-  "name": "Create TanStack App Sample",
+  "short_name": "GTD Chrome Extension",
+  "name": "GTD Chrome Extension",
   "icons": {
     "16": "favicon.ico",
     "32": "favicon.ico", 
@@ -12,5 +12,13 @@
   "action": {
     "default_popup": "index.html"
   },
-  "permissions": []
+  "permissions": [],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/contentScript.tsx"],
+      "run_at": "document_end"
+    }
+  ],
+  "host_permissions": ["<all_urls>"]
 }
