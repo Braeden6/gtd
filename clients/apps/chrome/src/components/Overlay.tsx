@@ -4,10 +4,13 @@ import SidePanel from "./SidePanel";
 
 function Overlay() {
     return (
-      <div className="fixed bottom-8 right-8 z-[999999] pointer-events-none font-sans">
-        <SelectionButton />
+      <div 
+        id="test" 
+        className="fixed bottom-8 right-8 z-[999999]"
+      >
         <SidePanel />
         <OverlayButton />
+        <SelectionButton />
       </div>
     )
 }

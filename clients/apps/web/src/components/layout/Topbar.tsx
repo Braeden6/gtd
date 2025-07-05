@@ -14,7 +14,7 @@ export function Topbar() {
   const { user, logout, isAuthenticated } = useAuth();
 
   return (
-    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 text-foreground">
+    <header className="border-b bg-background/95 sticky top-0 z-10">
       <div className="flex h-14 items-center justify-between px-6">
         <div className="font-semibold">GTD App</div>
         
@@ -35,8 +35,8 @@ export function Topbar() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem className="cursor-pointer" onClick={logout}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Logout</span>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <div>Logout</div>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

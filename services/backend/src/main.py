@@ -11,9 +11,6 @@ from supertokens_python import get_all_cors_headers
 from supertokens_python.framework.fastapi.fastapi_middleware import get_middleware
 from supertokens_python.recipe import thirdparty
 from supertokens_python.recipe.thirdparty import ProviderInput, ProviderConfig, ProviderClientConfig, SignInAndUpFeature
-from supertokens_python.recipe.passwordless.asyncio import create_magic_link, signinup
-from supertokens_python.recipe import passwordless
-from supertokens_python.recipe.passwordless import ContactEmailOnlyConfig
 
 async def lifespan(app: FastAPI):
     app.state.processor = AudioTranscriptionResultProcessor()
@@ -33,13 +30,10 @@ init(
     framework="fastapi",
     recipe_list=[
         session.init(
-            # tech debt: should be removed or addition of CSRF protection
+            # tech debt: should be removed
             cookie_same_site="none",
             cookie_secure=True,
-        ),
-        passwordless.init(
-            flow_type="MAGIC_LINK",
-            contact_config=ContactEmailOnlyConfig()
+            anti_csrf="NONE",
         ),
         thirdparty.init(
             sign_in_and_up_feature=SignInAndUpFeature(
@@ -61,38 +55,39 @@ init(
     ]
 )
 
-
-
 app = FastAPI(title="GTD Service", lifespan=lifespan) # type: ignore
-
-# tech debt: temp fix for chrome extension, restrict origins because we are using cookies same site none
-@app.middleware("http")
-async def origin_validation_middleware(request: Request, call_next):
-    origin = request.headers.get("origin")
-    if origin and origin not in settings.FRONTEND_URL.split(','):
-        return JSONResponse(
-            status_code=403,
-            content={"detail": "Origin not allowed"}
-        )
-    
-    return await call_next(request)
-
-
 app.add_middleware(get_middleware())
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.FRONTEND_URL.split(','),
     allow_credentials=True,
-    allow_methods=["GET", "POST", "DELETE", "PUT", "OPTIONS"],
+    allow_methods=["GET", "POST", "DELETE", "PUT", "OPTIONS", "PATCH"],
     allow_headers=["Content-Type"] + get_all_cors_headers(),
 )
-
 app.add_middleware(SessionMiddleware, secret_key=settings.SESSION_SECRET_KEY)
+
+
+@app.middleware("http")
+async def origin_validation_middleware(request: Request, call_next):
+    # allowing post to inbox from any origin for chrome extension
+    if request.url.path.endswith("inbox/") and request.method == "POST":
+        response = await call_next(request)
+        response.headers["Access-Control-Allow-Origin"] = request.headers.get("origin")
+        return response
+    
+    # allow only restricted origins for all other routes because cookies same site is none
+    origin = request.headers.get("origin")
+    if origin and origin in settings.FRONTEND_URL.split(','):
+        return await call_next(request)
+    
+    return JSONResponse(
+        status_code=403,
+        content={"detail": "Origin not allowed"}
+    )
 
 all_routers = get_all_routers()
 for router in all_routers:
     app.include_router(router)
-    
 
 @app.get("/health")
 async def health_check():

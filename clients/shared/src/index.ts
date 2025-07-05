@@ -1,5 +1,7 @@
 import './index.css'
+export * from './hooks/useTheme'
 export * from './components'
 export * from './api/generated'
 export * from './utils/api'
+export * from './lib/utils'
 export * from './components/ui'

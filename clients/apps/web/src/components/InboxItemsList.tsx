@@ -32,7 +32,7 @@ export const InboxItemsList = () => {
                 />
               ))}
               {unprocessedItems.length === 0 && (
-                <p className="text-muted-foreground italic">No unprocessed items</p>
+                <p className="italic">No unprocessed items</p>
               )}
             </div>
           </AccordionContent>
@@ -53,7 +53,7 @@ export const InboxItemsList = () => {
                 />
               ))}
               {processedItems.length === 0 && (
-                <p className="text-muted-foreground italic">No processed items</p>
+                <p className="italic">No processed items</p>
               )}
             </div>
           </AccordionContent>

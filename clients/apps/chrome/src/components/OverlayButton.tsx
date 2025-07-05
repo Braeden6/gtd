@@ -1,4 +1,5 @@
 import { useFormPopup } from "@/hooks/useFormPopup";
+import { Button } from "@gtd/shared";
 import { CheckCircle } from "lucide-react";
 
 function OverlayButton() {
@@ -7,23 +8,12 @@ function OverlayButton() {
     return (
         <>
         {!isOpen && 
-            <button
+            <Button
                 onClick={open}
-                className="
-                w-14 h-14 
-                bg-gray-800 hover:bg-gray-700 
-                text-white 
-                rounded-full 
-                shadow-lg hover:shadow-xl 
-                transition-all duration-200 
-                flex items-center justify-center 
-                text-xl font-semibold
-                border-2 border-gray-600 hover:border-gray-500
-                pointer-events-auto
-                "
+                className="rounded-full !bg-background/60 !text-foreground !p-2"
             >
-            <CheckCircle />
-        </button>
+            <CheckCircle  size={40}/>
+        </Button>
       }
       </>
     )

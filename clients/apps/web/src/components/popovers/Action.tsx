@@ -9,7 +9,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue, 
-  DatePicker} from "@gtd/shared";
+  DatePicker,
+  Card,
+  Button} from "@gtd/shared";
 import { X } from "lucide-react";
 import { useViewInbox } from "@/hooks/popover/useViewInbox";
 import { useState, useEffect } from "react";
@@ -93,7 +95,7 @@ export default function ActionPopover() {
           onClick={() => setPopover({ isOpen: false })}
           className="w-[100vw] h-[100vh] z-100 absolute top-0 left-0 bg-black/50 flex items-center justify-center text-foreground"
         >
-          <div className="bg-secondary border-primary border-2 rounded-md shadow-lg p-6 text-secondary-foreground" onClick={(e) => e.stopPropagation()}>
+          <Card className="p-6 min-w-[400px] max-w-[800px]" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-4 gap-2">
               <div className="font-medium">Convert capture item to actionable task</div>
               <button onClick={() => setPopover({ isOpen: false })} className="text-gray-500 hover:text-gray-700">
@@ -141,19 +143,19 @@ export default function ActionPopover() {
                 <div className="font-medium mb-2">Inbox Content</div>
                 {image && (<img src={image} alt="image" className="w-full h-auto max-h-64 object-contain cursor-pointer" />)}
                 {audio && <audio src={audio} controls />}
-                {inboxPopoverItem?.content && <Textarea className="w-full border rounded-md p-2 h-24 text-sm" value={inboxPopoverItem?.content} disabled readOnly />}
+                {inboxPopoverItem?.content && <Textarea className="w-full p-2 h-24 text-sm" value={inboxPopoverItem?.content} disabled readOnly />}
               </div>
             </div>
             
             <div className="flex flex-col gap-2 items-center">
               {
                 popover.type === PopoverType.EDIT ? 
-                  <button className="bg-primary text-primary-foreground py-2 rounded-md font-medium w-1/2" onClick={handleComplete}>Complete</button> :
-                  <button className="bg-primary text-primary-foreground py-2 rounded-md font-medium w-1/2" onClick={handleCreate}>Create</button>
+                  <Button className="bg-primary text-primary-foreground py-2 rounded-md font-medium w-1/2" onClick={handleComplete}>Complete</Button> :
+                  <Button className="bg-primary text-primary-foreground py-2 rounded-md font-medium w-1/2" onClick={handleCreate}>Create</Button>
               }
-              <button className="bg-gray-500 text-gray-700 py-2 rounded-md w-1/2" onClick={() => setPopover({ isOpen: false })}>Cancel</button>
+              <Button className="bg-gray-500 text-gray-700 py-2 rounded-md w-1/2" onClick={() => setPopover({ isOpen: false })}>Cancel</Button>
             </div>
-          </div>
+          </Card>
         </PopoverContent>
       </Popover>
     )

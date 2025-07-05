@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
-import { Badge } from "@gtd/shared";
+
+import { Badge, cn } from "@gtd/shared";
 import { Calendar } from "lucide-react";
 import { GripVertical } from "lucide-react";
 import { Priority } from "@gtd/shared";
@@ -26,10 +26,10 @@ export interface KanbanCardProps {
 export default function KanbanCard({ item, borderColor, backgroundColor }: KanbanCardProps) {
     return (
       <div className={cn(
-        "mb-3 bg-secondary border",
+        "mb-3 border",
         borderColor,
         item.isNew && "border-2",
-        "rounded-lg text-black"
+        "rounded-lg"
       )}>
         <div className="p-3 flex flex-col gap-1">
           <div className="flex justify-between items-center">
@@ -38,7 +38,6 @@ export default function KanbanCard({ item, borderColor, backgroundColor }: Kanba
               <div className={cn(
                 "text-xs flex items-center gap-2",
                 "rounded-[40%/50%] px-4 py-1",
-                "text-white",
                 backgroundColor
               )}>
                 New

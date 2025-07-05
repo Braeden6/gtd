@@ -10,7 +10,13 @@ export const useUser = () => {
         error
     } = useQuery({
         queryKey: ['user'],
-        queryFn: () => UsersService.getCurrentUserUsersMeGet(),
+        queryFn: async () => {
+            try {
+                return await UsersService.getCurrentUserUsersMeGet()
+            } catch{
+                return null
+            }
+        }
     });
 
     return {

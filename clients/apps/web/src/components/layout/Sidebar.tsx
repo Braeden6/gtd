@@ -8,10 +8,10 @@ import {
   FileText,
   Home
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@gtd/shared';
 import { Sun, Moon } from 'lucide-react';
 import { useInboxItems } from '@/hooks/useInboxItems';
-import { useTheme } from '@/context/useTheme';
+import { Theme, useTheme } from '@gtd/shared';
 import { Button } from '@gtd/shared';
 
 type NavigationItem = {
@@ -24,7 +24,7 @@ type NavigationItem = {
 export function Sidebar() {
   const location = useLocation();
   const { items } = useInboxItems();
-  const { isDarkMode, toggleTheme } = useTheme();
+  const { toggleTheme, theme } = useTheme();
   
   const navigation: NavigationItem[] = [
     { name: 'Dashboard', icon: Home, href: '/' },
@@ -45,15 +45,14 @@ export function Sidebar() {
         ))}
       </nav>
       
-      {/* Theme toggle at bottom of sidebar */}
       <div className="p-4 border-t">
         <Button
           variant="ghost"
           size="icon"
           onClick={toggleTheme}
-          className="w-full flex items-center justify-center gap-2"
+          className="w-full flex items-center justify-center gap-2 cursor-pointer"
         >
-          {isDarkMode ? (
+          {theme === Theme.Light ? (
             <>
               <Sun className="h-5 w-5" />
               <span>Light Mode</span>

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import { type KabanItem } from '@/lib/types';
 
@@ -12,8 +11,7 @@ export function Draggable({ id, children, item }: DraggableProps) {
   const {
     attributes,
     listeners,
-    setNodeRef,
-    // transform
+    setNodeRef
   } = useDraggable({ 
     id,
     data: {

@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
 import { Card, CardContent, Progress } from "@gtd/shared";
 import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@gtd/shared";
 
 interface LoadingScreenProps {
   title?: string;

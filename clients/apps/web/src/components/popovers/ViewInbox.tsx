@@ -1,6 +1,6 @@
 import { Calendar, X } from "lucide-react";
 import { useInboxItems } from "@/hooks/useInboxItems";
-import { Popover, PopoverContent, Textarea } from "@gtd/shared";
+import { Button, Label, Popover, PopoverContent, Textarea } from "@gtd/shared";
 import { formatDate } from "@/lib/date";
 import { useViewInbox } from "@/hooks/popover/useViewInbox";
 import { useEffect, useState } from "react";
@@ -45,30 +45,30 @@ export default function ViewInbox() {
           onClick={() => setPopoverOpen(false)}
           className="w-[100vw] h-[100vh] z-100 absolute top-0 left-0 bg-black/50 flex items-center justify-center text-foreground"
         >
-          <div className="bg-secondary border-primary border-2 rounded-md shadow-lg w-80 p-4" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-secondary border-primary border-2 rounded-md shadow-lg w-[400px] p-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-4">
               <div className="font-medium">Capture date</div>
-              <button onClick={() => setPopoverOpen(false)} className="text-gray-500 hover:text-gray-700">
+              <Button variant="ghost" onClick={() => setPopoverOpen(false)} className="text-gray-500 hover:text-gray-700">
                 <X className="w-6 h-6" />
-              </button>
+              </Button>
             </div>
             
             <div className="mb-4">
               <div className="flex items-center mb-2">
                 <Calendar className="w-4 h-4 mr-2" />
-                <label htmlFor="captureDate" className="text-sm">{formatDate(popoverItem?.created_at as string)}</label>
+                <Label htmlFor="captureDate" className="text-sm">{formatDate(popoverItem?.created_at as string)}</Label>
               </div>
               
               <div className="mb-4 ga-1">
                 <div className="font-medium mb-2">Content</div>
                 {image && (<img src={image} alt="image" className="w-full h-auto max-h-64 object-contain cursor-pointer" />)}
                 {audio && <audio src={audio} controls className="custom-audio-player" />}
-                {popoverItem?.content && <Textarea className="w-full border rounded-md p-2 h-24 text-sm" value={popoverItem?.content} />}
+                {popoverItem?.content && <Textarea className="w-full border rounded-md p-2 text-sm max-h-[400px]" value={popoverItem?.content} />}
               </div>
             </div>
             
             <div className="flex flex-col gap-2 items-center">
-              <button 
+              <Button 
                 className="bg-primary text-primary-foreground py-2 rounded-md font-medium w-1/2"
                   onClick={() => {
                     updateItem(popoverItem?.id as string, {
@@ -76,8 +76,8 @@ export default function ViewInbox() {
                     })
                     setPopoverOpen(false);
                   }}
-              >Complete</button>
-              <button className="bg- text-gray-700 py-2 rounded-md w-1/2" onClick={() => setPopoverOpen(false)}>Cancel</button>
+              >Complete</Button>
+              <Button className="bg- text-gray-700 py-2 rounded-md w-1/2" onClick={() => setPopoverOpen(false)}>Cancel</Button>
             </div>
           </div>
         </PopoverContent>

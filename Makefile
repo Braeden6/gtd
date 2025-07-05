@@ -59,8 +59,8 @@ shared:
 	cd clients/shared && \
 	pnpm run dev
 
-frontend:
-	cd clients/apps/frontend && \
+web:
+	cd clients/apps/web && \
 	pnpm run dev
 
 chrome:

@@ -9,7 +9,7 @@ type InboxItemProps = {
 export const InboxItem = ({ item, onDelete, isDeletingItem }: InboxItemProps) => (
     <div
       key={item.id}
-      className="p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors text-card-foreground"
+      className="p-4 rounded-lg border"
     >
       <div className="flex justify-between items-start">
         <div>

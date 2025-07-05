@@ -11,7 +11,6 @@ export default defineConfig({
     tanstackRouter({ autoCodeSplitting: true }),
     react(),
     tailwindcss(),
-    // @ts-expect-error
     crx({
       manifest,
       contentScripts: {
