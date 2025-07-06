@@ -1,4 +1,4 @@
-import { Card } from '@gtd/shared';
+import { Card } from '@gtd/shared/components/ui/card';
 import { createFileRoute } from '@tanstack/react-router';
 // import { useInboxItems } from '@/hooks/useInboxItems';
 

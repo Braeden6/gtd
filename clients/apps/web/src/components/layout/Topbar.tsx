@@ -1,14 +1,8 @@
 import { LogOut } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { 
-  Button, 
-  Avatar, 
-  AvatarFallback,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@gtd/shared';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@gtd/shared/components/ui/dropdown-menu';
+import { Button } from '@gtd/shared/components/ui/button';
+import { Avatar, AvatarFallback } from '@gtd/shared/components/ui/avatar';
 
 export function Topbar() {
   const { user, logout, isAuthenticated } = useAuth();

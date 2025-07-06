@@ -1,7 +1,7 @@
-
+import { Button } from "./ui/button"
 
 const Test = () => {
-    return <div>Test</div>
+    return <Button>Test</Button>
 }
 
 export default Test

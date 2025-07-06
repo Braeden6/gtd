@@ -1,35 +1,35 @@
 import { createFileRoute } from '@tanstack/react-router'
-import React, { useState } from 'react';
-import { Button } from '@gtd/shared/src/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@gtd/shared/src/components/ui/card';
-import { Badge } from '@gtd/shared/src/components/ui/badge';
-import { Input } from '@gtd/shared/src/components/ui/input';
-import { Label } from '@gtd/shared/src/components/ui/label';
-import { Switch } from '@gtd/shared/src/components/ui/switch';
-import { Slider } from '@gtd/shared/src/components/ui/slider';
-import { Progress } from '@gtd/shared/src/components/ui/progress';
-import { Separator } from '@gtd/shared/src/components/ui/separator';
-import { Avatar, AvatarFallback } from '@gtd/shared/src/components/ui/avatar';
-import { Calendar } from '@gtd/shared/src/components/ui/calendar';
+import { useState } from 'react';
+import { Button } from '@gtd/shared/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@gtd/shared/components/ui/card';
+import { Badge } from '@gtd/shared/components/ui/badge';
+import { Input } from '@gtd/shared/components/ui/input';
+import { Label } from '@gtd/shared/components/ui/label';
+import { Switch } from '@gtd/shared/components/ui/switch';
+import { Slider } from '@gtd/shared/components/ui/slider';
+import { Progress } from '@gtd/shared/components/ui/progress';
+import { Separator } from '@gtd/shared/components/ui/separator';
+import { Avatar, AvatarFallback } from '@gtd/shared/components/ui/avatar';
+import { Calendar } from '@gtd/shared/components/ui/calendar';
 import { 
   Select, 
   SelectContent, 
   SelectItem, 
   SelectTrigger, 
   SelectValue 
-} from '@gtd/shared/src/components/ui/select';
+} from '@gtd/shared/components/ui/select';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
   DropdownMenuTrigger 
-} from '@gtd/shared/src/components/ui/dropdown-menu';
+} from '@gtd/shared/components/ui/dropdown-menu';
 import { 
   Accordion, 
   AccordionContent, 
   AccordionItem, 
   AccordionTrigger 
-} from '@gtd/shared/src/components/ui/accordion';
+} from '@gtd/shared/components/ui/accordion';
 
 export const Route = createFileRoute('/themetest')({
   component: RouteComponent,

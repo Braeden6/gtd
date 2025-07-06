@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { type ActionCreate, type ActionResponse, ActionService, ActionStatus, type ActionUpdate, BasicComparison } from '@gtd/shared';
+import { type ActionCreate, type ActionResponse, ActionService, ActionStatus, type ActionUpdate, BasicComparison } from '@gtd/shared/api/generated';
 import { ItemType, type KabanItem } from '@/lib/types';
 
 const QUERY_CLIENT_KEY = 'action';

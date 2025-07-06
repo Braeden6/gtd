@@ -8,11 +8,11 @@ import {
   FileText,
   Home
 } from 'lucide-react';
-import { cn } from '@gtd/shared';
 import { Sun, Moon } from 'lucide-react';
 import { useInboxItems } from '@/hooks/useInboxItems';
-import { Theme, useTheme } from '@gtd/shared';
-import { Button } from '@gtd/shared';
+import { Theme, useTheme } from '@gtd/shared/hooks/useTheme';
+import { Button } from '@gtd/shared/components/ui/button';
+import { cn } from '@gtd/shared/lib/utils';
 
 type NavigationItem = {
   name: string;
@@ -28,6 +28,7 @@ export function Sidebar() {
   
   const navigation: NavigationItem[] = [
     { name: 'Dashboard', icon: Home, href: '/' },
+    // @ts-ignore
     { name: 'Inbox', icon: Inbox, count: items.filter(item => !item.processed).length, href: '/inbox' },
     { name: 'Next Actions', icon: CheckSquare, href: '/next-actions' },
     { name: 'Projects', icon: FolderKanban, href: '/projects' },
@@ -44,9 +45,6 @@ export function Sidebar() {
           <NavLink key={item.name} item={item} isActive={location.pathname === item.href} />
         ))}
       </nav>
-
-      asdasdasdasd
-      
       <div className="p-4 border-t">
         <Button
           variant="ghost"

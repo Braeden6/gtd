@@ -1,4 +1,4 @@
-import { UsersService } from '@gtd/shared';
+import { UsersService } from '@gtd/shared/api/generated';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useSessionContext } from 'supertokens-auth-react/recipe/session';

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { type InboxItemResponseDTO, InboxService, type InboxItemUpdate, BasicComparison } from '@gtd/shared';
+import { type InboxItemResponseDTO, InboxService, type InboxItemUpdate, BasicComparison } from '@gtd/shared/api/generated';
 import { ItemType, type KabanItem } from '@/lib/types';
 
 export function useInboxItems() {
