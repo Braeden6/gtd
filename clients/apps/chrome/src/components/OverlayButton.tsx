@@ -10,7 +10,7 @@ function OverlayButton() {
         {!isOpen && 
             <Button
                 onClick={open}
-                className="rounded-full !bg-background/60 !text-foreground !p-2"
+                className="rounded-full !bg-black !text-white !p-2"
             >
             <CheckCircle  size={40}/>
         </Button>

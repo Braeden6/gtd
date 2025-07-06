@@ -24,7 +24,7 @@ function SidePanel() {
     return (
         <>
         {isOpen && (
-            <Card className="w-[500px] h-[500px] bg-black/70 text-white rounded-lg !p-4 !border-2">
+            <Card className="w-[500px] h-[500px] !bg-black !text-white rounded-lg !p-4 !border">
               <Button 
                 onClick={close}
                 className="absolute top-4 right-4"

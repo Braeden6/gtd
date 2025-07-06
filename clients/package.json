@@ -9,5 +9,13 @@
   },
   "devDependencies": {
     "openapi-typescript-codegen": "^0.29.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@biomejs/biome",
+      "@tailwindcss/oxide",
+      "browser-tabs-lock",
+      "esbuild"
+    ]
   }
 }

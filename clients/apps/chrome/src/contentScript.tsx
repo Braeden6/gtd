@@ -1,9 +1,10 @@
 import { createRoot } from 'react-dom/client';
 import './styles.css';
+// import '@gtd/shared/dist/shared.css';
 import Overlay from './components/Overlay';
 import { initializeApi, useTheme } from '@gtd/shared';
 
-const overlayId = '__gtd_overlay_root';
+const overlayId = 'gtd_overlay';
 
 if (!document.getElementById(overlayId)) {
   const { initializeTheme } = useTheme.getState();

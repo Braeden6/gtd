@@ -38,12 +38,14 @@ export function Sidebar() {
 
 
   return (
-    <aside className="w-64 h-[calc(100vh-3.5rem)] border-r bg-muted/10 flex flex-col">
+    <aside className="w-64 h-[calc(100vh-3.5rem)] border bg-primary flex flex-col">
       <nav className="flex flex-col gap-2 p-4 flex-1 overflow-y-auto">
         {navigation.map((item) => (
           <NavLink key={item.name} item={item} isActive={location.pathname === item.href} />
         ))}
       </nav>
+
+      asdasdasdasd
       
       <div className="p-4 border-t">
         <Button
