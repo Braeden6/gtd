@@ -1,65 +1,183 @@
-import { Card } from '@gtd/shared/components/ui/card';
-import { createFileRoute } from '@tanstack/react-router';
-// import { useInboxItems } from '@/hooks/useInboxItems';
+import Calendar, { type CalendarEvent } from '@/components/Calendar';
+import DeadlineDrawer, { type Deadline } from '@/components/DeadlineDrawer';
+import { getElementTypeStyles } from '@/utils/getStyles';
+import { ElementType } from '@/lib/types';
+import { Card, CardContent, CardHeader, CardTitle } from '@gtd/shared/components/ui/card';
+import { cn } from '@gtd/shared/lib/utils';
+import { createFileRoute } from '@tanstack/react-router'
+import {
+    CalendarIcon,
+  } from "lucide-react";
+  import { useState } from "react";
+import { Priority } from '@gtd/shared/api/generated';
 
 export const Route = createFileRoute('/_main/')({
-  component: Dashboard,
+    component: RouteComponent,
 })
+  
+function RouteComponent() {
+    const [showDeadlines, setShowDeadlines] = useState(false);
 
-function Dashboard() {
-  // const { items } = useInboxItems();
+    const [calendarViewingDate, setCalendarViewingDate] = useState(new Date());
 
-  return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">Welcome to your GTD workspace</p>
-        </div>
+    const handleCalendarViewingDateChange = (increment: number) => {
+        setCalendarViewingDate(new Date(calendarViewingDate.setMonth(calendarViewingDate.getMonth() + increment)));
+    }
+  
+    const overviewCards = [
+      {
+        title: "Next Action due Today",
+        value: "1",
+        valueColor: getElementTypeStyles(ElementType.Action).textColor,
+      },
+      {
+        title: "Project due Soon",
+        value: "1",
+        valueColor: getElementTypeStyles(ElementType.Project).textColor,
+      },
+      {
+        title: "Overdue Tasks",
+        value: "3",
+        valueColor: getElementTypeStyles(undefined).textColor,
+      },
+    ];
+  
+    const calendarEvents = [
+      { day: new Date(2025, 0, 5), type: "action" },
+      { day: new Date(2025, 0, 9), type: "action" },
+      { day: new Date(2025, 0, 18), type: "action" },
+      { day: new Date(2025, 0, 19), type: "action" },
+      { day: new Date(2025, 0, 26), type: "action" },
+      { day: new Date(2025, 0, 31), type: "project" },
+    ] as CalendarEvent[];
+  
+    const upcomingDeadlines = [
+      {
+        id: 1,
+        title: "Complete project proposal",
+        date: "2024-07-20",
+        type: ElementType.Action,
+        priority: Priority.HIGH,
+      },
+      {
+        id: 2,
+        title: "Review marketing materials",
+        date: "2024-07-22",
+        type: ElementType.Action,
+        priority: Priority.MEDIUM,
+      },
+      {
+        id: 3,
+        title: "Website redesign project",
+        date: "2024-07-31",
+        type: ElementType.Project,
+        priority: Priority.HIGH,
+      },
+      {
+        id: 4,
+        title: "Team meeting preparation",
+        date: "2024-08-02",
+        type: ElementType.Action,
+        priority: Priority.LOW,
+      },
+    ] as Deadline[];
+  
+    const pastDeadlines = [
+      {
+        id: 5,
+        title: "Submit quarterly report",
+        date: "2024-07-15",
+        type: ElementType.Action,
+        priority: Priority.HIGH,
+        status: "overdue",
+      },
+      {
+        id: 6,
+        title: "Client presentation",
+        date: "2024-07-10",
+        type: ElementType.Action,
+        priority: Priority.MEDIUM,
+        status: "completed",
+      },
+      {
+        id: 7,
+        title: "Budget planning",
+        date: "2024-07-05",
+        type: ElementType.Project,
+        priority: Priority.HIGH,
+        status: "overdue",
+      },
+    ] as Deadline[];
 
-        {/* Dashboard Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Inbox Card */}
-          <Card className="p-6">
-            <h2 className="text-lg font-semibold mb-2">Inbox</h2>
-            {/* <div className="text-2xl text-primary">{items.filter(item => !item.processed).length} of {items.length} items</div> */}
-            <p className="text-sm text-muted-foreground">Items need processing</p>
-          </Card>
 
-          {/* Today's Actions */}
-          <Card className="p-6">
-            <h2 className="text-lg font-semibold mb-2">Today</h2>
-            <div className="space-y-2">
-              <div className="text-sm">📝 Review project proposal</div>
-              <div className="text-sm">📞 Call client about meeting</div>
-            </div>
-          </Card>
+  
+    return (
+      <div className="w-full h-[832px] overflow-hidden relative">
+        <div className="transition-all duration-300 ease-in-out">
+          <div className="flex flex-col w-full max-w-[1239px] items-start gap-[38px] absolute top-0 left-5">
+            <div className="flex gap-[27px] w-full">  
+              <div className="flex flex-col w-[820px] items-start gap-[30px]">
+                <h2 className="relative self-stretch font-bold text-[26px]">
+                  Overview
+                </h2>
 
-          {/* Active Projects */}
-          <Card className="p-6">
-            <h2 className="text-lg font-semibold mb-2">Active Projects</h2>
-            <div className="text-3xl font-bold">3</div>
-            <p className="text-sm text-muted-foreground">Projects in progress</p>
-          </Card>
-        </div>
+                <div className="flex items-stretch gap-5 self-stretch w-full">
+                  {overviewCards.map((card, index) => (
+                    <Card
+                      key={index}
+                      className="flex-1 rounded-[10px] overflow-hidden"
+                    >
+                      <CardHeader>
+                        <CardTitle>{card.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent className={cn(
+                        "flex flex-col justify-between h-full",
+                        card.valueColor
+                      )}>
+                        <div className="font-bold text-2xl">
+                          {card.value}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
 
-        {/* Recent Activity */}
-        <Card className="p-6">
-          <h2 className="text-lg font-semibold mb-4">Recent Activity</h2>
-          <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <div className="text-sm">
-                <div className="font-medium">Completed task: Update documentation</div>
-                <div className="text-muted-foreground">2 hours ago</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="text-sm">
-                <div className="font-medium">Added new project: Website Redesign</div>
-                <div className="text-muted-foreground">5 hours ago</div>
+                <h2 className="relative self-stretch font-bold text-[26px]">
+                  Calender
+                </h2>
+
+                <div className="relative w-[473px] h-[395px]">
+                  <Calendar
+                    viewingDate={calendarViewingDate}
+                    calendarEvents={calendarEvents}
+                    onMonthChange={handleCalendarViewingDateChange}
+                    enableLegend
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </Card>
+        </div>
+  
+        <div
+          className="fixed top-0 right-0 w-2 h-full z-40"
+          onMouseEnter={() => setShowDeadlines(true)}
+        />
+  
+        <div
+          className="fixed top-20 right-2 p-2 rounded-full shadow-lg bg-primary/40 transition-all duration-200"
+          onMouseEnter={() => setShowDeadlines(true)}
+          title="View Deadlines"
+        >
+          <CalendarIcon className="w-5 h-5" />
+        </div>
+  
+        <DeadlineDrawer 
+          open={showDeadlines} 
+          setOpen={setShowDeadlines} 
+          upcomingDeadlines={upcomingDeadlines} 
+          pastDeadlines={pastDeadlines} 
+        />
       </div>
-  );
-}
+    );
+  };

@@ -1,23 +1,21 @@
 import { createRoot } from 'react-dom/client';
-import './styles.css';
-// import '@gtd/shared/dist/shared.css';
+import styles from './index.css?inline';
 import Overlay from './components/Overlay';
-import { initializeApi, useTheme } from '@gtd/shared';
+import { useTheme } from '@gtd/shared/hooks/useTheme';
+import { initializeApi } from '@gtd/shared/utils/api';
 
-const overlayId = 'gtd_overlay';
+export default function createShadowRoot(styles: string) {
+  const container = document.createElement('div');
+  const shadow = container.attachShadow({ mode: 'open' });
+  const globalStyleSheet = new CSSStyleSheet();
+  globalStyleSheet.replaceSync(styles);
+  shadow.adoptedStyleSheets = [globalStyleSheet];
+  document.body.appendChild(container);
+  return createRoot(shadow);
+}
 
-if (!document.getElementById(overlayId)) {
-  const { initializeTheme } = useTheme.getState();
-  initializeTheme();
-  const div = document.createElement('div');
-  div.id = overlayId;
-  document.body.appendChild(div);
-  initializeApi(import.meta.env.VITE_API_URL);
-
-  const rootContainer = document.querySelector(`#${overlayId}`);
-  if (!rootContainer) throw new Error("Can't find GTD overlay root element");
-  
-  const root = createRoot(rootContainer);
-  root.render(<Overlay/>);
-  console.log('GTD content script loaded');
-} 
+const { initializeTheme } = useTheme.getState();
+initializeTheme();
+initializeApi(import.meta.env.VITE_API_URL);
+const root = createShadowRoot(styles);
+root.render(<Overlay/>);

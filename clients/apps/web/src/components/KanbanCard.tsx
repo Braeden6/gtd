@@ -1,8 +1,8 @@
-
-import { Badge, cn } from "@gtd/shared";
+import { Badge } from "@gtd/shared/components/ui/badge";
+import { cn } from "@gtd/shared/lib/utils";
 import { Calendar } from "lucide-react";
 import { GripVertical } from "lucide-react";
-import { Priority } from "@gtd/shared";
+import { Priority } from "@gtd/shared/api/generated";
 import { type KabanItem } from "@/lib/types";
 
 const priorityColors = {
@@ -26,7 +26,7 @@ export interface KanbanCardProps {
 export default function KanbanCard({ item, borderColor, backgroundColor }: KanbanCardProps) {
     return (
       <div className={cn(
-        "mb-3 border",
+        "mb-3 border bg-card",
         borderColor,
         item.isNew && "border-2",
         "rounded-lg"

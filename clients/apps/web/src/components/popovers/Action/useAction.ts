@@ -1,4 +1,4 @@
-import type { ActionResponse } from '@gtd/shared';
+import type { ActionResponse } from '@gtd/shared/api/generated';
 import { create } from 'zustand';
 
 export enum PopoverType {

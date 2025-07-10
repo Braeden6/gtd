@@ -13,5 +13,6 @@ export type ActionResponse = {
     status?: (ActionStatus | null);
     created_at: string;
     project_id?: (string | null);
+    inbox_id?: (string | null);
 };
 

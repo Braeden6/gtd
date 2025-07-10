@@ -1,4 +1,4 @@
-import type { InboxItemResponseDTO } from '@gtd/shared';
+import type { InboxItemResponseDTO } from '@gtd/shared/api/generated';
 import { create } from 'zustand';
 
 interface ViewInboxState {

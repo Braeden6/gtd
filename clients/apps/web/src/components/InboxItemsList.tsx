@@ -4,7 +4,7 @@ import {
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-  } from "@gtd/shared";
+  } from "@gtd/shared/components/ui/accordion";
 import { useInboxItems } from '@/hooks/useInboxItems';
 
 

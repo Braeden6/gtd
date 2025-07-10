@@ -20,10 +20,10 @@ import { useInboxItems } from "@/hooks/useInboxItems";
 import KanbanCard from "@/components/KanbanCard";
 import { KabanColumn } from "@/components/KandanColumn";
 import { ItemType, type KabanItem } from "@/lib/types";
-import { useViewInbox } from "@/hooks/popover/useViewInbox";
-import ViewInbox from "@/components/popovers/ViewInbox";
-import { PopoverType, useAction } from "@/hooks/popover/useAction";
-import ActionPopover from "@/components/popovers/Action";
+import { useViewInbox } from "@/components/popovers/Inbox/useViewInbox";
+import ViewInbox from "@/components/popovers/Inbox/ViewInbox";
+import { PopoverType, useAction } from "@/components/popovers/Action/useAction";
+import ActionPopover from "@/components/popovers/Action/Action";
 import { useProjects } from "@/hooks/useProjects";
 
 export const Route = createFileRoute('/_main/inbox')({
@@ -32,7 +32,7 @@ export const Route = createFileRoute('/_main/inbox')({
 
 function Inbox() {
   const { items, updateItem, kanbanItems } = useInboxItems();
-  const { kanbanActions } = useActions();
+  const { actions,kanbanActions } = useActions();
   const { kanbanProjects } = useProjects();
   const { setPopoverOpen, setPopoverItem } = useViewInbox();
   const { setPopover: setActionPopover } = useAction();
@@ -56,7 +56,7 @@ function Inbox() {
       return actionItem;
     }
 
-    const projectItem = kanbanProjects.find(item => item.id === id);
+    const projectItem = kanbanProjects.find((item) => item.id === id);
     if (projectItem) {
       return projectItem;
     }
@@ -100,9 +100,10 @@ function Inbox() {
   }
 
   const handleActionClick = (id: string) => {
-    const actionItem = kanbanActions.find(item => item.id === id);
-    const inboxItem = items.find(item => item.id === id);
+    const actionItem = actions.find(item => item.id === id);
+    
     if (actionItem) {
+      const inboxItem = items.find(item => item.id === actionItem?.inbox_id);
       setPopoverItem(inboxItem || null);
       setActionPopover({
         isOpen: true,

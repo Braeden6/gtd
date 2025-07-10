@@ -1,7 +1,6 @@
 import { useFormPopup } from "@/hooks/useFormPopup";
-import { Button } from "@gtd/shared";
+import { Button } from "@gtd/shared/components/ui/button";
 import { useEffect, useState } from "react";
-import '@/styles.css'
 
 function SelectionButton() {
     const { addText, open } = useFormPopup();
@@ -83,7 +82,7 @@ function SelectionButton() {
         {selectedText && selectionPosition && (
             <Button
               onClick={handleAddSelectedText}
-              className="fixed z-[999998] !cursor-pointer !bg-black !text-white rounded-lg !p-2 !text-[18px]"
+              className="fixed z-[999998] !cursor-pointer !bg-black/80 !text-white !rounded-lg !p-2 !text-[18px]"
               style={{
                 left: `${selectionPosition.x}px`,
                 top: `${selectionPosition.y}px`,
