@@ -32,7 +32,10 @@ async def current_active_user(
             raise HTTPException(status_code=401, detail="Unauthorized")
         return user
     except Exception:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(
+            status_code=428, 
+            detail="Account setup incomplete. Please complete your profile."
+        )
 
 def get_protected_router(prefix: str, tags: list[str | Enum]):
     return APIRouter(

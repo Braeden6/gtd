@@ -1,4 +1,4 @@
-from src.features.extended_inbox.schemas import SearchExtendedInbox
+# from src.features.extended_inbox.schemas import SearchExtendedInbox
 from src.features.inbox.repository import InboxRepository
 from src.features.inbox.schemas import InboxItemUpdate, SearchInboxItem
 from src.features.inbox.model import InboxItem
@@ -12,7 +12,7 @@ from typing import Optional
 from fastapi import UploadFile
 from src.features.audio.model import Audio
 from src.features.image.model import Image
-from src.features.extended_inbox.service import ExtendedInboxService
+# from src.features.extended_inbox.service import ExtendedInboxService
 from uuid import UUID
 
 class InboxService(BaseSoftDeleteService[InboxItem, InboxItemUpdate, SearchInboxItem]):
@@ -21,12 +21,13 @@ class InboxService(BaseSoftDeleteService[InboxItem, InboxItemUpdate, SearchInbox
         repository: Annotated[InboxRepository, Depends()],
         audio_service: Annotated[AudioService, Depends()],
         image_service: Annotated[ImageService, Depends()],
-        extended_inbox_service: Annotated[ExtendedInboxService, Depends()]
+        # tech debt: do we need this? adds transcript of audio to response
+        # extended_inbox_service: Annotated[ExtendedInboxService, Depends()]
     ):
         super().__init__(repository)
         self.audio_service = audio_service
         self.image_service = image_service
-        self.extended_inbox_service = extended_inbox_service
+        # self.extended_inbox_service = extended_inbox_service
     @override
     async def create(self, item: InboxItem, audio: Optional[UploadFile], image: Optional[UploadFile]) -> InboxItem:
         if audio:
@@ -48,12 +49,12 @@ class InboxService(BaseSoftDeleteService[InboxItem, InboxItemUpdate, SearchInbox
     
     @override
     async def get_all(self, user_id: UUID) -> list[InboxItem]:
-        return await self.extended_inbox_service.get_all(user_id)
+        return await self.repository.get_all(user_id)
     
     @override
     async def get_by_id(self, item_id: UUID, user_id: UUID) -> InboxItem:
-        return await self.extended_inbox_service.get_by_id(item_id, user_id)
+        return await self.repository.get_by_id(item_id, user_id)
     
     @override
-    async def search(self, user_id: UUID, search: SearchExtendedInbox) -> list[InboxItem]:
-        return await self.extended_inbox_service.search(user_id, search)
+    async def search(self, user_id: UUID, search: SearchInboxItem) -> list[InboxItem]:
+        return await self.repository.search(user_id, search)

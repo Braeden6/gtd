@@ -18,16 +18,14 @@ export function useAuth() {
       try {
         return await UsersService.getCurrentUserUsersMeGet()
       } catch (error: any) {
-        if (error.status === 404) {
+        if (error.status === 428) {
           navigate({ to: '/user/create' });
           return null;
         } else if (error.status === 401) {
           navigate({ to: '/login' });
           return null;
-        } else {
-          navigate({ to: '/login' });
-          return null;
         }
+        // tech debt: 404 or other errors? maybe a specific page for this?
       } 
     },
   });

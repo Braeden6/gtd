@@ -12,32 +12,30 @@
 # prospector src/api
 
 setup: 
-	cd clients && \
-	pnpm install
+	curl -LsSf https://astral.sh/uv/install.sh | sh
 
 	cd clients/shared && \
 	pnpm install
 
-	cd clients/apps/frontend && \
+	cd clients/apps/web && \
 	pnpm install
 
 	cd clients/apps/chrome && \
 	pnpm install
 
+	uv venv && \
+	uv sync
 
+	cd shared && \
+	uv sync
 
-# tech debt: fix setup
-# cd frontend && \
-# pnpm install && \
-# cd ../ && \
-# uv venv && \
-# uv sync && \
-# cd shared && \
-# uv sync && \
-# cd ../services/transcription && \
-# uv sync && \
-# cd ../backend && \
-# uv sync --dev
+	cd services/backend && \
+	uv sync --dev
+
+	docker compose up -d
+
+	cd services/backend && \
+	uv run alembic upgrade head
 
 sdk:
 	cd clients && \
@@ -45,7 +43,6 @@ sdk:
 
 # run services
 backend:
-	source .venv/bin/activate && \
 	cd services/backend && \
 	uv run -- uvicorn src.main:app --reload --host 0.0.0.0
 
@@ -53,11 +50,6 @@ transcription:
 	source .venv/bin/activate && \
 	cd services/transcription && \
 	uv run -- python app/main.py
-
-# make sure to run this for hot reloading on shared components
-shared:
-	cd clients/shared && \
-	pnpm run dev
 
 web:
 	cd clients/apps/web && \
@@ -72,25 +64,17 @@ mobile:
 	pnpm run start
 
 
-
-
-
 db-migrate:
-	source .venv/bin/activate && \
 	cd services/backend && \
-	alembic revision --autogenerate -m "message"
+	uv run alembic revision --autogenerate -m "message"
 
 db-upgrade:
-	source .venv/bin/activate && \
 	cd services/backend && \
-	alembic upgrade head
+	uv run alembic upgrade head
 
 db-downgrade:
-	source .venv/bin/activate && \
 	cd services/backend && \
-	alembic downgrade -1
-
-
+	uv run alembic downgrade -1
 
 
 mfix:
