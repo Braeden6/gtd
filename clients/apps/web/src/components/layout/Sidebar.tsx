@@ -3,9 +3,6 @@ import {
   Inbox, 
   CheckSquare, 
   FolderKanban, 
-  Clock, 
-  Archive, 
-  FileText,
   Home
 } from 'lucide-react';
 import { Sun, Moon } from 'lucide-react';
@@ -28,19 +25,15 @@ export function Sidebar() {
   
   const navigation: NavigationItem[] = [
     { name: 'Dashboard', icon: Home, href: '/' },
-    // @ts-ignore
     { name: 'Inbox', icon: Inbox, count: items.filter(item => !item.processed).length, href: '/inbox' },
-    { name: 'Next Actions', icon: CheckSquare, href: '/next-actions' },
     { name: 'Projects', icon: FolderKanban, href: '/projects' },
-    { name: 'Waiting For', icon: Clock, href: '/waiting-for' },
-    { name: 'Someday/Maybe', icon: Archive, href: '/someday' },
-    { name: 'Reference', icon: FileText, href: '/reference' },
+    { name: 'Completed', icon: CheckSquare, href: '/completed' },
   ];
 
 
   return (
-    <aside className="w-64 h-[calc(100vh-3.5rem)] border bg-primary flex flex-col">
-      <nav className="flex flex-col gap-2 p-4 flex-1 overflow-y-auto">
+    <aside className="w-64 h-[calc(100vh-3.5rem)] border flex flex-col">
+      <nav className="flex flex-col gap-4 p-4 flex-1 overflow-y-auto">
         {navigation.map((item) => (
           <NavLink key={item.name} item={item} isActive={location.pathname === item.href} />
         ))}
@@ -82,8 +75,8 @@ function NavLink({
       className={cn(
         'flex items-center gap-3 px-3 py-2 rounded-md',
         'text-sm font-medium',
-        'hover:bg-muted/50 transition-colors',
-        isActive && 'bg-secondary text-secondary-foreground'
+        'hover:bg-card transition-colors',
+        isActive && 'bg-primary text-primary-foreground hover:bg-primary'
       )}
     >
       <item.icon className="h-5 w-5" />

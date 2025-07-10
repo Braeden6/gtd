@@ -7,8 +7,8 @@ interface LabeledInputProps {
 export const LabeledInput = ({ label, isRequired, children }: LabeledInputProps) => {
     return (
         <div className="mb-4">
-        <div>{`${label} ${isRequired ? "*" : ""}`}</div>
-        {children}
+            <div>{`${label} ${isRequired ? "*" : ""}`}</div>
+            {children}
         </div>
     )
 }

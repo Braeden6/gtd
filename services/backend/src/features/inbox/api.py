@@ -1,7 +1,6 @@
 from fastapi import Body, Depends, UploadFile, Form, status
 from typing import Annotated, Optional
 from uuid import UUID
-from src.features.extended_inbox.service import ExtendedInboxService
 from src.features.inbox.service import InboxService
 from src.core.dependencies import current_active_user
 from src.features.user.model import User
@@ -34,7 +33,7 @@ async def get_user_inbox_items(
 
 @router.post("/search", response_model=list[InboxItemResponseDTO], status_code=status.HTTP_200_OK, summary="Search for inbox items")
 async def search_inbox_items(
-    inbox_service: Annotated[ExtendedInboxService, Depends()],
+    inbox_service: Annotated[InboxService, Depends()],
     current_user: User = Depends(current_active_user),
     search_params: SearchInboxItem = Body(...),
 ):

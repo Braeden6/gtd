@@ -70,11 +70,18 @@ app.add_middleware(SessionMiddleware, secret_key=settings.SESSION_SECRET_KEY)
 @app.middleware("http")
 async def origin_validation_middleware(request: Request, call_next):
     # allowing post to inbox from any origin for chrome extension
-    if request.url.path.endswith("inbox/") and request.method == "POST":
-        response = await call_next(request)
-        response.headers["Access-Control-Allow-Origin"] = request.headers.get("origin")
-        return response
-    
+    allowed = [
+        { "endwith": "inbox/", "method": "POST" },
+        { "endwith": "docs", "method": "GET" },
+        { "endwith": "openapi.json", "method": "GET" },
+    ]
+    for allowed_route in allowed:
+        if request.url.path.endswith(allowed_route["endwith"]) and request.method == allowed_route["method"]:
+            response = await call_next(request)
+            if request.headers.get("origin"):
+                response.headers["Access-Control-Allow-Origin"] = request.headers.get("origin")
+            return response
+
     # allow only restricted origins for all other routes because cookies same site is none
     origin = request.headers.get("origin")
     if origin and origin in settings.FRONTEND_URL.split(','):

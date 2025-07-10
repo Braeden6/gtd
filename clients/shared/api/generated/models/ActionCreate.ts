@@ -29,5 +29,9 @@ export type ActionCreate = {
      * Project ID of the action
      */
     project_id?: (string | null);
+    /**
+     * Inbox ID of the action
+     */
+    inbox_id?: (string | null);
 };
 

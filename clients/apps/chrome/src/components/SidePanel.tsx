@@ -1,5 +1,8 @@
 import { useFormPopup } from "@/hooks/useFormPopup";
-import { Button, Card, CardContent, CardFooter, CardHeader, CardTitle, Textarea, InboxService } from "@gtd/shared";
+import { Button } from "@gtd/shared/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@gtd/shared/components/ui/card";
+import { Textarea } from "@gtd/shared/components/ui/textarea";
+import { InboxService } from "@gtd/shared/api/generated";
 import { Loader2, X } from "lucide-react";
 import { useState } from "react";
 
@@ -24,7 +27,7 @@ function SidePanel() {
     return (
         <>
         {isOpen && (
-            <Card className="w-[500px] h-[500px] !bg-black !text-white rounded-lg !p-4 !border">
+            <Card className="w-[500px] h-[500px] !bg-black/80 !text-white !rounded-lg !p-4 !border">
               <Button 
                 onClick={close}
                 className="absolute top-4 right-4"

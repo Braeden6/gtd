@@ -33,6 +33,7 @@ class ActionCreate(SQLModel, table=False):
     due_date: Optional[NaiveDateTime] = Field(None, description="Due date of the action")
     status: Optional[ActionStatus] = Field(None, description="Status of the action")
     project_id: Optional[UUID] = Field(None, description="Project ID of the action")
+    inbox_id: Optional[UUID] = Field(None, description="Inbox ID of the action")
 
     class Config:
         json_schema_extra = {
@@ -42,7 +43,8 @@ class ActionCreate(SQLModel, table=False):
                 "priority": Priority.HIGH,
                 "due_date": "2023-06-15T12:30:45.123Z",
                 "status": ActionStatus.PENDING,
-                "project_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                "project_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                "inbox_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
             }
         }
 
@@ -55,6 +57,7 @@ class ActionResponse(SQLModel, table=False):
     status: Optional[ActionStatus] = None
     created_at: datetime
     project_id: Optional[UUID] = None
+    inbox_id: Optional[UUID] = None
     
     class Config:
         from_attributes = True
@@ -67,6 +70,7 @@ class ActionResponse(SQLModel, table=False):
                 "due_date": "2023-06-15T12:30:45.123Z",
                 "status": ActionStatus.PENDING,
                 "created_at": "2023-06-15T12:30:45.123Z",
-                "project_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                "project_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                "inbox_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
             }
         }

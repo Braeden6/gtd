@@ -20,6 +20,7 @@ async def get_current_user(
     user: User = Depends(current_active_user),
 ):
     return user
+        
 
 
 @router.post("/create", response_model=UserReadDTO, summary="Create user")

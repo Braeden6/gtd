@@ -16,7 +16,7 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@gtd/shared/*": ["./*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"]

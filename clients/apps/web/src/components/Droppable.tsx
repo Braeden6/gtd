@@ -1,5 +1,5 @@
 import { useDndContext, useDroppable } from "@dnd-kit/core";
-import { cn } from "@gtd/shared";
+import { cn } from "@gtd/shared/lib/utils";
 
 interface DroppableProps {
   id: string;

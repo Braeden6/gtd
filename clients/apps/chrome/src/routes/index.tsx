@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Button, Test } from '@gtd/shared'
+import { Button } from '@gtd/shared/components/ui/button'
 import { useUser } from '@/hooks/useUser';
 
 export const Route = createFileRoute('/')({
@@ -25,7 +25,6 @@ function App() {
         <div>
           Welcome {user?.first_name} {user?.last_name}
         </div>
-        <Test />
       </header>
     </div>
   )

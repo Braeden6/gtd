@@ -1,10 +1,14 @@
 import { Calendar, X } from "lucide-react";
 import { useInboxItems } from "@/hooks/useInboxItems";
-import { Button, Label, Popover, PopoverContent, Textarea } from "@gtd/shared";
+import { Label } from "@gtd/shared/components/ui/label";
+import { Popover, PopoverContent } from "@gtd/shared/components/ui/popover";
+import { Textarea } from "@gtd/shared/components/ui/textarea";
+import { Button } from "@gtd/shared/components/ui/button";
 import { formatDate } from "@/lib/date";
-import { useViewInbox } from "@/hooks/popover/useViewInbox";
+import { useViewInbox } from "@/components/popovers/Inbox/useViewInbox";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Card } from "@gtd/shared/components/ui/card";
 
 export default function ViewInbox() {
     const { updateItem } = useInboxItems();
@@ -45,10 +49,10 @@ export default function ViewInbox() {
           onClick={() => setPopoverOpen(false)}
           className="w-[100vw] h-[100vh] z-100 absolute top-0 left-0 bg-black/50 flex items-center justify-center text-foreground"
         >
-          <div className="bg-secondary border-primary border-2 rounded-md shadow-lg w-[400px] p-4" onClick={(e) => e.stopPropagation()}>
+          <Card className="border-2 rounded-md shadow-lg w-[400px] p-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-4">
               <div className="font-medium">Capture date</div>
-              <Button variant="ghost" onClick={() => setPopoverOpen(false)} className="text-gray-500 hover:text-gray-700">
+              <Button variant="ghost" onClick={() => setPopoverOpen(false)}>
                 <X className="w-6 h-6" />
               </Button>
             </div>
@@ -63,7 +67,7 @@ export default function ViewInbox() {
                 <div className="font-medium mb-2">Content</div>
                 {image && (<img src={image} alt="image" className="w-full h-auto max-h-64 object-contain cursor-pointer" />)}
                 {audio && <audio src={audio} controls className="custom-audio-player" />}
-                {popoverItem?.content && <Textarea className="w-full border rounded-md p-2 text-sm max-h-[400px]" value={popoverItem?.content} />}
+                {popoverItem?.content && <Textarea className="w-full border border-secondary rounded-md p-2 text-sm max-h-[400px] min-h-[150px]" value={popoverItem?.content} />}
               </div>
             </div>
             
@@ -77,9 +81,9 @@ export default function ViewInbox() {
                     setPopoverOpen(false);
                   }}
               >Complete</Button>
-              <Button className="bg- text-gray-700 py-2 rounded-md w-1/2" onClick={() => setPopoverOpen(false)}>Cancel</Button>
+              <Button className="py-2 rounded-md w-1/2 bg-accent text-accent-foreground" onClick={() => setPopoverOpen(false)}>Cancel</Button>
             </div>
-          </div>
+          </Card>
         </PopoverContent>
       </Popover>
     )

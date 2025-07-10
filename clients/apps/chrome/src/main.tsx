@@ -3,16 +3,16 @@ import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import * as TanStackQueryProvider from './lib/root-provider.tsx'
 import { routeTree } from './routeTree.gen'
-import './styles.css'
+import './index.css'
 import reportWebVitals from './reportWebVitals.ts'
-import { initializeApi } from '@gtd/shared'
 import SuperTokens, { SuperTokensWrapper } from "supertokens-auth-react";
 import ThirdPartyReact from 'supertokens-auth-react/recipe/thirdparty'
 import { Google } from 'supertokens-auth-react/recipe/thirdparty';
 import Session from "supertokens-auth-react/recipe/session";
 import { canHandleRoute, getRoutingComponent } from 'supertokens-auth-react/ui/index'
 import { ThirdPartyPreBuiltUI } from 'supertokens-auth-react/recipe/thirdparty/prebuiltui'
-import { useTheme } from '@gtd/shared'
+import { useTheme } from '@gtd/shared/hooks/useTheme.tsx'
+import { initializeApi } from '@gtd/shared/utils/api.ts'
 
 const router = createRouter({
   routeTree,

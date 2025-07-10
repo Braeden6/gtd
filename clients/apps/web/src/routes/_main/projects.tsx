@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react';
 import { Plus, ChevronDown, ChevronRight } from 'lucide-react';
-import { Button } from '@gtd/shared';
+import { Button } from '@gtd/shared/components/ui/button';
 
 interface Project {
   id: string;

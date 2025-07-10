@@ -1,5 +1,5 @@
 
-import { UsersService } from '@gtd/shared';
+import { UsersService } from '@gtd/shared/api/generated';
 import { useQuery } from '@tanstack/react-query';
 
 export const useUser = () => {

@@ -32,5 +32,6 @@
       },
       "editor.codeActionsOnSave": {
         "source.organizeImports.biome": "explicit"
-      }
+      },
+      "cursorpyright.analysis.typeCheckingMode": "basic"
 }

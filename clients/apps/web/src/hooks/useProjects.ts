@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { type ProjectCreate, type ProjectResponse, ProjectService, type ProjectUpdate } from '@gtd/shared';
+import { type ProjectCreate, type ProjectResponse, ProjectService, type ProjectUpdate } from '@gtd/shared/api/generated';
 import { ItemType, type KabanItem } from '@/lib/types';
 
 const QUERY_CLIENT_KEY = 'project';
