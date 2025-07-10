@@ -14,6 +14,8 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as MainRouteImport } from './routes/_main'
 import { Route as MainIndexRouteImport } from './routes/_main/index'
 import { Route as UserCreateRouteImport } from './routes/user.create'
+import { Route as MainTest2RouteImport } from './routes/_main/test2'
+import { Route as MainTestRouteImport } from './routes/_main/test'
 import { Route as MainProjectsRouteImport } from './routes/_main/projects'
 import { Route as MainInboxRouteImport } from './routes/_main/inbox'
 
@@ -41,6 +43,16 @@ const UserCreateRoute = UserCreateRouteImport.update({
   path: '/user/create',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MainTest2Route = MainTest2RouteImport.update({
+  id: '/test2',
+  path: '/test2',
+  getParentRoute: () => MainRoute,
+} as any)
+const MainTestRoute = MainTestRouteImport.update({
+  id: '/test',
+  path: '/test',
+  getParentRoute: () => MainRoute,
+} as any)
 const MainProjectsRoute = MainProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
@@ -57,6 +69,8 @@ export interface FileRoutesByFullPath {
   '/themetest': typeof ThemetestRoute
   '/inbox': typeof MainInboxRoute
   '/projects': typeof MainProjectsRoute
+  '/test': typeof MainTestRoute
+  '/test2': typeof MainTest2Route
   '/user/create': typeof UserCreateRoute
   '/': typeof MainIndexRoute
 }
@@ -65,6 +79,8 @@ export interface FileRoutesByTo {
   '/themetest': typeof ThemetestRoute
   '/inbox': typeof MainInboxRoute
   '/projects': typeof MainProjectsRoute
+  '/test': typeof MainTestRoute
+  '/test2': typeof MainTest2Route
   '/user/create': typeof UserCreateRoute
   '/': typeof MainIndexRoute
 }
@@ -75,6 +91,8 @@ export interface FileRoutesById {
   '/themetest': typeof ThemetestRoute
   '/_main/inbox': typeof MainInboxRoute
   '/_main/projects': typeof MainProjectsRoute
+  '/_main/test': typeof MainTestRoute
+  '/_main/test2': typeof MainTest2Route
   '/user/create': typeof UserCreateRoute
   '/_main/': typeof MainIndexRoute
 }
@@ -85,10 +103,20 @@ export interface FileRouteTypes {
     | '/themetest'
     | '/inbox'
     | '/projects'
+    | '/test'
+    | '/test2'
     | '/user/create'
     | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/themetest' | '/inbox' | '/projects' | '/user/create' | '/'
+  to:
+    | '/login'
+    | '/themetest'
+    | '/inbox'
+    | '/projects'
+    | '/test'
+    | '/test2'
+    | '/user/create'
+    | '/'
   id:
     | '__root__'
     | '/_main'
@@ -96,6 +124,8 @@ export interface FileRouteTypes {
     | '/themetest'
     | '/_main/inbox'
     | '/_main/projects'
+    | '/_main/test'
+    | '/_main/test2'
     | '/user/create'
     | '/_main/'
   fileRoutesById: FileRoutesById
@@ -144,6 +174,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_main/test2': {
+      id: '/_main/test2'
+      path: '/test2'
+      fullPath: '/test2'
+      preLoaderRoute: typeof MainTest2RouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/_main/test': {
+      id: '/_main/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof MainTestRouteImport
+      parentRoute: typeof MainRoute
+    }
     '/_main/projects': {
       id: '/_main/projects'
       path: '/projects'
@@ -164,12 +208,16 @@ declare module '@tanstack/react-router' {
 interface MainRouteChildren {
   MainInboxRoute: typeof MainInboxRoute
   MainProjectsRoute: typeof MainProjectsRoute
+  MainTestRoute: typeof MainTestRoute
+  MainTest2Route: typeof MainTest2Route
   MainIndexRoute: typeof MainIndexRoute
 }
 
 const MainRouteChildren: MainRouteChildren = {
   MainInboxRoute: MainInboxRoute,
   MainProjectsRoute: MainProjectsRoute,
+  MainTestRoute: MainTestRoute,
+  MainTest2Route: MainTest2Route,
   MainIndexRoute: MainIndexRoute,
 }
 
