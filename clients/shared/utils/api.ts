@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import { OpenAPI } from '../api/generated';
+import { OpenAPI } from '../../api/generated';
 
 export function initializeApi(API_URL?: string) {
     OpenAPI.BASE = (API_URL || 'http://localhost:3000');

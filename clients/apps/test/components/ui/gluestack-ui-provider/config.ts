@@ -1,0 +1,51 @@
+'use client';
+import { vars } from 'nativewind';
+// import { generateColorPalette } from '@/utils/color';
+
+export const config = {
+  light: vars({
+    background: '#FFFFFF',
+    foreground: '#000000',
+    card: '#FFFFFF',
+    cardForeground: '#000000',
+    popover: '#5d5a60',
+    popoverForeground: '#FFFFFF',
+    primary: '#0284C7',        
+    primaryForeground: '#000000',
+    secondary: '#37A1E7',
+    secondaryForeground: '#000000',
+    muted: '#F1F5F9',
+    mutedForeground: '#64748B',
+    accent: '#F1F5F9',
+    accentForeground: '#0F172A',
+    destructive: '#ED0C0C',
+    destructiveForground: '#FFFFFF',
+    border: '#E2E8F0',
+    input: '#E2E8F0',
+    ring: '#7DD3FC',
+  }),
+  
+  dark: vars({
+    background: '#2E1A51',     
+    foreground: '#FFFFFF',
+    card: '#ECE4FB',
+    cardForeground: '#000000',
+    popover: '#F0EEF2',
+    popoverForeground: '#000000',
+    primary: '#8B5CF6',         
+    primaryForeground: '#FFFFFF',
+    secondary: '#A78BFA',
+    secondaryForeground: '#000000',
+    tertiary: '#E1F1FB',
+    tertiaryForeground: '#000000',
+    muted: '#334155',
+    mutedForeground: '#94A3B8',
+    accent: '#334155',
+    accentForeground: '#FFFFFF',
+    destructive: '#ED0C0C',
+    destructiveForground: '#FFFFFF',
+    border: '#334155',
+    input: '#334155',
+    ring: '#A78BFA',
+  }),
+};

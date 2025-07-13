@@ -20,7 +20,7 @@ export function Topbar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="h-8 w-8 border-2 border-primary hover:border-secondary cursor-pointer">
                     <AvatarFallback>
                       {user?.first_name?.charAt(0).toUpperCase() || 'U'}
                     </AvatarFallback>

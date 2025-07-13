@@ -6,11 +6,11 @@ from src.core.util import get_all_routers
 from src.service.audio_transcription_result import AudioTranscriptionResultProcessor
 from starlette.middleware.sessions import SessionMiddleware
 from supertokens_python import init, InputAppInfo, SupertokensConfig
-from supertokens_python.recipe import session
+from supertokens_python.recipe import session, passwordless, thirdparty
 from supertokens_python import get_all_cors_headers
 from supertokens_python.framework.fastapi.fastapi_middleware import get_middleware
-from supertokens_python.recipe import thirdparty
 from supertokens_python.recipe.thirdparty import ProviderInput, ProviderConfig, ProviderClientConfig, SignInAndUpFeature
+from supertokens_python.recipe.passwordless import ContactEmailOnlyConfig
 
 async def lifespan(app: FastAPI):
     app.state.processor = AudioTranscriptionResultProcessor()
@@ -51,6 +51,10 @@ init(
                     ),
                 ]
             )
+        ),
+        passwordless.init(
+            flow_type="MAGIC_LINK",
+            contact_config=ContactEmailOnlyConfig()
         )
     ]
 )

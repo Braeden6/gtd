@@ -2,46 +2,15 @@ import { Calendar, X } from "lucide-react";
 import { useInboxItems } from "@/hooks/useInboxItems";
 import { Label } from "@gtd/shared/components/ui/label";
 import { Popover, PopoverContent } from "@gtd/shared/components/ui/popover";
-import { Textarea } from "@gtd/shared/components/ui/textarea";
 import { Button } from "@gtd/shared/components/ui/button";
 import { formatDate } from "@/lib/date";
 import { useViewInbox } from "@/components/popovers/Inbox/useViewInbox";
-import { useEffect, useState } from "react";
-import axios from "axios";
 import { Card } from "@gtd/shared/components/ui/card";
+import BaseViewInboxData from "./BaseViewInboxData";
 
 export default function ViewInbox() {
     const { updateItem } = useInboxItems();
     const { popoverOpen, setPopoverOpen, popoverItem } = useViewInbox();
-    const [image, setImage] = useState<string | null>(null);
-    const [audio, setAudio] = useState<string | null>(null);
-
-    useEffect(() => {
-        const getAudio = async () => {
-          if (!popoverItem?.audio_id) {
-            setAudio(null);
-            return;
-          };
-          const response = await axios.get(`${import.meta.env.VITE_API_URL}/audio/${popoverItem.audio_id}/file`, { responseType: 'arraybuffer' });
-          const blob = new Blob([response.data], { type: 'audio/mpeg' });
-          const audioUrl = URL.createObjectURL(blob);
-          setAudio(audioUrl);
-        }
-
-        const getImage = async () => {
-          if (!popoverItem?.image_id) {
-            setImage(null);
-            return;
-          };
-          const response = await axios.get(`${import.meta.env.VITE_API_URL}/image/${popoverItem.image_id}/file`, { responseType: 'arraybuffer' });
-          const blob = new Blob([response.data], { type: 'image/jpeg' });
-          const imageUrl = URL.createObjectURL(blob);
-          setImage(imageUrl);
-        }
-
-        getAudio();
-        getImage();
-    }, [popoverItem]);
 
     return (
     <Popover open={popoverOpen}>
@@ -62,13 +31,7 @@ export default function ViewInbox() {
                 <Calendar className="w-4 h-4 mr-2" />
                 <Label htmlFor="captureDate" className="text-sm">{formatDate(popoverItem?.created_at as string)}</Label>
               </div>
-              
-              <div className="mb-4 ga-1">
-                <div className="font-medium mb-2">Content</div>
-                {image && (<img src={image} alt="image" className="w-full h-auto max-h-64 object-contain cursor-pointer" />)}
-                {audio && <audio src={audio} controls className="custom-audio-player" />}
-                {popoverItem?.content && <Textarea className="w-full border border-secondary rounded-md p-2 text-sm max-h-[400px] min-h-[150px]" value={popoverItem?.content} />}
-              </div>
+              <BaseViewInboxData />
             </div>
             
             <div className="flex flex-col gap-2 items-center">

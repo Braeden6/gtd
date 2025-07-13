@@ -18,6 +18,7 @@ import { Route as MainTest2RouteImport } from './routes/_main/test2'
 import { Route as MainTestRouteImport } from './routes/_main/test'
 import { Route as MainProjectsRouteImport } from './routes/_main/projects'
 import { Route as MainInboxRouteImport } from './routes/_main/inbox'
+import { Route as MainCompletedRouteImport } from './routes/_main/completed'
 
 const ThemetestRoute = ThemetestRouteImport.update({
   id: '/themetest',
@@ -63,10 +64,16 @@ const MainInboxRoute = MainInboxRouteImport.update({
   path: '/inbox',
   getParentRoute: () => MainRoute,
 } as any)
+const MainCompletedRoute = MainCompletedRouteImport.update({
+  id: '/completed',
+  path: '/completed',
+  getParentRoute: () => MainRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/themetest': typeof ThemetestRoute
+  '/completed': typeof MainCompletedRoute
   '/inbox': typeof MainInboxRoute
   '/projects': typeof MainProjectsRoute
   '/test': typeof MainTestRoute
@@ -77,6 +84,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/themetest': typeof ThemetestRoute
+  '/completed': typeof MainCompletedRoute
   '/inbox': typeof MainInboxRoute
   '/projects': typeof MainProjectsRoute
   '/test': typeof MainTestRoute
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/_main': typeof MainRouteWithChildren
   '/login': typeof LoginRoute
   '/themetest': typeof ThemetestRoute
+  '/_main/completed': typeof MainCompletedRoute
   '/_main/inbox': typeof MainInboxRoute
   '/_main/projects': typeof MainProjectsRoute
   '/_main/test': typeof MainTestRoute
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/login'
     | '/themetest'
+    | '/completed'
     | '/inbox'
     | '/projects'
     | '/test'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
   to:
     | '/login'
     | '/themetest'
+    | '/completed'
     | '/inbox'
     | '/projects'
     | '/test'
@@ -122,6 +133,7 @@ export interface FileRouteTypes {
     | '/_main'
     | '/login'
     | '/themetest'
+    | '/_main/completed'
     | '/_main/inbox'
     | '/_main/projects'
     | '/_main/test'
@@ -202,10 +214,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainInboxRouteImport
       parentRoute: typeof MainRoute
     }
+    '/_main/completed': {
+      id: '/_main/completed'
+      path: '/completed'
+      fullPath: '/completed'
+      preLoaderRoute: typeof MainCompletedRouteImport
+      parentRoute: typeof MainRoute
+    }
   }
 }
 
 interface MainRouteChildren {
+  MainCompletedRoute: typeof MainCompletedRoute
   MainInboxRoute: typeof MainInboxRoute
   MainProjectsRoute: typeof MainProjectsRoute
   MainTestRoute: typeof MainTestRoute
@@ -214,6 +234,7 @@ interface MainRouteChildren {
 }
 
 const MainRouteChildren: MainRouteChildren = {
+  MainCompletedRoute: MainCompletedRoute,
   MainInboxRoute: MainInboxRoute,
   MainProjectsRoute: MainProjectsRoute,
   MainTestRoute: MainTestRoute,
