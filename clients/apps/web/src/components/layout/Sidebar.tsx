@@ -25,7 +25,7 @@ export function Sidebar() {
   
   const navigation: NavigationItem[] = [
     { name: 'Dashboard', icon: Home, href: '/' },
-    { name: 'Inbox', icon: Inbox, count: items.filter(item => !item.processed).length, href: '/inbox' },
+    { name: 'Inbox', icon: Inbox, count: 2, href: '/inbox' },
     { name: 'Projects', icon: FolderKanban, href: '/projects' },
     { name: 'Completed', icon: CheckSquare, href: '/completed' },
   ];
@@ -82,7 +82,7 @@ function NavLink({
       <item.icon className="h-5 w-5" />
       <span>{item.name}</span>
       {item.count && (
-        <span className="ml-auto bg-primary/10 text-primary px-2 py-1 rounded-full text-xs">
+        <span className="ml-auto bg-purple-500 text-white px-2 py-1 rounded-full text-xs">
           {item.count}
         </span>
       )}

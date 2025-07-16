@@ -16,6 +16,8 @@ import { Route as MainIndexRouteImport } from './routes/_main/index'
 import { Route as UserCreateRouteImport } from './routes/user.create'
 import { Route as MainProjectsRouteImport } from './routes/_main/projects'
 import { Route as MainInboxRouteImport } from './routes/_main/inbox'
+import { Route as MainCounterRouteImport } from './routes/_main/counter'
+import { Route as MainCompletedRouteImport } from './routes/_main/completed'
 
 const ThemetestRoute = ThemetestRouteImport.update({
   id: '/themetest',
@@ -51,10 +53,22 @@ const MainInboxRoute = MainInboxRouteImport.update({
   path: '/inbox',
   getParentRoute: () => MainRoute,
 } as any)
+const MainCounterRoute = MainCounterRouteImport.update({
+  id: '/counter',
+  path: '/counter',
+  getParentRoute: () => MainRoute,
+} as any)
+const MainCompletedRoute = MainCompletedRouteImport.update({
+  id: '/completed',
+  path: '/completed',
+  getParentRoute: () => MainRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/themetest': typeof ThemetestRoute
+  '/completed': typeof MainCompletedRoute
+  '/counter': typeof MainCounterRoute
   '/inbox': typeof MainInboxRoute
   '/projects': typeof MainProjectsRoute
   '/user/create': typeof UserCreateRoute
@@ -63,6 +77,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/themetest': typeof ThemetestRoute
+  '/completed': typeof MainCompletedRoute
+  '/counter': typeof MainCounterRoute
   '/inbox': typeof MainInboxRoute
   '/projects': typeof MainProjectsRoute
   '/user/create': typeof UserCreateRoute
@@ -73,6 +89,8 @@ export interface FileRoutesById {
   '/_main': typeof MainRouteWithChildren
   '/login': typeof LoginRoute
   '/themetest': typeof ThemetestRoute
+  '/_main/completed': typeof MainCompletedRoute
+  '/_main/counter': typeof MainCounterRoute
   '/_main/inbox': typeof MainInboxRoute
   '/_main/projects': typeof MainProjectsRoute
   '/user/create': typeof UserCreateRoute
@@ -83,17 +101,29 @@ export interface FileRouteTypes {
   fullPaths:
     | '/login'
     | '/themetest'
+    | '/completed'
+    | '/counter'
     | '/inbox'
     | '/projects'
     | '/user/create'
     | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/themetest' | '/inbox' | '/projects' | '/user/create' | '/'
+  to:
+    | '/login'
+    | '/themetest'
+    | '/completed'
+    | '/counter'
+    | '/inbox'
+    | '/projects'
+    | '/user/create'
+    | '/'
   id:
     | '__root__'
     | '/_main'
     | '/login'
     | '/themetest'
+    | '/_main/completed'
+    | '/_main/counter'
     | '/_main/inbox'
     | '/_main/projects'
     | '/user/create'
@@ -158,16 +188,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainInboxRouteImport
       parentRoute: typeof MainRoute
     }
+    '/_main/counter': {
+      id: '/_main/counter'
+      path: '/counter'
+      fullPath: '/counter'
+      preLoaderRoute: typeof MainCounterRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/_main/completed': {
+      id: '/_main/completed'
+      path: '/completed'
+      fullPath: '/completed'
+      preLoaderRoute: typeof MainCompletedRouteImport
+      parentRoute: typeof MainRoute
+    }
   }
 }
 
 interface MainRouteChildren {
+  MainCompletedRoute: typeof MainCompletedRoute
+  MainCounterRoute: typeof MainCounterRoute
   MainInboxRoute: typeof MainInboxRoute
   MainProjectsRoute: typeof MainProjectsRoute
   MainIndexRoute: typeof MainIndexRoute
 }
 
 const MainRouteChildren: MainRouteChildren = {
+  MainCompletedRoute: MainCompletedRoute,
+  MainCounterRoute: MainCounterRoute,
   MainInboxRoute: MainInboxRoute,
   MainProjectsRoute: MainProjectsRoute,
   MainIndexRoute: MainIndexRoute,
