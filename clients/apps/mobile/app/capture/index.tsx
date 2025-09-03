@@ -1,4 +1,3 @@
-import React from "react";
 import { Box } from "@/components/ui/box";
 import { Text } from "@/components/ui/text";
 import { ThemeSelect } from "@/components/ThemeSelect";
@@ -13,7 +12,7 @@ import { Image } from "expo-image";
 import { Record } from "@/components/Record";
 import { CustomToast } from "@/components/CustomToast";
 import { useToast } from "@/components/ui/toast";
-import { InboxService } from "@gtd/shared'";
+// import { InboxService } from "@gtd/shared'";
 import axios from "axios";
 import { useAlertDialogStore } from "@/hooks/useCustomAlertDialog";
 
@@ -76,7 +75,7 @@ export default function Capture() {
                 mainAction: {
                   text: "Undo",
                   onPress: () => {
-                    InboxService.deleteInboxItemInboxItemIdDelete(response.data.id);
+                    // InboxService.deleteInboxItemInboxItemIdDelete(response.data.id);
                     toast.close("submit-form-toast");
                   }
                 },

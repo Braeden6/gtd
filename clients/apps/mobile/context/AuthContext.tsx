@@ -2,10 +2,10 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { AuthService, UserRead, UsersService } from '@gtd/shared'';
+import type { UserReadDTO } from '@gtd/shared/api/generated';
 
 interface AuthContextType {
-  userInfo: UserRead | null;
+  userInfo: UserReadDTO | null;
   saveSessionCookie: (tokenValue: string) => Promise<boolean>;
   getUserInfo: () => Promise<void>;
   logout: () => Promise<void>;
@@ -16,7 +16,7 @@ const GTD_AUTH_COOKIE_KEY = 'gtd_auth_cookie';
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [userInfo, setUserInfo] = useState<UserRead | null>(null);
+  const [userInfo, setUserInfo] = useState<UserReadDTO | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      await AuthService.oauthGoogleSessionAuthorizeAuthOauthGoogleAuthorizeGet();
+      // await AuthService.oauthGoogleSessionAuthorizeAuthOauthGoogleAuthorizeGet();
     } catch (error) {
       console.error('Error logging out:', error);
     }
@@ -78,8 +78,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const getUserInfo = async () => {
     try {
-      const response = await UsersService.usersCurrentUserUsersMeGet();
-      setUserInfo(response);
+      // const response = await UsersService.usersCurrentUserUsersMeGet();
+      // setUserInfo(response);
     } catch (error) {
       console.error('Error fetching user info:', error);
       setUserInfo(null);

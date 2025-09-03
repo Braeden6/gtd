@@ -9,7 +9,8 @@ import { useRouter } from "expo-router";
 import { ThemeSelect } from "@/components/ThemeSelect";
 import { Image } from "@/components/ui/image";
 import { Dimensions, useColorScheme } from "react-native";
-import { AuthService, InboxService } from "@gtd/shared'";
+// import { AuthService, InboxService } from "@gtd/shared'";
+import SuperTokens from 'supertokens-react-native';
 
 export default function Home() {
   const colorScheme = useColorScheme();
@@ -23,48 +24,48 @@ export default function Home() {
     }
   }, [userInfo]);
 
-  const initiateLogin = async (): Promise<void> => {
-    try {
-      setIsLoading(true);
-      const response = await AuthService.getAuthorizationUrlAuthOauthMobileGoogleAuthorizeGet();
-      const authorizationUrl = response.authorization_url;
-      const url = new URL(authorizationUrl);
-      const state = url.searchParams.get('state');
-      const redirectUri = url.searchParams.get('redirect_uri');
-      const result = await WebBrowser.openAuthSessionAsync(
-        response.authorization_url,
-        redirectUri
-      );
-      // @ts-ignore
-      const responseUrl =  new URLSearchParams(result.url.split('?')[1]);
-      const responseCode = responseUrl.get('code');
-      const responseState = responseUrl.get('state');
-      if (!responseCode) {
-        throw new Error('No code found');
-      }
-      if (state !== responseState) {
-      throw new Error('State mismatch');
-      }
+  // const initiateLogin = async (): Promise<void> => {
+  //   try {
+  //     setIsLoading(true);
+  //     const response = await AuthService.getAuthorizationUrlAuthOauthMobileGoogleAuthorizeGet();
+  //     const authorizationUrl = response.authorization_url;
+  //     const url = new URL(authorizationUrl);
+  //     const state = url.searchParams.get('state');
+  //     const redirectUri = url.searchParams.get('redirect_uri');
+  //     const result = await WebBrowser.openAuthSessionAsync(
+  //       response.authorization_url,
+  //       redirectUri
+  //     );
+  //     // @ts-ignore
+  //     const responseUrl =  new URLSearchParams(result.url.split('?')[1]);
+  //     const responseCode = responseUrl.get('code');
+  //     const responseState = responseUrl.get('state');
+  //     if (!responseCode) {
+  //       throw new Error('No code found');
+  //     }
+  //     if (state !== responseState) {
+  //     throw new Error('State mismatch');
+  //     }
 
-      const finalResponse = await axios.get(
-        `${process.env.EXPO_PUBLIC_API_URL}/auth/oauth/mobile/google/callback?code=${responseCode}&state=${responseState}`, 
-        { withCredentials: true }
-      );
-      const cookies = finalResponse.headers['set-cookie'];
-      const authCookie = cookies?.find((cookie: string) => cookie.startsWith('gtd_auth='));
-      const tokenValue = authCookie?.split(';')[0].replace('gtd_auth=', '');
-      if (!tokenValue) {
-        throw new Error('No token found');
-      }
-      await saveSessionCookie(tokenValue);
-      await getUserInfo();
-    } catch (error) {
-      // !!! popup saying "Something went wrong logging in, please try again"
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     const finalResponse = await axios.get(
+  //       `${process.env.EXPO_PUBLIC_API_URL}/auth/oauth/mobile/google/callback?code=${responseCode}&state=${responseState}`, 
+  //       { withCredentials: true }
+  //     );
+  //     const cookies = finalResponse.headers['set-cookie'];
+  //     const authCookie = cookies?.find((cookie: string) => cookie.startsWith('gtd_auth='));
+  //     const tokenValue = authCookie?.split(';')[0].replace('gtd_auth=', '');
+  //     if (!tokenValue) {
+  //       throw new Error('No token found');
+  //     }
+  //     await saveSessionCookie(tokenValue);
+  //     await getUserInfo();
+  //   } catch (error) {
+  //     // !!! popup saying "Something went wrong logging in, please try again"
+  //     console.log(error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   return (
     <>
@@ -78,9 +79,9 @@ export default function Home() {
           </Box>
         </Box>
 
-        <Button className="w-[200px] bg-secondary" onPress={initiateLogin} disabled={isLoading}>
+        {/* <Button className="w-[200px] bg-secondary" onPress={initiateLogin} disabled={isLoading}>
           <ButtonText className="text-secondary-foreground">Sign In</ButtonText>
-        </Button>
+        </Button> */}
       </Box>
 
       <Image 

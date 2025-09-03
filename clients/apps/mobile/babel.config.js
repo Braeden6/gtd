@@ -10,6 +10,7 @@ module.exports = function(api) {
                 root: ["./"],
                 alias: {
                     "@": "./",
+                    "@gtd/shared": "../../shared",
                     "tailwind.config": "./tailwind.config.js"
                 }
             }]

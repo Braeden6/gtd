@@ -67,9 +67,22 @@ chrome:
 	cd clients/apps/chrome && \
 	pnpm run dev
 
+
 mobile:
-	cd mobile && \
+	cd clients/apps/mobile && \
 	pnpm run start
+
+mobile-prebuild:
+	cd clients/apps/mobile && \
+	pnpm prebuild
+
+mobile-fix:
+	cd clients/apps/mobile && \
+	pnpm prebuild
+
+mobile-build:
+	cd clients/apps/mobile && \
+	eas build --platform ios --profile preview
 
 
 
@@ -90,16 +103,6 @@ db-downgrade:
 	cd services/backend && \
 	alembic downgrade -1
 
-
-
-
-mfix:
-	cd mobile && \
-	pnpm prebuild
-
-mbuild:
-	cd mobile && \
-	eas build --platform ios --profile preview
 
 fbuild:
 	docker build --platform linux/amd64 -t registry.braeden6.com/gtd/frontend:latest -f docker/Dockerfile.frontend . && \
