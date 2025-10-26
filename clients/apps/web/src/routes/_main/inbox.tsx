@@ -137,6 +137,107 @@ function Inbox() {
 
   }
 
+  const exampleInboxItems: KabanItem[] = [
+    {
+      id: 'inbox-1',
+      title: 'Review quarterly financial report',
+      date: new Date().toISOString(),
+      isNew: true,
+      type: ItemType.INBOX,
+      priority: 'high' as any
+    },
+    {
+      id: 'inbox-2',
+      title: 'Schedule team meeting for next week',
+      date: new Date().toISOString(),
+      isNew: true,
+      type: ItemType.INBOX,
+      priority: 'medium' as any
+    },
+    {
+      id: 'inbox-3',
+      title: 'Order new office supplies',
+      date: new Date().toISOString(),
+      type: ItemType.INBOX,
+      priority: 'low' as any
+    }
+  ];
+
+  const exampleActionItems: KabanItem[] = [
+    {
+      id: 'action-1',
+      title: 'Complete project documentation',
+      date: new Date(Date.now() + 86400000).toISOString(), // tomorrow
+      type: ItemType.ACTION,
+      priority: 'high' as any
+    },
+    {
+      id: 'action-2',
+      title: 'Call client to discuss proposal',
+      date: new Date(Date.now() + 172800000).toISOString(), // day after tomorrow
+      type: ItemType.ACTION,
+      priority: 'medium' as any
+    },
+    {
+      id: 'action-3',
+      title: 'Update website content',
+      date: new Date(Date.now() + 259200000).toISOString(), // 3 days from now
+      type: ItemType.ACTION,
+      priority: 'low' as any
+    }
+  ];
+
+  const exampleProjectItems: KabanItem[] = [
+    {
+      id: 'project-1',
+      title: 'Website Redesign Project',
+      date: new Date(Date.now() + 604800000).toISOString(), // 1 week from now
+      type: ItemType.PROJECT,
+      priority: 'high' as any
+    },
+    {
+      id: 'project-2',
+      title: 'Mobile App Development',
+      date: new Date(Date.now() + 1209600000).toISOString(), // 2 weeks from now
+      type: ItemType.PROJECT,
+      priority: 'medium' as any
+    }
+  ];
+
+  const exampleSomedayItems: KabanItem[] = [
+    {
+      id: 'someday-1',
+      title: 'Learn Spanish',
+      date: null,
+      type: ItemType.SOMEDAY,
+      priority: 'low' as any
+    },
+    {
+      id: 'someday-2',
+      title: 'Write a book',
+      date: null,
+      type: ItemType.SOMEDAY,
+      priority: 'low' as any
+    }
+  ];
+
+  const exampleReferenceItems: KabanItem[] = [
+    {
+      id: 'reference-1',
+      title: 'Meeting notes from Q4 planning',
+      date: new Date(Date.now() - 259200000).toISOString(), // 3 days ago
+      type: ItemType.REFERENCE,
+      priority: null
+    },
+    {
+      id: 'reference-2',
+      title: 'Company policies and procedures',
+      date: new Date(Date.now() - 518400000).toISOString(), // 6 days ago
+      type: ItemType.REFERENCE,
+      priority: null
+    }
+  ];
+
   const columnConfigs = [
     {
       id: ItemType.INBOX,
@@ -145,7 +246,7 @@ function Inbox() {
       cardBorderColor: "border-[#7643CF]",
       headerColor: "bg-[#7643CF33]",
       iconColor: "#7643CF",
-      items: kanbanItems
+      items: kanbanItems.length > 0 ? kanbanItems : exampleInboxItems
     },
     {
       id: ItemType.ACTION,
@@ -154,7 +255,7 @@ function Inbox() {
       cardBorderColor: "border-[#ED0C0C]",
       headerColor: "bg-[#ED0C0C33]",
       iconColor: "#ED0C0C",
-      items: kanbanActions
+      items: kanbanActions.length > 0 ? kanbanActions : exampleActionItems
     },
     {
       id: ItemType.PROJECT,
@@ -163,7 +264,7 @@ function Inbox() {
       cardBorderColor: "border-[#07A604]",
       headerColor: "bg-[#07A60433]",
       iconColor: "#07A604",
-      items: kanbanProjects
+      items: kanbanProjects.length > 0 ? kanbanProjects : exampleProjectItems
     },
     {
       id: ItemType.SOMEDAY,
@@ -172,7 +273,7 @@ function Inbox() {
       cardBorderColor: "border-[#593406]",
       headerColor: "bg-[#59340633]",
       iconColor: "#593406",
-      items: []
+      items: exampleSomedayItems
     },
     {
       id: ItemType.REFERENCE,
@@ -181,7 +282,7 @@ function Inbox() {
       cardBorderColor: "border-[#0B17F3]",
       headerColor: "bg-[#0B17F333]",
       iconColor: "#0B17F3",
-      items: []
+      items: exampleReferenceItems
     }
   ]
 
